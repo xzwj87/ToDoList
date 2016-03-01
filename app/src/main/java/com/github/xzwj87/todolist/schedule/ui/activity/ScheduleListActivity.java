@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.github.xzwj87.todolist.R;
@@ -65,5 +68,23 @@ public class ScheduleListActivity extends AppCompatActivity
             intent.setData(uri);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main,menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int itemId = item.getItemId();
+        Log.v(LOG_TAG,"onOptionsItemSelected():item id = " + itemId);
+        // start a search activity
+        if(itemId == R.id.action_search){
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
