@@ -1,7 +1,6 @@
 package com.github.xzwj87.todolist.schedule.ui.activity;
 
-import android.content.ContentValues;
-import android.net.Uri;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenter;
+import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenterImpl;
+import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -26,19 +27,20 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AddScheduleActivity extends AppCompatActivity
-        implements DatePickerDialog.OnDateSetListener {
+        implements AddScheduleView,DatePickerDialog.OnDateSetListener {
     private static final String LOG_TAG = AddScheduleActivity.class.getSimpleName();
 
-    private static final String TAG_START_DATE_PICK_DLG = "start_date_pick_dlg";
-    private static final String TAG_END_DATE_PICK_DLG = "end_date_pick_dlg";
-    private static final String TAG_START_TIME_PICK_DLG = "start_date_pick_dlg";
-    private static final String TAG_END_TIME_PICK_DLG = "end_date_pick_dlg";
+    private static final String START_DATE_PICK_DLG_TAG = "start_date_pick_dlg";
+    private static final String END_DATE_PICK_DLG_TAG = "end_date_pick_dlg";
+    private static final String START_TIME_PICK_DLG_TAG = "start_date_pick_dlg";
+    private static final String END_TIME_PICK_DLG_TAG = "end_date_pick_dlg";
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM d, yyyy");
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
     private Calendar mScheduleStart;
     private Calendar mScheduleEnd;
+    private AddSchedulePresenter mAddSchedulePresenter;
 
     @Bind(R.id.edit_schedule_title) EditText mEditScheduleTitle;
     @Bind(R.id.btn_schedule_date_start) Button mBtnScheduleDateStart;
@@ -59,7 +61,30 @@ public class AddScheduleActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_24dp);
 
-        initViews();
+        initialize();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAddSchedulePresenter.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mAddSchedulePresenter.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAddSchedulePresenter.destroy();
+    }
+
+    private void initialize() {
+        mAddSchedulePresenter = new AddSchedulePresenterImpl();
+        mAddSchedulePresenter.setView(this);
     }
 
     @Override
@@ -72,10 +97,7 @@ public class AddScheduleActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                ContentValues schedule = getSchedule();
-                Uri scheduleInsertUri = this.getContentResolver()
-                        .insert(ScheduleContract.ScheduleEntry.CONTENT_URI, schedule);
-                Log.v(LOG_TAG, "onOptionsItemSelected(): Saved to " + scheduleInsertUri);
+                mAddSchedulePresenter.onSave();
                 finish();
                 return true;
             default:
@@ -90,144 +112,113 @@ public class AddScheduleActivity extends AppCompatActivity
         // NOTE: monthOfYear starts from 0
         Log.v(LOG_TAG, "onDateSet(): tag =" + view.getTag() + ", year = " + year +
                 ", monthOfYear = " + monthOfYear + ", dayOfMonth = " + dayOfMonth);
-        Calendar calendar;
-        Button button;
+
         switch (view.getTag()) {
-            case TAG_START_DATE_PICK_DLG: {
-                calendar = mScheduleStart;
-                button = mBtnScheduleDateStart;
+            case START_DATE_PICK_DLG_TAG:
+                mAddSchedulePresenter.onStartDateSet(year, monthOfYear, dayOfMonth);
                 break;
-            }
-            case TAG_END_DATE_PICK_DLG: {
-                calendar = mScheduleEnd;
-                button = mBtnScheduleDateEnd;
+            case END_DATE_PICK_DLG_TAG:
+                mAddSchedulePresenter.onEndDateSet(year, monthOfYear, dayOfMonth);
                 break;
-            }
-            default: {
-                calendar = mScheduleStart;
-                button = mBtnScheduleDateStart;
-                break;
-            }
-
         }
+    }
 
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, monthOfYear);
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        button.setText(DATE_FORMAT.format(calendar.getTime()));
+    @Override
+    public void showPickStartDateDlg(int year, int monthOfYear, int dayOfMonth) {
+        DatePickerDialog dpd = DatePickerDialog.newInstance(this, year, monthOfYear, dayOfMonth);
+        dpd.show(getFragmentManager(), START_DATE_PICK_DLG_TAG);
+    }
+
+    @Override
+    public void showPickEndDateDlg(int year, int monthOfYear, int dayOfMonth) {
+        DatePickerDialog dpd = DatePickerDialog.newInstance(this, year, monthOfYear, dayOfMonth);
+        dpd.show(getFragmentManager(), END_DATE_PICK_DLG_TAG);
+    }
+
+    @Override
+    public void showPickStartTimeDlg(int hourOfDay, int minute, int second) {
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute,
+                                          int second) {
+                        mAddSchedulePresenter.onStartTimeSet(hourOfDay, minute, second);
+                    }
+                },
+                hourOfDay,
+                minute,
+                true
+        );
+
+        tpd.show(getFragmentManager(), START_TIME_PICK_DLG_TAG);
+    }
+
+    @Override
+    public void showPickEndTimeDlg(int hourOfDay, int minute, int second) {
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute,
+                                          int second) {
+                        mAddSchedulePresenter.onEndTimeSet(hourOfDay, minute, second);
+                    }
+                },
+                hourOfDay,
+                minute,
+                true
+        );
+
+        tpd.show(getFragmentManager(), END_TIME_PICK_DLG_TAG);
+    }
+
+    @Override
+    public void updateStartDateDisplay(String startDate) {
+        mBtnScheduleDateStart.setText(startDate);
+    }
+
+    @Override
+    public void updateEndDateDisplay(String endDate) {
+        mBtnScheduleDateEnd.setText(endDate);
+    }
+
+    @Override
+    public void updateStartTimeDisplay(String startTime) {
+        mBtnScheduleTimeStart.setText(startTime);
+    }
+
+    @Override
+    public void updateEndTimeDisplay(String endTime) {
+        mBtnScheduleTimeEnd.setText(endTime);
+    }
+
+    @Override
+    public String getScheduleTitle() {
+        return mEditScheduleTitle.getText().toString();
+    }
+
+    @Override
+    public Context getViewContext() {
+        return this;
     }
 
     @OnClick(R.id.btn_schedule_date_start)
     public void pickStartDate(View view) {
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
-                this,
-                mScheduleStart.get(Calendar.YEAR),
-                mScheduleStart.get(Calendar.MONTH),
-                mScheduleStart.get(Calendar.DAY_OF_MONTH)
-        );
-
-        dpd.show(getFragmentManager(), TAG_START_DATE_PICK_DLG);
+        mAddSchedulePresenter.setStartDate();
     }
 
     @OnClick(R.id.btn_schedule_date_end)
     public void pickEndDate(View view) {
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
-                this,
-                mScheduleEnd.get(Calendar.YEAR),
-                mScheduleEnd.get(Calendar.MONTH),
-                mScheduleEnd.get(Calendar.DAY_OF_MONTH)
-        );
-
-        dpd.show(getFragmentManager(), TAG_END_DATE_PICK_DLG);
+        mAddSchedulePresenter.setEndDate();
     }
 
     @OnClick(R.id.btn_schedule_time_start)
     public void pickStartTime(View view) {
-        TimePickerDialog tpd = TimePickerDialog.newInstance(
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute,
-                                          int second) {
-                        mScheduleStart.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        mScheduleStart.set(Calendar.MINUTE, minute);
-                        mScheduleStart.set(Calendar.SECOND, second);
-                        mBtnScheduleTimeStart.setText(TIME_FORMAT.format(mScheduleStart.getTime()));
-                    }
-                },
-                mScheduleStart.get(Calendar.HOUR_OF_DAY),
-                mScheduleStart.get(Calendar.MINUTE),
-                true
-        );
-
-        tpd.show(getFragmentManager(), TAG_START_TIME_PICK_DLG);
+        mAddSchedulePresenter.setStartTime();
     }
 
     @OnClick(R.id.btn_schedule_time_end)
     public void pickEndTime(View view) {
-        TimePickerDialog tpd = TimePickerDialog.newInstance(
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute,
-                                          int second) {
-                        mScheduleEnd.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        mScheduleEnd.set(Calendar.MINUTE, minute);
-                        mScheduleEnd.set(Calendar.SECOND, second);
-                        mBtnScheduleTimeEnd.setText(TIME_FORMAT.format(mScheduleEnd.getTime()));
-                    }
-                },
-                mScheduleEnd.get(Calendar.HOUR_OF_DAY),
-                mScheduleEnd.get(Calendar.MINUTE),
-                true
-        );
-
-        tpd.show(getFragmentManager(), TAG_END_TIME_PICK_DLG);
-    }
-
-    private void initCalendars() {
-        mScheduleStart = Calendar.getInstance();
-        int minute = mScheduleStart.get(Calendar.MINUTE);
-        mScheduleStart.set(Calendar.MINUTE, minute + 10);
-
-        mScheduleEnd = Calendar.getInstance();
-        int hourOfDay = mScheduleEnd.get(Calendar.HOUR_OF_DAY);
-        mScheduleEnd.set(Calendar.HOUR_OF_DAY, hourOfDay + 1);
-        mScheduleEnd.set(Calendar.MINUTE, minute + 10);
-
-        Log.v(LOG_TAG, "initCalendars(): mScheduleStart = " + mScheduleStart.getTime() +
-                ", mScheduleEnd = " + mScheduleEnd.getTime());
-
-    }
-
-    private void initViews() {
-        initCalendars();
-
-        String startDate = DATE_FORMAT.format(mScheduleStart.getTime());
-        String startTime = TIME_FORMAT.format(mScheduleStart.getTime());
-        String endDate = DATE_FORMAT.format(mScheduleEnd.getTime());
-        String endTime = TIME_FORMAT.format(mScheduleEnd.getTime());
-
-        Log.v(LOG_TAG, "initViews(): startDate = " + startDate + ", startTime = " + startTime +
-                ", endDate = " + endDate + ", endTime = " + endTime);
-
-        mBtnScheduleDateStart.setText(startDate);
-        mBtnScheduleTimeStart.setText(startTime);
-        mBtnScheduleDateEnd.setText(endDate);
-        mBtnScheduleTimeEnd.setText(endTime);
-    }
-
-    private ContentValues getSchedule() {
-        ContentValues scheduleValues = new ContentValues();
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TITLE, mEditScheduleTitle.getText().toString());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DETAIL, "None");
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TYPE, "None");
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_START, mScheduleStart.getTimeInMillis());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_END, mScheduleEnd.getTimeInMillis());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_SCHEDULE, 1);
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME, mScheduleStart.getTimeInMillis());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES, 1);
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL, 10);
-
-        return scheduleValues;
+        mAddSchedulePresenter.setEndTime();
     }
 
 }
