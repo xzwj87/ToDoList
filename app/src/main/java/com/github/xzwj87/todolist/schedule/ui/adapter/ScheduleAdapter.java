@@ -43,16 +43,17 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
         mCursor.moveToPosition(position);
 
         String title = mCursor.getString(ScheduleListFragment.COL_SCHEDULE_TITLE);
-        Date start = new Date(mCursor.getInt(ScheduleListFragment.COL_SCHEDULE_DATE_START));
-        Date end = new Date(mCursor.getInt(ScheduleListFragment.COL_SCHEDULE_DATE_END));
+        Date start = new Date(mCursor.getLong(ScheduleListFragment.COL_SCHEDULE_DATE_START));
+        Date end = new Date(mCursor.getLong(ScheduleListFragment.COL_SCHEDULE_DATE_END));
 
         Log.v(LOG_TAG, "onBindViewHolder(): position = " + position + ", start = " + start +
                 ", end = " + end);
 
         holder.mTvScheduleTitle.setText(title);
         String startTime = TIME_FORMAT.format(start);
-        String endTime = TIME_FORMAT.format(start);
-        Log.v(LOG_TAG, "onBindViewHolder(): startTime = " + startTime + ", endTime = " + endTime);
+        String endTime = TIME_FORMAT.format(end);
+        Log.v(LOG_TAG, "onBindViewHolder(): position = " + position + "title = " + title +
+                ", startTime = " + startTime + ", endTime = " + endTime);
 
         holder.mTvScheduleStartTime.setText(startTime);
         holder.mTvScheduleEndTime.setText(endTime);
