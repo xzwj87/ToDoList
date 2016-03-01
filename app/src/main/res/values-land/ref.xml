@@ -1,0 +1,3 @@
+<resources>
+    <item type="layout" name="schedule_list">@layout/schedule_list_two_panes</item>
+</resources>
