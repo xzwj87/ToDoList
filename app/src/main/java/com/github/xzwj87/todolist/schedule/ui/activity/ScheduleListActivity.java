@@ -72,15 +72,17 @@ public class ScheduleListActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
+        Log.d(LOG_TAG,"onCreateOptionsMenu(): menu = " + menu.toString());
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_main,menu);
 
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int itemId = item.getItemId();
-        Log.v(LOG_TAG,"onOptionsItemSelected():item id = " + itemId);
+        Log.v(LOG_TAG,"onOptionsItemSelected():item = " + item.toString());
         // start a search activity
         if(itemId == R.id.action_search){
             return true;
