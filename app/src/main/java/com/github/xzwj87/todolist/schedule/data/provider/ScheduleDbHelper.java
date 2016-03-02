@@ -1,10 +1,10 @@
-package com.github.xzwj87.todolist.schedule.provider;
+package com.github.xzwj87.todolist.schedule.data.provider;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.github.xzwj87.todolist.schedule.provider.ScheduleContract.ScheduleEntry;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract.ScheduleEntry;
 
 public class ScheduleDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;

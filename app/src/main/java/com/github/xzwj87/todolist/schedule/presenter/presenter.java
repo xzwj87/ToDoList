@@ -1,6 +1,6 @@
 package com.github.xzwj87.todolist.schedule.presenter;
 
-public interface presenter {
+public interface Presenter {
     void resume();
 
     void pause();

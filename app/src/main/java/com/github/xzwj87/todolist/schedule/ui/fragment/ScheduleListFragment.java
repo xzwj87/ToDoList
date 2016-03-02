@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
 
 import butterknife.Bind;

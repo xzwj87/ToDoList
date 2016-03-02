@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
 
-public interface AddSchedulePresenter extends presenter {
+public interface AddSchedulePresenter extends Presenter {
 
     void setView(@NonNull AddScheduleView view);
 

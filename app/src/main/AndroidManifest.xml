@@ -31,7 +31,7 @@
         </activity>
 
         <provider
-            android:name="com.github.xzwj87.todolist.schedule.provider.ScheduleProvider"
+            android:name=".schedule.data.provider.ScheduleProvider"
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true" />

@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.github.xzwj87.todolist.schedule.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
 
 import java.text.SimpleDateFormat;
