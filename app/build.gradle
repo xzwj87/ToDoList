@@ -28,4 +28,6 @@ dependencies {
     compile 'com.android.support:design:23.2.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.wdullaer:materialdatetimepicker:2.2.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
 }

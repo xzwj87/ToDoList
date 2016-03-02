@@ -30,32 +30,42 @@ public class ScheduleModel {
     @Retention(RetentionPolicy.SOURCE)
     public @interface ScheduleRepeatType {}
 
+    private int mId;
+
     private String mTitle;
     private String mDetail;
     @ScheduleType private String mType;
 
-    private Date mScheduleFrom;
-    private Date mScheduleTo;
+    private Date mScheduleStart;
+    private Date mScheduleEnd;
     @ScheduleRepeatType private String mScheduleRepeatType;
 
     private Date mAlarmTime;
     private int mRepeatAlarmTimes;
     private int mRepeatAlarmInterval;
 
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        this.mId = id;
+    }
+
     public String getTitle() {
         return mTitle;
     }
 
-    public void setTitle(String mTitle) {
-        this.mTitle = mTitle;
+    public void setTitle(String title) {
+        this.mTitle = title;
     }
 
     public String getDetail() {
         return mDetail;
     }
 
-    public void setDetail(String mDetail) {
-        this.mDetail = mDetail;
+    public void setDetail(String detail) {
+        this.mDetail = detail;
     }
 
     @ScheduleType
@@ -63,24 +73,24 @@ public class ScheduleModel {
         return mType;
     }
 
-    public void setType(@ScheduleType String mType) {
-        this.mType = mType;
+    public void setType(@ScheduleType String type) {
+        this.mType = type;
     }
 
-    public Date getScheduleFrom() {
-        return mScheduleFrom;
+    public Date getScheduleStart() {
+        return mScheduleStart;
     }
 
-    public void setScheduleFrom(Date mScheduleFrom) {
-        this.mScheduleFrom = mScheduleFrom;
+    public void setScheduleStart(Date scheduleFrom) {
+        this.mScheduleStart = scheduleFrom;
     }
 
-    public Date getScheduleTo() {
-        return mScheduleTo;
+    public Date getScheduleEnd() {
+        return mScheduleEnd;
     }
 
-    public void setScheduleTo(Date mScheduleTo) {
-        this.mScheduleTo = mScheduleTo;
+    public void setScheduleEnd(Date scheduleEnd) {
+        this.mScheduleEnd = scheduleEnd;
     }
 
     @ScheduleRepeatType
@@ -88,32 +98,32 @@ public class ScheduleModel {
         return mScheduleRepeatType;
     }
 
-    public void setScheduleRepeatType(@ScheduleRepeatType String mScheduleRepeatType) {
-        this.mScheduleRepeatType = mScheduleRepeatType;
+    public void setScheduleRepeatType(@ScheduleRepeatType String scheduleRepeatType) {
+        this.mScheduleRepeatType = scheduleRepeatType;
     }
 
     public Date getAlarmTime() {
         return mAlarmTime;
     }
 
-    public void setAlarmTime(Date mAlarmTime) {
-        this.mAlarmTime = mAlarmTime;
+    public void setAlarmTime(Date alarmTime) {
+        this.mAlarmTime = alarmTime;
     }
 
     public int getRepeatAlarmTimes() {
         return mRepeatAlarmTimes;
     }
 
-    public void setRepeatAlarmTimes(int mRepeatAlarmTimes) {
-        this.mRepeatAlarmTimes = mRepeatAlarmTimes;
+    public void setRepeatAlarmTimes(int repeatAlarmTimes) {
+        this.mRepeatAlarmTimes = repeatAlarmTimes;
     }
 
     public int getRepeatAlarmInterval() {
         return mRepeatAlarmInterval;
     }
 
-    public void setRepeatAlarmInterval(int mRepeatAlarmInterval) {
-        this.mRepeatAlarmInterval = mRepeatAlarmInterval;
+    public void setRepeatAlarmInterval(int repeatAlarmInterval) {
+        this.mRepeatAlarmInterval = repeatAlarmInterval;
     }
 
 }
