@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -72,21 +71,18 @@ public class ScheduleListActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        Log.d(LOG_TAG,"onCreateOptionsMenu(): menu = " + menu.toString());
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_main,menu);
-
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        int itemId = item.getItemId();
-        Log.v(LOG_TAG,"onOptionsItemSelected():item = " + item.toString());
-        // start a search activity
-        if(itemId == R.id.action_search){
-            return true;
+        Log.v(LOG_TAG, "onOptionsItemSelected(): item = " + item);
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 }
