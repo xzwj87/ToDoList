@@ -10,17 +10,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenter;
+import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
+import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ScheduleDetailFragment extends Fragment {
+public class ScheduleDetailFragment extends Fragment implements ScheduleDetailView {
     private static final String LOG_TAG = ScheduleDetailFragment.class.getSimpleName();
 
     public static final String ARG_ITEM_ID = "item_id";
     public static final String DETAIL_URI = "URI";
 
     private Uri mUri;
+    private int mScheduleId = 0;
+    private ScheduleDetailPresenter mScheduleDetailPresenter;
 
     @Bind(R.id.tv_schedule_detail) TextView mTvScheduleDetail;
 
@@ -46,10 +53,33 @@ public class ScheduleDetailFragment extends Fragment {
         Bundle arguments = getArguments();
         if (arguments != null) {
             mUri = arguments.getParcelable(DETAIL_URI);
-            Log.v(LOG_TAG, "onCreateView(): mUri = " + mUri);
-            mTvScheduleDetail.setText(mUri.toString());
+            mScheduleId = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(mUri);
+            Log.v(LOG_TAG, "onCreateView(): mUri = " + mUri + ", mScheduleId = " + mScheduleId);
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initialize();
+    }
+
+    @Override
+    public void renderSchedule(ScheduleModel schedule) {
+        String text = "Schedule id: " + schedule.getId();
+        mTvScheduleDetail.setText(text);
+    }
+
+    private void initialize() {
+        mScheduleDetailPresenter = new ScheduleDetailPresenterImpl();
+        mScheduleDetailPresenter.setView(this);
+
+        loadScheduleData(mScheduleId);
+    }
+    private void loadScheduleData(int id) {
+        mScheduleDetailPresenter.setScheduleId(id);
+        mScheduleDetailPresenter.initialize();
     }
 }

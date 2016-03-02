@@ -13,6 +13,6 @@
     <string name="title_activity_add"> </string>
 
     <string name="time_period_separator">-</string>
-    <string name="search_action_bar">search</string>
+    <string name="action_search">search</string>
 
 </resources>

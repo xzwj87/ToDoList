@@ -1,4 +1,4 @@
-package com.github.xzwj87.todolist.schedule.provider;
+package com.github.xzwj87.todolist.schedule.data.provider;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
-import com.github.xzwj87.todolist.schedule.provider.ScheduleContract.ScheduleEntry;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract.ScheduleEntry;
 
 public class TestProvider extends AndroidTestCase {
     public static final String LOG_TAG = TestProvider.class.getSimpleName();

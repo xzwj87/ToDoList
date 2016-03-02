@@ -1,4 +1,4 @@
-package com.github.xzwj87.todolist.schedule.provider;
+package com.github.xzwj87.todolist.schedule.data.provider;
 
 
 import android.annotation.TargetApi;

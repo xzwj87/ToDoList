@@ -15,6 +15,6 @@ public interface AddScheduleView {
     void updateEndTimeDisplay(String endTime);
 
     String getScheduleTitle();
-    // TODO: Inject context to presenter
+    // TODO: Inject context to Presenter
     Context getViewContext();
 }
