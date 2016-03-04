@@ -19,9 +19,6 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,11 +32,6 @@ public class AddScheduleActivity extends AppCompatActivity
     private static final String START_TIME_PICK_DLG_TAG = "start_date_pick_dlg";
     private static final String END_TIME_PICK_DLG_TAG = "end_date_pick_dlg";
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM d, yyyy");
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
-
-    private Calendar mScheduleStart;
-    private Calendar mScheduleEnd;
     private AddSchedulePresenter mAddSchedulePresenter;
 
     @Bind(R.id.edit_schedule_title) EditText mEditScheduleTitle;
