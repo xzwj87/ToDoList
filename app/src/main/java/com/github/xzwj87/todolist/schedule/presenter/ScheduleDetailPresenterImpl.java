@@ -1,8 +1,13 @@
 package com.github.xzwj87.todolist.schedule.presenter;
 
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
+import com.github.xzwj87.todolist.schedule.interactor.UseCase;
+import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
@@ -13,6 +18,13 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
 
     private ScheduleDetailView mScheduleDetailView;
     private int mScheduleId = INVALID_ID;
+    private UseCase mUseCase;
+    private ScheduleModelDataMapper mMapper;
+
+    public ScheduleDetailPresenterImpl(UseCase useCase, ScheduleModelDataMapper mapper) {
+        mUseCase = useCase;
+        mMapper = mapper;
+    }
 
     @Override
     public void setView(@NonNull ScheduleDetailView view) {
@@ -20,15 +32,8 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     }
 
     @Override
-    public void setScheduleId(int id) {
-        mScheduleId = id;
-    }
-
-    @Override
     public void initialize() {
-        if (mScheduleId != INVALID_ID) {
-            mScheduleDetailView.renderSchedule(getSchedule(mScheduleId));
-        }
+        loadScheduleDetails();
     }
 
     @Override
@@ -39,12 +44,27 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
 
     @Override
     public void destroy() {
+        Log.v(LOG_TAG, "destroy()");
+        mUseCase.unsubscribe();
         mScheduleDetailView = null;
     }
 
-    private ScheduleModel getSchedule(int id) {
-        ScheduleModel dummy = new ScheduleModel();
-        dummy.setId(id);
-        return dummy;
+    private void loadScheduleDetails() {
+        mUseCase.execute(new ScheduleDetailsSubscriber());
+    }
+
+    private final class ScheduleDetailsSubscriber extends DefaultSubscriber<Cursor> {
+
+        @Override public void onCompleted() {}
+
+        @Override public void onError(Throwable e) {}
+
+        @Override public void onNext(Cursor cursor) {
+            cursor.moveToFirst();
+            ScheduleModel scheduleModel = mMapper.transform(cursor);
+            Log.v(LOG_TAG, "onNext(): scheduleModel = " + scheduleModel);
+            cursor.close();
+            mScheduleDetailView.renderSchedule(scheduleModel);
+        }
     }
 }

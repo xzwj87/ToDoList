@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.interactor.GetScheduleDetail;
+import com.github.xzwj87.todolist.schedule.interactor.UseCase;
+import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
@@ -67,19 +70,38 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mScheduleDetailPresenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mScheduleDetailPresenter.pause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mScheduleDetailPresenter.destroy();
+    }
+
+    @Override
     public void renderSchedule(ScheduleModel schedule) {
-        String text = "Schedule id: " + schedule.getId();
+        String text = "Schedule id: " + schedule.getId() + ", title = " + schedule.getTitle();
         mTvScheduleDetail.setText(text);
     }
 
     private void initialize() {
-        mScheduleDetailPresenter = new ScheduleDetailPresenterImpl();
+        UseCase useCase = new GetScheduleDetail(mScheduleId);
+        ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
+        mScheduleDetailPresenter = new ScheduleDetailPresenterImpl(useCase, mapper);
         mScheduleDetailPresenter.setView(this);
 
-        loadScheduleData(mScheduleId);
+        loadScheduleData();
     }
-    private void loadScheduleData(int id) {
-        mScheduleDetailPresenter.setScheduleId(id);
+    private void loadScheduleData() {
         mScheduleDetailPresenter.initialize();
     }
 }
