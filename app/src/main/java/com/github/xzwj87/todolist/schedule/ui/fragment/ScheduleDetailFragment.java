@@ -1,6 +1,5 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.GetScheduleDetail;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
@@ -25,16 +23,24 @@ import butterknife.ButterKnife;
 public class ScheduleDetailFragment extends Fragment implements ScheduleDetailView {
     private static final String LOG_TAG = ScheduleDetailFragment.class.getSimpleName();
 
-    public static final String ARG_ITEM_ID = "item_id";
-    public static final String DETAIL_URI = "URI";
+    public static final String SCHEDULE_ID = "id";
 
-    private Uri mUri;
     private int mScheduleId = 0;
     private ScheduleDetailPresenter mScheduleDetailPresenter;
 
     @Bind(R.id.tv_schedule_detail) TextView mTvScheduleDetail;
 
     public ScheduleDetailFragment() { }
+
+    public static ScheduleDetailFragment newInstance(int scheduleId) {
+        ScheduleDetailFragment fragment = new ScheduleDetailFragment();
+
+        Bundle args = new Bundle();
+        args.putInt(SCHEDULE_ID, scheduleId);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,9 +61,8 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mUri = arguments.getParcelable(DETAIL_URI);
-            mScheduleId = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(mUri);
-            Log.v(LOG_TAG, "onCreateView(): mUri = " + mUri + ", mScheduleId = " + mScheduleId);
+            mScheduleId = arguments.getInt(SCHEDULE_ID);
+            Log.v(LOG_TAG, "onCreateView(): mScheduleId = " + mScheduleId);
         }
 
         return rootView;

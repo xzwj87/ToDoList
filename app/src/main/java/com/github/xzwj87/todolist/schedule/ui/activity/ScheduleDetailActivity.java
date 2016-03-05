@@ -20,6 +20,8 @@ import butterknife.OnClick;
 public class ScheduleDetailActivity extends AppCompatActivity {
     private static final String LOG_TAG = ScheduleDetailActivity.class.getSimpleName();
 
+    public static final String SCHEDULE_ID = "id";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +40,9 @@ public class ScheduleDetailActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
             Log.v(LOG_TAG, "onCreate(): intent = " + getIntent().getData());
-            arguments.putParcelable(ScheduleDetailFragment.DETAIL_URI, getIntent().getData());
+            int id = getIntent().getIntExtra(SCHEDULE_ID, 0);
+            Log.v(LOG_TAG, "onCreate(): id = " + id);
+            arguments.putInt(ScheduleDetailFragment.SCHEDULE_ID, id);
 
             ScheduleDetailFragment fragment = new ScheduleDetailFragment();
             fragment.setArguments(arguments);
