@@ -19,7 +19,6 @@ import java.util.HashMap;
 public class AlarmReceiver extends BroadcastReceiver implements AlarmService{
     protected static final String LOG_TAG = "AlarmReceiver";
 
-    private static AlarmReceiver mInstance = new AlarmReceiver();
     // a HashMap to save event title/alarm time
     private  HashMap<String,Long> mEventMap = null;
     private PowerManager.WakeLock mWakeLock = null;
@@ -27,16 +26,15 @@ public class AlarmReceiver extends BroadcastReceiver implements AlarmService{
     private Context mContext = null;
     private AlarmDialogFragment mAlarmDialog;
 
-    public AlarmReceiver(){
+    public AlarmReceiver() {
+    }
+
+    public AlarmReceiver(Context context) {
+        this.mContext = context;
         mEventMap = new HashMap<>();
         mAlarmMgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
     }
 
-    public AlarmReceiver getInstance(Context context){
-        this.mContext = context;
-
-        return mInstance;
-    }
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v(LOG_TAG, "onReceive(): action = " + intent.getAction().toString());
