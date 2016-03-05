@@ -8,8 +8,6 @@ public interface ScheduleDetailPresenter extends Presenter {
 
     void setView(@NonNull ScheduleDetailView view);
 
-    void setScheduleId(int id);
-
     void initialize();
 
 }

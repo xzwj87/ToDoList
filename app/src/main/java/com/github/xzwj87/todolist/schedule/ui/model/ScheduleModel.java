@@ -126,4 +126,17 @@ public class ScheduleModel {
         this.mRepeatAlarmInterval = repeatAlarmInterval;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("***** ScheduleModel Details *****\n");
+        stringBuilder.append("id = " + mId + "\n");
+        stringBuilder.append("title = " + mTitle + "\n");
+        stringBuilder.append("start = " + mScheduleStart + "\n");
+        stringBuilder.append("end = " + mScheduleEnd + "\n");
+        stringBuilder.append("alarm = " + mAlarmTime + "\n");
+
+        return stringBuilder.toString();
+    }
 }
