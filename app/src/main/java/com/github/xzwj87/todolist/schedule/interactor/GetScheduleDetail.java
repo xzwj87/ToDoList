@@ -13,7 +13,7 @@ import com.squareup.sqlbrite.SqlBrite;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-public class GetScheduleDetail extends UseCase {
+public class GetScheduleDetail extends ReadDataUseCase {
     private final String LOG_TAG = GetScheduleDetail.class.getSimpleName();
 
     private final int mScheduleId;

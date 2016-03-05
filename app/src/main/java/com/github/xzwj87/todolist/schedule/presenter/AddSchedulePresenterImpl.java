@@ -1,12 +1,13 @@
 package com.github.xzwj87.todolist.schedule.presenter;
 
-import android.content.ContentValues;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
+import com.github.xzwj87.todolist.schedule.interactor.WriteDataUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,12 +18,16 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM d, yyyy");
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
+    private WriteDataUseCase mUseCase;
+    private ScheduleContentValuesDataMapper mMapper;
     private AddScheduleView mAddScheduleView;
     private Calendar mScheduleStart;
     private Calendar mScheduleEnd;
 
-    public AddSchedulePresenterImpl() {
-
+    public AddSchedulePresenterImpl(WriteDataUseCase useCase,
+                                    ScheduleContentValuesDataMapper mapper) {
+        mUseCase = useCase;
+        mMapper = mapper;
     }
 
     @Override
@@ -102,14 +107,12 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     @Override
     public void destroy() {
         mAddScheduleView = null;
+        mUseCase.unsubscribe();
     }
 
     @Override
     public void onSave() {
-        ContentValues schedule = getSchedule();
-        Uri scheduleInsertUri = mAddScheduleView.getViewContext().getContentResolver()
-                .insert(ScheduleContract.ScheduleEntry.CONTENT_URI, schedule);
-        Log.v(LOG_TAG, "onSave(): Saved to " + scheduleInsertUri);
+        mUseCase.execute(mMapper.transform(getSchedule()), new AddScheduleSubscriber());
     }
 
     private void initCalendarsWithCurrentTime() {
@@ -126,20 +129,30 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
                 + mScheduleStart.getTime() + ", mScheduleEnd = " + mScheduleEnd.getTime());
     }
 
-    private ContentValues getSchedule() {
-        Log.v(LOG_TAG, "getSchedule(): Start date = " + mScheduleStart.getTime() + ", end date = " + mScheduleEnd.getTime());
-        ContentValues scheduleValues = new ContentValues();
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TITLE, mAddScheduleView.getScheduleTitle());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DETAIL, "None");
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TYPE, "None");
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_START, mScheduleStart.getTimeInMillis());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_END, mScheduleEnd.getTimeInMillis());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_SCHEDULE, 1);
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME, mScheduleStart.getTimeInMillis());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES, 1);
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL, 10);
+    private ScheduleModel getSchedule() {
+        ScheduleModel schedule = new ScheduleModel();
 
-        Log.v(LOG_TAG, "getSchedule(): scheduleValues = " + scheduleValues);
-        return scheduleValues;
+        schedule.setTitle(mAddScheduleView.getScheduleTitle());
+        schedule.setDetail("None");
+        schedule.setType(ScheduleModel.SCHEDULE_TYPE_DEFAULT);
+        schedule.setScheduleStart(mScheduleStart.getTime());
+        schedule.setScheduleEnd(mScheduleEnd.getTime());
+        schedule.setScheduleRepeatType(ScheduleModel.SCHEDULE_REPEAT_EVERY_DAY);
+        schedule.setAlarmTime(mScheduleStart.getTime());
+        schedule.setRepeatAlarmTimes(1);
+        schedule.setRepeatAlarmInterval(10);
+
+        return schedule;
+    }
+
+    private final class AddScheduleSubscriber extends DefaultSubscriber<Integer> {
+
+        @Override public void onCompleted() {}
+
+        @Override public void onError(Throwable e) {}
+
+        @Override public void onNext(Integer id) {
+            Log.v(LOG_TAG, "onNext(): id = " + id);
+        }
     }
 }

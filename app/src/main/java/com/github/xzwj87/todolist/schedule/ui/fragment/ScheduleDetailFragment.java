@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.GetScheduleDetail;
-import com.github.xzwj87.todolist.schedule.interactor.UseCase;
+import com.github.xzwj87.todolist.schedule.interactor.ReadDataUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
@@ -99,7 +99,7 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     }
 
     private void initialize() {
-        UseCase useCase = new GetScheduleDetail(mScheduleId);
+        ReadDataUseCase useCase = new GetScheduleDetail(mScheduleId);
         ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
         mScheduleDetailPresenter = new ScheduleDetailPresenterImpl(useCase, mapper);
         mScheduleDetailPresenter.setView(this);
