@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.schedule.interactor.AddSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenter;
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
@@ -75,7 +77,9 @@ public class AddScheduleActivity extends AppCompatActivity
     }
 
     private void initialize() {
-        mAddSchedulePresenter = new AddSchedulePresenterImpl();
+        AddSchedule addSchedule = new AddSchedule();
+        ScheduleContentValuesDataMapper mapper = new ScheduleContentValuesDataMapper();
+        mAddSchedulePresenter = new AddSchedulePresenterImpl(addSchedule, mapper);
         mAddSchedulePresenter.setView(this);
     }
 
