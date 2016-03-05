@@ -1,7 +1,6 @@
 package com.github.xzwj87.todolist.schedule.ui.adapter;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,10 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,7 +23,18 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
     private static OnItemClickListener mListener;
-    private Cursor mCursor;
+
+    private DataSource mDataSourse;
+
+    public interface DataSource {
+        ScheduleModel getItemAtPosition(int position);
+        int getItemCount();
+    }
+
+    public ScheduleAdapter(DataSource dataSource) {
+        mDataSourse = dataSource;
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,46 +43,29 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
         View contactView = inflater.inflate(R.layout.item_schedule, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(contactView);
-        return viewHolder;
+        return new ViewHolder(contactView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        mCursor.moveToPosition(position);
+        ScheduleModel schedule = mDataSourse.getItemAtPosition(position);
+        Log.v(LOG_TAG, "onBindViewHolder(): position = " + position + ", schedule = " + schedule);
 
-        String title = mCursor.getString(ScheduleListFragment.COL_SCHEDULE_TITLE);
-        Date start = new Date(mCursor.getLong(ScheduleListFragment.COL_SCHEDULE_DATE_START));
-        Date end = new Date(mCursor.getLong(ScheduleListFragment.COL_SCHEDULE_DATE_END));
 
-        Log.v(LOG_TAG, "onBindViewHolder(): position = " + position + ", start = " + start +
-                ", end = " + end);
+        holder.mTvScheduleTitle.setText(schedule.getTitle());
 
-        holder.mTvScheduleTitle.setText(title);
-        String startTime = TIME_FORMAT.format(start);
-        String endTime = TIME_FORMAT.format(end);
-        Log.v(LOG_TAG, "onBindViewHolder(): position = " + position + "title = " + title +
-                ", startTime = " + startTime + ", endTime = " + endTime);
-
+        String startTime = TIME_FORMAT.format(schedule.getScheduleStart());
         holder.mTvScheduleStartTime.setText(startTime);
+
+        String endTime = TIME_FORMAT.format(schedule.getScheduleEnd());
         holder.mTvScheduleEndTime.setText(endTime);
     }
 
     @Override
     public int getItemCount() {
-        int count = mCursor == null ? 0: mCursor.getCount();
-        Log.v(LOG_TAG, "onBindViewHolder(): count = " + count);
-        return count;
+        return mDataSourse.getItemCount();
     }
 
-    public void swapCursor(Cursor newCursor) {
-        mCursor = newCursor;
-        notifyDataSetChanged();
-    }
-
-    public Cursor getCursor() {
-        return mCursor;
-    }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.mListener = listener;

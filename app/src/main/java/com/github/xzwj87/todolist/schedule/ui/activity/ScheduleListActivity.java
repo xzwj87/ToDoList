@@ -1,7 +1,6 @@
 package com.github.xzwj87.todolist.schedule.ui.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -49,22 +48,18 @@ public class ScheduleListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onItemSelected(Uri uri, ScheduleAdapter.ViewHolder vh) {
-        Log.v(LOG_TAG, "onItemSelected(): uri = " + uri);
+    public void onItemSelected(int id, ScheduleAdapter.ViewHolder vh) {
+        Log.v(LOG_TAG, "onItemSelected(): id = " + id);
 
         if (mTwoPane) {
-            Bundle args = new Bundle();
-            args.putParcelable(ScheduleDetailFragment.DETAIL_URI, uri);
-
-            ScheduleDetailFragment fragment = new ScheduleDetailFragment();
-            fragment.setArguments(args);
+            ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(id);
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.schedule_detail_container, fragment, DETAIL_FRAGMENT_TAG)
                     .commit();
         } else {
             Intent intent = new Intent(this, ScheduleDetailActivity.class);
-            intent.setData(uri);
+            intent.putExtra(ScheduleDetailActivity.SCHEDULE_ID, id);
             startActivity(intent);
         }
     }
