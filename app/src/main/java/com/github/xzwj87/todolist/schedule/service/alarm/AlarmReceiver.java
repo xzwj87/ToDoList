@@ -16,9 +16,9 @@ import java.util.HashMap;
 /**
  * Created by JasonWang on 2016/3/2.
  */
-public class OneTimeAlarmService extends BroadcastReceiver implements AlarmService{
-    protected static final String LOG_TAG = "OneTimeAlarmService";
-    private static OneTimeAlarmService mInstance = new OneTimeAlarmService();
+public class AlarmReceiver extends BroadcastReceiver implements AlarmService{
+    protected static final String LOG_TAG = "AlarmReceiver";
+    private static AlarmReceiver mInstance = new AlarmReceiver();
     // a HashMap to save event title/alarm time
     private  HashMap<String,Long> mEventMap = null;
     private PowerManager.WakeLock mWakeLock = null;
@@ -27,12 +27,12 @@ public class OneTimeAlarmService extends BroadcastReceiver implements AlarmServi
     private AlarmDialogFragment mAlarmDialog;
 
 
-    public OneTimeAlarmService(){
+    public AlarmReceiver(){
         mEventMap = new HashMap<>();
         mAlarmMgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
     }
 
-    public OneTimeAlarmService getInstance(Context context){
+    public AlarmReceiver getInstance(Context context){
         this.mContext = context;
 
         return mInstance;
@@ -56,7 +56,7 @@ public class OneTimeAlarmService extends BroadcastReceiver implements AlarmServi
         Log.v(LOG_TAG, "setAlarm(): " + title);
         mEventMap.put(title, alarmTime);
 
-        Intent alarmIntent = new Intent(mContext,OneTimeAlarmService.class);
+        Intent alarmIntent = new Intent(mContext,AlarmReceiver.class);
         // put extra information to the intent
         alarmIntent.putExtra(title, alarmTime);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,0,alarmIntent,0);
@@ -67,7 +67,7 @@ public class OneTimeAlarmService extends BroadcastReceiver implements AlarmServi
     public void cancelAlarm(String title,long alarmTime) {
         Log.v(LOG_TAG, "cancelAlarm(): " + title);
 
-        Intent cancelIntent = new Intent(mContext,OneTimeAlarmService.class);
+        Intent cancelIntent = new Intent(mContext,AlarmReceiver.class);
         cancelIntent.putExtra(title,alarmTime);
         PendingIntent sender = PendingIntent.getBroadcast(mContext,0,cancelIntent,0);
         mAlarmMgr.cancel(sender);
