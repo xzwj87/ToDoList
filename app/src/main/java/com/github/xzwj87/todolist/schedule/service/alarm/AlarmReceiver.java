@@ -18,6 +18,7 @@ import java.util.HashMap;
  */
 public class AlarmReceiver extends BroadcastReceiver implements AlarmService{
     protected static final String LOG_TAG = "AlarmReceiver";
+
     private static AlarmReceiver mInstance = new AlarmReceiver();
     // a HashMap to save event title/alarm time
     private  HashMap<String,Long> mEventMap = null;
@@ -25,7 +26,6 @@ public class AlarmReceiver extends BroadcastReceiver implements AlarmService{
     private AlarmManager mAlarmMgr = null;
     private Context mContext = null;
     private AlarmDialogFragment mAlarmDialog;
-
 
     public AlarmReceiver(){
         mEventMap = new HashMap<>();
@@ -57,20 +57,52 @@ public class AlarmReceiver extends BroadcastReceiver implements AlarmService{
         mEventMap.put(title, alarmTime);
 
         Intent alarmIntent = new Intent(mContext,AlarmReceiver.class);
+        alarmIntent.setAction(AlarmService.ALARM_TYPE_ONE_TIME);
         // put extra information to the intent
         alarmIntent.putExtra(title, alarmTime);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,0,alarmIntent,0);
-        mAlarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+
+        try {
+            mAlarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        }catch (Exception e){
+            Log.e(LOG_TAG,"setAlarm(): fail to set alarm");
+        }
     }
 
     @Override
-    public void cancelAlarm(String title,long alarmTime) {
+    public void setRepeatAlarm(String title,long firstTime,int interval){
+        Log.e(LOG_TAG, "setRepeatAlarm(): " + title);
+
+        Intent alarmIntent = new Intent(mContext,AlarmReceiver.class);
+        alarmIntent.setAction(AlarmService.ALARM_TYPE_REPEAT);
+        alarmIntent.putExtra(title, firstTime);
+
+        PendingIntent pi = PendingIntent.getBroadcast(mContext,0,alarmIntent,0);
+
+        try{
+            mAlarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,firstTime,interval,pi);
+        }catch (Exception e){
+            Log.e(LOG_TAG,"setRepeatAlarm(): fail to set repeating alarm");
+        }
+    }
+    @Override
+    public void cancelAlarm(String title,long alarmTime,String type) {
         Log.v(LOG_TAG, "cancelAlarm(): " + title);
+        if(!(type.equals(AlarmService.ALARM_TYPE_ONE_TIME) || type.equals(AlarmService.ALARM_TYPE_REPEAT))){
+            Log.e(LOG_TAG,"cancelAlarm(): wrong alarm type");
+            return;
+        }
 
         Intent cancelIntent = new Intent(mContext,AlarmReceiver.class);
-        cancelIntent.putExtra(title,alarmTime);
+        cancelIntent.setAction(type);
+        cancelIntent.putExtra(title, alarmTime);
         PendingIntent sender = PendingIntent.getBroadcast(mContext,0,cancelIntent,0);
-        mAlarmMgr.cancel(sender);
+
+        try {
+            mAlarmMgr.cancel(sender);
+        }catch (Exception e){
+            Log.e(LOG_TAG,"cancelAlarm(): fail to cancel the alarm");
+        }
     }
 
     private void startAlarmDialog(Context context){
