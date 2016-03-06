@@ -105,7 +105,7 @@ public class ScheduleProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        getContext().getContentResolver().notifyChange(returnUri, null);
         return returnUri;
     }
 
@@ -118,6 +118,14 @@ public class ScheduleProvider extends ContentProvider {
         if (null == selection) selection = "1";
         switch (match) {
             case SCHEDULE:
+                rowsDeleted = db.delete(
+                        ScheduleContract.ScheduleEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case SCHEDULE_WITH_ID:
+                int id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
+                selectionArgs = new String[]{ String.valueOf(id) };
+                selection = sScheduleIdSelection;
+                Log.v(LOG_TAG, "delete(): SCHEDULE_WITH_ID, id = " + id);
                 rowsDeleted = db.delete(
                         ScheduleContract.ScheduleEntry.TABLE_NAME, selection, selectionArgs);
                 break;
@@ -139,6 +147,14 @@ public class ScheduleProvider extends ContentProvider {
 
         switch (match) {
             case SCHEDULE:
+                rowsUpdated = db.update(ScheduleContract.ScheduleEntry.TABLE_NAME, values,
+                        selection, selectionArgs);
+                break;
+            case SCHEDULE_WITH_ID:
+                int id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
+                selectionArgs = new String[]{ String.valueOf(id) };
+                selection = sScheduleIdSelection;
+                Log.v(LOG_TAG, "update(): SCHEDULE_WITH_ID, id = " + id);
                 rowsUpdated = db.update(ScheduleContract.ScheduleEntry.TABLE_NAME, values,
                         selection, selectionArgs);
                 break;
