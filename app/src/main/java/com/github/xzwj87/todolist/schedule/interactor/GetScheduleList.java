@@ -40,11 +40,10 @@ public class GetScheduleList extends ReadDataUseCase {
 
     @Override
     protected Observable buildUseCaseObservable() {
-
         return mBriteContentResolver
                 .createQuery(
                         ScheduleContract.ScheduleEntry.CONTENT_URI,
-                        ScheduleModelDataMapper.SCHEDULE_COLUMNS, null, null, mSortOrder, false)
+                        ScheduleModelDataMapper.SCHEDULE_COLUMNS, null, null, mSortOrder, true)
                 .map(SqlBrite.Query::run);
     }
 }

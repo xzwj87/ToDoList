@@ -76,7 +76,7 @@ public class TestProvider extends AndroidTestCase {
                 ScheduleEntry.CONTENT_ITEM_TYPE, type);
     }
 
-    public void testInsertReadProvider() {
+    public Uri testInsertReadProvider() {
         ContentValues scheduleValues = TestUtility.createScheduleValues();
 
         TestUtility.TestContentObserver tco = TestUtility.getTestContentObserver();
@@ -112,6 +112,54 @@ public class TestProvider extends AndroidTestCase {
         TestUtility.validateCursor("testInsertReadProvider(): Error validating ScheduleEntry with ID.",
                 scheduleCursor, scheduleValues);
 
+        return scheduleInsertUri;
+    }
+
+    public void testUpdateRecordsWithId() {
+        // Insert record
+        ContentValues[] bulkInsertContentValues = createBulkInsertScheduleValues();
+
+        TestUtility.TestContentObserver tco = TestUtility.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(ScheduleEntry.CONTENT_URI, true, tco);
+
+        Uri scheduleInsertUri = mContext.getContentResolver()
+                .insert(ScheduleEntry.CONTENT_URI, bulkInsertContentValues[0]);
+        Log.v(LOG_TAG, "testUpdateRecords(): " + scheduleInsertUri);
+        assertTrue(scheduleInsertUri != null);
+
+        tco.waitForNotificationOrFail();
+
+        Cursor scheduleCursor = mContext.getContentResolver().query(
+                scheduleInsertUri,
+                null,
+                null,
+                null,
+                null
+        );
+        TestUtility.validateCursor("testUpdateRecords(): Error validating ScheduleEntry with ID.",
+                scheduleCursor, bulkInsertContentValues[0]);
+
+        mContext.getContentResolver().unregisterContentObserver(tco);
+
+        // Update record
+        mContext.getContentResolver().registerContentObserver(scheduleInsertUri, true, tco);
+        int rowsUpdated = mContext.getContentResolver()
+                .update(scheduleInsertUri, bulkInsertContentValues[1], null, null);
+        Log.v(LOG_TAG, "testUpdateRecords(): rowsUpdated = " + rowsUpdated);
+
+        tco.waitForNotificationOrFail();
+
+        Cursor updatedScheduleCursor = mContext.getContentResolver().query(
+                scheduleInsertUri,
+                null,
+                null,
+                null,
+                null
+        );
+        TestUtility.validateCursor("testUpdateRecords(): Error validating ScheduleEntry with ID.",
+                updatedScheduleCursor, bulkInsertContentValues[1]);
+
+        mContext.getContentResolver().unregisterContentObserver(tco);
     }
 
     public void testDeleteRecords() {
@@ -122,6 +170,21 @@ public class TestProvider extends AndroidTestCase {
                 .registerContentObserver(ScheduleEntry.CONTENT_URI, true, tco);
 
         deleteAllRecordsFromProvider();
+        tco.waitForNotificationOrFail();
+
+        mContext.getContentResolver().unregisterContentObserver(tco);
+    }
+
+    public void testDeleteRecordsWithId() {
+        Uri uri = testInsertReadProvider();
+
+        TestUtility.TestContentObserver tco = TestUtility.getTestContentObserver();
+        mContext.getContentResolver()
+                .registerContentObserver(uri, true, tco);
+
+        int rowsDeleted = mContext.getContentResolver().delete(uri, null, null);
+        Log.v(LOG_TAG, "testDeleteRecordsWithId(): rowsDeleted = " + rowsDeleted);
+
         tco.waitForNotificationOrFail();
 
         mContext.getContentResolver().unregisterContentObserver(tco);
