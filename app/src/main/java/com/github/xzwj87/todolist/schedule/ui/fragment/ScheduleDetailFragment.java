@@ -25,18 +25,18 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
 
     public static final String SCHEDULE_ID = "id";
 
-    private int mScheduleId = 0;
+    private long mScheduleId = 0;
     private ScheduleDetailPresenter mScheduleDetailPresenter;
 
     @Bind(R.id.tv_schedule_detail) TextView mTvScheduleDetail;
 
     public ScheduleDetailFragment() { }
 
-    public static ScheduleDetailFragment newInstance(int scheduleId) {
+    public static ScheduleDetailFragment newInstance(long scheduleId) {
         ScheduleDetailFragment fragment = new ScheduleDetailFragment();
 
         Bundle args = new Bundle();
-        args.putInt(SCHEDULE_ID, scheduleId);
+        args.putLong(SCHEDULE_ID, scheduleId);
         fragment.setArguments(args);
 
         return fragment;
@@ -61,7 +61,7 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mScheduleId = arguments.getInt(SCHEDULE_ID);
+            mScheduleId = arguments.getLong(SCHEDULE_ID);
             Log.v(LOG_TAG, "onCreateView(): mScheduleId = " + mScheduleId);
         }
 

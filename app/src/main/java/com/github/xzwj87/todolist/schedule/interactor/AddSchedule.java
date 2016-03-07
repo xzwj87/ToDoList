@@ -15,12 +15,12 @@ public class AddSchedule extends InsertUseCase {
 
     @Override
     protected Observable buildUseCaseObservable(ContentValues schedule) {
-        Observable<Integer> observable = Observable.create(subscriber -> {
+        Observable<Long> observable = Observable.create(subscriber -> {
                     Uri uri = App.getAppContext()
                             .getContentResolver()
                             .insert(ScheduleContract.ScheduleEntry.CONTENT_URI, schedule);
                     Log.v(LOG_TAG, "buildUseCaseObservable(): uri = " + uri);
-                    int id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
+                    Long id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
                     subscriber.onNext(id);
                     subscriber.onCompleted();
                 }

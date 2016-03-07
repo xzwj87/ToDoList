@@ -145,13 +145,13 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         return schedule;
     }
 
-    private final class AddScheduleSubscriber extends DefaultSubscriber<Integer> {
+    private final class AddScheduleSubscriber extends DefaultSubscriber<Long> {
 
         @Override public void onCompleted() {}
 
         @Override public void onError(Throwable e) {}
 
-        @Override public void onNext(Integer id) {
+        @Override public void onNext(Long id) {
             Log.v(LOG_TAG, "onNext(): id = " + id);
         }
     }

@@ -50,7 +50,7 @@ public class ScheduleProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             // "schedule/*"
             case SCHEDULE_WITH_ID: {
-                int id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
+                long id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
                 selectionArgs = new String[]{ String.valueOf(id) };
                 selection = sScheduleIdSelection;
                 Log.v(LOG_TAG, "query(): SCHEDULE_WITH_ID, id = " + id);
@@ -122,7 +122,7 @@ public class ScheduleProvider extends ContentProvider {
                         ScheduleContract.ScheduleEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case SCHEDULE_WITH_ID:
-                int id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
+                long id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
                 selectionArgs = new String[]{ String.valueOf(id) };
                 selection = sScheduleIdSelection;
                 Log.v(LOG_TAG, "delete(): SCHEDULE_WITH_ID, id = " + id);
@@ -151,7 +151,7 @@ public class ScheduleProvider extends ContentProvider {
                         selection, selectionArgs);
                 break;
             case SCHEDULE_WITH_ID:
-                int id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
+                long id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
                 selectionArgs = new String[]{ String.valueOf(id) };
                 selection = sScheduleIdSelection;
                 Log.v(LOG_TAG, "update(): SCHEDULE_WITH_ID, id = " + id);

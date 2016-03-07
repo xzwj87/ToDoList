@@ -39,8 +39,8 @@ public class ScheduleContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static int getScheduleIdFromUri(Uri uri) {
-            return Integer.parseInt(uri.getPathSegments().get(1));
+        public static long getScheduleIdFromUri(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
         }
     }
 

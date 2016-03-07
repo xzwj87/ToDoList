@@ -34,12 +34,12 @@ public class ScheduleListFragment extends Fragment implements
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
 
     public interface Callbacks {
-        void onItemSelected(int id, ScheduleAdapter.ViewHolder vh);
+        void onItemSelected(long id, ScheduleAdapter.ViewHolder vh);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(int id, ScheduleAdapter.ViewHolder vh) { }
+        public void onItemSelected(long id, ScheduleAdapter.ViewHolder vh) { }
     };
 
     public ScheduleListFragment() {}
@@ -129,7 +129,7 @@ public class ScheduleListFragment extends Fragment implements
         mScheduleAdapter.setOnItemClickListener(new ScheduleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, ScheduleAdapter.ViewHolder vh) {
-                int id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
+                long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
                 Log.v(LOG_TAG, "onItemClick(): position = " + position + ", id = " + id);
 
                 mCallbacks.onItemSelected(id, vh);
