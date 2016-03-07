@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
-import com.github.xzwj87.todolist.schedule.interactor.WriteDataUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.InsertUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
@@ -18,13 +18,13 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM d, yyyy");
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
-    private WriteDataUseCase mUseCase;
+    private InsertUseCase mUseCase;
     private ScheduleContentValuesDataMapper mMapper;
     private AddScheduleView mAddScheduleView;
     private Calendar mScheduleStart;
     private Calendar mScheduleEnd;
 
-    public AddSchedulePresenterImpl(WriteDataUseCase useCase,
+    public AddSchedulePresenterImpl(InsertUseCase useCase,
                                     ScheduleContentValuesDataMapper mapper) {
         mUseCase = useCase;
         mMapper = mapper;
@@ -145,13 +145,13 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         return schedule;
     }
 
-    private final class AddScheduleSubscriber extends DefaultSubscriber<Integer> {
+    private final class AddScheduleSubscriber extends DefaultSubscriber<Long> {
 
         @Override public void onCompleted() {}
 
         @Override public void onError(Throwable e) {}
 
-        @Override public void onNext(Integer id) {
+        @Override public void onNext(Long id) {
             Log.v(LOG_TAG, "onNext(): id = " + id);
         }
     }

@@ -48,7 +48,7 @@ public class ScheduleListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onItemSelected(int id, ScheduleAdapter.ViewHolder vh) {
+    public void onItemSelected(long id, ScheduleAdapter.ViewHolder vh) {
         Log.v(LOG_TAG, "onItemSelected(): id = " + id);
 
         if (mTwoPane) {

@@ -15,7 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-public class GetScheduleList extends ReadDataUseCase {
+public class GetScheduleList extends QueryUseCase {
     private final String LOG_TAG = GetScheduleList.class.getSimpleName();
 
     public static final String SORT_BY_START_DATE_ASC =

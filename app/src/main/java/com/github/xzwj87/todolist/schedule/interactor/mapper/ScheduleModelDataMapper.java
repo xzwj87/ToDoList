@@ -46,7 +46,7 @@ public class ScheduleModelDataMapper {
         }
 
         ScheduleModel scheduleModel = new ScheduleModel();
-        scheduleModel.setId(cursor.getInt(COL_SCHEDULE_ID));
+        scheduleModel.setId(cursor.getLong(COL_SCHEDULE_ID));
         scheduleModel.setTitle(cursor.getString(COL_SCHEDULE_TITLE));
         scheduleModel.setDetail(cursor.getString(COL_SCHEDULE_DETAIL));
         scheduleModel.setType(cursor.getString(COL_SCHEDULE_TYPE));
