@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
-import com.github.xzwj87.todolist.schedule.interactor.WriteDataUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.InsertUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
@@ -18,13 +18,13 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM d, yyyy");
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
-    private WriteDataUseCase mUseCase;
+    private InsertUseCase mUseCase;
     private ScheduleContentValuesDataMapper mMapper;
     private AddScheduleView mAddScheduleView;
     private Calendar mScheduleStart;
     private Calendar mScheduleEnd;
 
-    public AddSchedulePresenterImpl(WriteDataUseCase useCase,
+    public AddSchedulePresenterImpl(InsertUseCase useCase,
                                     ScheduleContentValuesDataMapper mapper) {
         mUseCase = useCase;
         mMapper = mapper;

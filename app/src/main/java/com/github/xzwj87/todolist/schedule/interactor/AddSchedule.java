@@ -10,7 +10,7 @@ import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 
 import rx.Observable;
 
-public class AddSchedule extends WriteDataUseCase {
+public class AddSchedule extends InsertUseCase {
     private static final String LOG_TAG = AddSchedule.class.getSimpleName();
 
     @Override
