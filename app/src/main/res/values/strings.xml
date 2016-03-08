@@ -14,5 +14,6 @@
 
     <string name="time_period_separator">-</string>
     <string name="action_search">search</string>
+    <string name="title_activity_edit_schedule">EditScheduleActivity</string>
 
 </resources>
