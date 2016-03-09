@@ -32,7 +32,7 @@ public class AlertTimeDialogFragment extends DialogFragment implements DialogInt
     public @interface AlertTimeType {}
 
     public interface OnPickAlertTimeListener {
-        public void onAlertTimePicked(@AlertTimeType int alertTimeType);
+        void onAlertTimePicked(@AlertTimeType int alertTimeType);
     }
 
     @Override
