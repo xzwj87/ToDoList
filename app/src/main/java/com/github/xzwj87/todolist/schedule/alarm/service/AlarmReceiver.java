@@ -1,22 +1,16 @@
-package com.github.xzwj87.todolist.schedule.service.alarm;
+package com.github.xzwj87.todolist.schedule.alarm.service;
 
-import android.annotation.TargetApi;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.PowerManager;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Display;
 import android.widget.Toast;
 
 import com.github.xzwj87.todolist.schedule.ui.fragment.AlarmDialogFragment;
-
-import java.util.HashMap;
 
 /**
  * Created by JasonWang on 2016/3/2.
