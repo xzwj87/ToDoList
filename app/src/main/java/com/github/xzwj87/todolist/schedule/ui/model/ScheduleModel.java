@@ -18,7 +18,6 @@ public class ScheduleModel {
     @Retention(RetentionPolicy.SOURCE)
     public @interface ScheduleType {}
 
-
     public static final String SCHEDULE_REPEAT_NONE = "none";
     public static final String SCHEDULE_REPEAT_EVERY_DAY = "every_day";
     public static final String SCHEDULE_REPEAT_EVERY_WEEK = "every_week";
@@ -30,6 +29,17 @@ public class ScheduleModel {
     @Retention(RetentionPolicy.SOURCE)
     public @interface ScheduleRepeatType {}
 
+    public static final String ALARM_NONE = "none";
+    public static final String ALARM_10_MINUTES_BEFORE = "10_minutes_before";
+    public static final String ALARM_30_MINUTES_BEFORE = "30_minutes_before";
+    public static final String ALARM_1_HOUR_BEFORE = "1_hour_before";
+    public static final String ALARM_CUSTOM_BEFORE = "custom";
+
+    @StringDef({ALARM_NONE, ALARM_10_MINUTES_BEFORE, ALARM_30_MINUTES_BEFORE, ALARM_1_HOUR_BEFORE,
+            ALARM_CUSTOM_BEFORE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AlertType {}
+
     private long mId;
 
     private String mTitle;
@@ -40,6 +50,7 @@ public class ScheduleModel {
     private Date mScheduleEnd;
     @ScheduleRepeatType private String mScheduleRepeatType;
 
+    @AlertType private String mAlarmType;
     private Date mAlarmTime;
     private int mRepeatAlarmTimes;
     private int mRepeatAlarmInterval;
@@ -102,6 +113,15 @@ public class ScheduleModel {
         this.mScheduleRepeatType = scheduleRepeatType;
     }
 
+    @AlertType
+    public String getAlarmType() {
+        return mAlarmType;
+    }
+
+    public void setAlarmType(@AlertType String alarmType) {
+        mAlarmType = alarmType;
+    }
+
     public Date getAlarmTime() {
         return mAlarmTime;
     }
@@ -135,6 +155,7 @@ public class ScheduleModel {
         stringBuilder.append("title = " + mTitle + "\n");
         stringBuilder.append("start = " + mScheduleStart + "\n");
         stringBuilder.append("end = " + mScheduleEnd + "\n");
+        stringBuilder.append("alarm type = " + mAlarmType + "\n");
         stringBuilder.append("alarm = " + mAlarmTime + "\n");
 
         return stringBuilder.toString();
