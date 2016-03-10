@@ -4,49 +4,40 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.Date;
 
 public class AlertTimeDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
     private static final String LOG_TAG = AlertTimeDialogFragment.class.getSimpleName();
 
     private OnPickAlertTimeListener mListener;
-    @AlertTimeType private int mAlertTimeType = ALERT_NONE;
+    private int mSelectedIdx = 0;
+    @ScheduleModel.AlarmType private String mAlarmType = ScheduleModel.ALARM_10_MINUTES_BEFORE;
+    private Date mAlarmTime;
 
-    public static final int ALERT_NONE = 0;
-    public static final int ALERT_10_MINUTES_BEFORE = 1;
-    public static final int ALERT_30_MINUTES_BEFORE = 2;
-    public static final int ALERT_1_HOUR_BEFORE = 3;
-    public static final int ALERT_CUSTOM = 4;
-
-    @IntDef({ALERT_NONE, ALERT_10_MINUTES_BEFORE, ALERT_30_MINUTES_BEFORE, ALERT_1_HOUR_BEFORE,
-            ALERT_CUSTOM})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface AlertTimeType {}
 
     public interface OnPickAlertTimeListener {
-        void onAlertTimePicked(@AlertTimeType int alertTimeType);
+        void onAlertTimePicked(@ScheduleModel.AlarmType String alarmType, Date alarmTime);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setSingleChoiceItems(R.array.alert_time_type, mAlertTimeType, this);
+        builder.setSingleChoiceItems(R.array.alert_time_type, mSelectedIdx, this);
         return builder.create();
     }
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
         Log.v(LOG_TAG, "onClick(): which = " + which);
-        mListener.onAlertTimePicked(which);
+
         dismiss();
     }
 
@@ -61,7 +52,23 @@ public class AlertTimeDialogFragment extends DialogFragment implements DialogInt
         }
     }
 
-    public void setSelected(@AlertTimeType int alertTimeType) {
-        mAlertTimeType = alertTimeType;
+    public void setInitialAlarm(@ScheduleModel.AlarmType String alarmType, Date alarmTime) {
+        mAlarmType = alarmType;
+        mAlarmTime = alarmTime;
+
+        switch (mAlarmType) {
+            case ScheduleModel.ALARM_NONE:
+                mSelectedIdx = 0;
+                break;
+            case ScheduleModel.ALARM_10_MINUTES_BEFORE:
+                mSelectedIdx = 1;
+                break;
+            case ScheduleModel.ALARM_30_MINUTES_BEFORE:
+                mSelectedIdx = 2;
+                break;
+            case ScheduleModel.ALARM_CUSTOM_BEFORE:
+                mSelectedIdx = 3;
+                break;
+        }
     }
 }

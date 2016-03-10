@@ -38,7 +38,7 @@ public class ScheduleModel {
     @StringDef({ALARM_NONE, ALARM_10_MINUTES_BEFORE, ALARM_30_MINUTES_BEFORE, ALARM_1_HOUR_BEFORE,
             ALARM_CUSTOM_BEFORE})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface AlertType {}
+    public @interface AlarmType {}
 
     private long mId;
 
@@ -50,7 +50,8 @@ public class ScheduleModel {
     private Date mScheduleEnd;
     @ScheduleRepeatType private String mScheduleRepeatType;
 
-    @AlertType private String mAlarmType;
+    @AlarmType
+    private String mAlarmType;
     private Date mAlarmTime;
     private int mRepeatAlarmTimes;
     private int mRepeatAlarmInterval;
@@ -113,12 +114,12 @@ public class ScheduleModel {
         this.mScheduleRepeatType = scheduleRepeatType;
     }
 
-    @AlertType
+    @AlarmType
     public String getAlarmType() {
         return mAlarmType;
     }
 
-    public void setAlarmType(@AlertType String alarmType) {
+    public void setAlarmType(@AlarmType String alarmType) {
         mAlarmType = alarmType;
     }
 
