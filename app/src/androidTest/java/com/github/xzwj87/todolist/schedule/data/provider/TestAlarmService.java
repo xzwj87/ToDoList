@@ -3,9 +3,11 @@ package com.github.xzwj87.todolist.schedule.data.provider;
 import android.os.SystemClock;
 import android.test.AndroidTestCase;
 
-import com.github.xzwj87.todolist.schedule.service.alarm.AlarmReceiver;
-import com.github.xzwj87.todolist.schedule.service.alarm.AlarmCommandsInterface;
-import com.github.xzwj87.todolist.schedule.service.alarm.AlarmService;
+import com.github.xzwj87.todolist.schedule.alarm.service.AlarmCommandsInterface;
+import com.github.xzwj87.todolist.schedule.alarm.service.AlarmService;
+import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
+
+import java.util.Date;
 
 /**
  * Created by JasonWang on 2016/3/5.
@@ -13,6 +15,7 @@ import com.github.xzwj87.todolist.schedule.service.alarm.AlarmService;
 public class TestAlarmService extends AndroidTestCase {
     static final String TAG = "TestAlarmService";
     AlarmCommandsInterface mAlarmCommandsInterface;
+    ScheduleEntity mSchedule = new ScheduleEntity();
 
     String title = "you got to do this!";
     long timeInterval = 5*1000;
@@ -23,13 +26,18 @@ public class TestAlarmService extends AndroidTestCase {
 
     public void testAlarmReceiver(){
         mAlarmCommandsInterface = new AlarmService(getContext());
-        mAlarmCommandsInterface.setAlarm(title, startTime,0,duration);
-        mAlarmCommandsInterface.setRepeatAlarm(title, startTime + repeatInterval, repeatInterval,duration);
+        mSchedule.setTitle(title);
+        mSchedule.setAlarmTime(new Date(startTime));
+        mSchedule.setRepeatAlarmInterval(repeatInterval);
+
+        mAlarmCommandsInterface.addScheduleEntity(mSchedule);
+        mAlarmCommandsInterface.setAlarm();
+        mAlarmCommandsInterface.setRepeatAlarm();
 
         SystemClock.sleep(timeInterval * 5);
 
         //mAlarmCommandsInterface.cancelAlarm(title, startTime, AlarmCommandsInterface.ALARM_TYPE_ONE_TIME);
-        mAlarmCommandsInterface.cancelAlarm(title,startTime,repeatInterval,duration,AlarmCommandsInterface.ALARM_TYPE_REPEAT);
+        mAlarmCommandsInterface.cancelAlarm(AlarmCommandsInterface.ALARM_TYPE_REPEAT);
     }
 
 

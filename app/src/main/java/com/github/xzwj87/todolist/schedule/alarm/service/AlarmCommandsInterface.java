@@ -1,6 +1,8 @@
-package com.github.xzwj87.todolist.schedule.service.alarm;
+package com.github.xzwj87.todolist.schedule.alarm.service;
 
 import android.content.Context;
+
+import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
 
 /**
  * Created by JasonWang on 2016/3/2.
@@ -15,7 +17,10 @@ public interface AlarmCommandsInterface {
     public final String ALARM_DURATION_TIME = "AlarmDurationTime";
     public final String ALARM_REPEAT_INTERVAL = "AlarmRepeatInterval";
 
-    void setAlarm(String title, long alarmTime,int interval,int duration);
-    void setRepeatAlarm(String title,long firstTime,int interval,int duration);
-    void cancelAlarm(String title, long alarmTime,int interval,int duration,String type);
+    void addScheduleEntity(ScheduleEntity entity);
+    ScheduleEntity getScheduleEntity(String title);
+    void setAlarm();
+    void setRepeatAlarm();
+    void cancelAlarm(String type);
+    void onDestroy();
 }
