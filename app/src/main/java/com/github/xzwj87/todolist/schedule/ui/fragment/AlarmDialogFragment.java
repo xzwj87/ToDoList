@@ -7,7 +7,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
 
 /**
  * Created by JasonWang on 2016/3/2.

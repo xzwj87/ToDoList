@@ -11,6 +11,7 @@ import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private static final String LOG_TAG = AddSchedulePresenterImpl.class.getSimpleName();
@@ -18,11 +19,15 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM d, yyyy");
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
+    private static final long MILLISECONDS_IN_10_MINUTES = 10 * 60 * 1000;
+
     private InsertUseCase mUseCase;
     private ScheduleContentValuesDataMapper mMapper;
     private AddScheduleView mAddScheduleView;
     private Calendar mScheduleStart;
     private Calendar mScheduleEnd;
+    @ScheduleModel.AlarmType private String mAlarmType;
+    private Date mAlarmTime;
 
     public AddSchedulePresenterImpl(InsertUseCase useCase,
                                     ScheduleContentValuesDataMapper mapper) {
@@ -40,6 +45,8 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         mAddScheduleView.updateEndDateDisplay(DATE_FORMAT.format(mScheduleEnd.getTime()));
         mAddScheduleView.updateStartTimeDisplay(TIME_FORMAT.format(mScheduleStart.getTime()));
         mAddScheduleView.updateEndTimeDisplay(TIME_FORMAT.format(mScheduleEnd.getTime()));
+        // TODO Convert to proper text
+        mAddScheduleView.updateAlarmTimeDisplay(mAlarmType);
     }
 
     @Override
@@ -64,6 +71,11 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     public void setEndTime() {
         mAddScheduleView.showPickEndTimeDlg(mScheduleStart.get(Calendar.HOUR_OF_DAY),
                 mScheduleStart.get(Calendar.MINUTE), mScheduleStart.get(Calendar.SECOND));
+    }
+
+    @Override
+    public void setAlarmTime() {
+        mAddScheduleView.showPickAlarmTimeDlg(mAlarmType, mAlarmTime);
     }
 
     @Override
@@ -99,6 +111,13 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     }
 
     @Override
+    public void onAlarmTimeSet(@ScheduleModel.AlarmType String alarmType, Date alarmTime) {
+        mAlarmType = alarmType;
+        mAlarmTime = alarmTime;
+        mAddScheduleView.updateAlarmTimeDisplay(mAlarmType);
+    }
+
+    @Override
     public void resume() {}
 
     @Override
@@ -124,6 +143,9 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         int hourOfDay = mScheduleEnd.get(Calendar.HOUR_OF_DAY);
         mScheduleEnd.set(Calendar.HOUR_OF_DAY, hourOfDay + 1);
         mScheduleEnd.set(Calendar.MINUTE, minute + 10);
+
+        mAlarmType = ScheduleModel.ALARM_10_MINUTES_BEFORE;
+        mAlarmTime = new Date(mScheduleStart.getTimeInMillis() - MILLISECONDS_IN_10_MINUTES);
 
         Log.v(LOG_TAG, "initCalendarsWithCurrentTime(): mScheduleStart = "
                 + mScheduleStart.getTime() + ", mScheduleEnd = " + mScheduleEnd.getTime());
