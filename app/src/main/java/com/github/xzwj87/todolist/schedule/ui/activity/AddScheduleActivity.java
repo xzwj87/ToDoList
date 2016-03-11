@@ -2,6 +2,7 @@ package com.github.xzwj87.todolist.schedule.ui.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,22 +18,28 @@ import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValu
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenter;
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
+import com.github.xzwj87.todolist.schedule.ui.fragment.AlarmTimeDialogFragment;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AddScheduleActivity extends AppCompatActivity
-        implements AddScheduleView,DatePickerDialog.OnDateSetListener {
+        implements AddScheduleView,DatePickerDialog.OnDateSetListener,
+        AlarmTimeDialogFragment.OnPickAlertTimeListener {
     private static final String LOG_TAG = AddScheduleActivity.class.getSimpleName();
 
     private static final String START_DATE_PICK_DLG_TAG = "start_date_pick_dlg";
     private static final String END_DATE_PICK_DLG_TAG = "end_date_pick_dlg";
     private static final String START_TIME_PICK_DLG_TAG = "start_date_pick_dlg";
     private static final String END_TIME_PICK_DLG_TAG = "end_date_pick_dlg";
+    private static final String ALARM_TIME_PICK_DLG_TAG = "alarm_time_pick_dlg";
 
     private AddSchedulePresenter mAddSchedulePresenter;
 
@@ -41,6 +48,7 @@ public class AddScheduleActivity extends AppCompatActivity
     @Bind(R.id.btn_schedule_time_start) Button mBtnScheduleTimeStart;
     @Bind(R.id.btn_schedule_date_end) Button mBtnScheduleDateEnd;
     @Bind(R.id.btn_schedule_time_end) Button mBtnScheduleTimeEnd;
+    @Bind(R.id.btn_alarm_time) Button mBtnAlarmTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +176,13 @@ public class AddScheduleActivity extends AppCompatActivity
     }
 
     @Override
+    public void showPickAlarmTimeDlg(@ScheduleModel.AlarmType String alarmType, Date alarmTime) {
+        AlarmTimeDialogFragment fragment = new AlarmTimeDialogFragment();
+        fragment.setInitialAlarm(alarmType, alarmTime);
+        fragment.show(getSupportFragmentManager(), ALARM_TIME_PICK_DLG_TAG);
+    }
+
+    @Override
     public void updateStartDateDisplay(String startDate) {
         mBtnScheduleDateStart.setText(startDate);
     }
@@ -183,6 +198,11 @@ public class AddScheduleActivity extends AppCompatActivity
     }
 
     @Override
+    public void updateAlarmTimeDisplay(String alarmTime) {
+        mBtnAlarmTime.setText(alarmTime);
+    }
+
+    @Override
     public void updateEndTimeDisplay(String endTime) {
         mBtnScheduleTimeEnd.setText(endTime);
     }
@@ -195,6 +215,13 @@ public class AddScheduleActivity extends AppCompatActivity
     @Override
     public Context getViewContext() {
         return this;
+    }
+
+    @Override
+    public void onAlertTimePicked(@ScheduleModel.AlarmType String alarmType, Date alarmTime) {
+        Log.v(LOG_TAG, "onAlertTimePicked(): alarmType = " + alarmType +
+                ", alarmTime = " + alarmTime);
+        mAddSchedulePresenter.onAlarmTimeSet(alarmType, alarmTime);
     }
 
     @OnClick(R.id.btn_schedule_date_start)
@@ -215,6 +242,11 @@ public class AddScheduleActivity extends AppCompatActivity
     @OnClick(R.id.btn_schedule_time_end)
     public void pickEndTime(View view) {
         mAddSchedulePresenter.setEndTime();
+    }
+
+    @OnClick(R.id.btn_alarm_time)
+    public void pickAlarmTime(View view) {
+        mAddSchedulePresenter.setAlarmTime();
     }
 
 }

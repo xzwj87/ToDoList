@@ -13,8 +13,8 @@ import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.util.Date;
 
-public class AlertTimeDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
-    private static final String LOG_TAG = AlertTimeDialogFragment.class.getSimpleName();
+public class AlarmTimeDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
+    private static final String LOG_TAG = AlarmTimeDialogFragment.class.getSimpleName();
 
     private OnPickAlertTimeListener mListener;
     private int mSelectedIdx = 0;
@@ -37,7 +37,25 @@ public class AlertTimeDialogFragment extends DialogFragment implements DialogInt
     @Override
     public void onClick(DialogInterface dialog, int which) {
         Log.v(LOG_TAG, "onClick(): which = " + which);
-
+        switch (which) {
+            case 0:
+                mAlarmType = ScheduleModel.ALARM_NONE;
+                break;
+            case 1:
+                mAlarmType = ScheduleModel.ALARM_10_MINUTES_BEFORE;
+                break;
+            case 2:
+                mAlarmType = ScheduleModel.ALARM_30_MINUTES_BEFORE;
+                break;
+            case 3:
+                mAlarmType = ScheduleModel.ALARM_1_HOUR_BEFORE;
+                break;
+            case 4:
+                mAlarmType = ScheduleModel.ALARM_CUSTOM_BEFORE;
+                // TODO Show time pick dlg
+                break;
+        }
+        mListener.onAlertTimePicked(mAlarmType, mAlarmTime);
         dismiss();
     }
 
@@ -66,8 +84,11 @@ public class AlertTimeDialogFragment extends DialogFragment implements DialogInt
             case ScheduleModel.ALARM_30_MINUTES_BEFORE:
                 mSelectedIdx = 2;
                 break;
-            case ScheduleModel.ALARM_CUSTOM_BEFORE:
+            case ScheduleModel.ALARM_1_HOUR_BEFORE:
                 mSelectedIdx = 3;
+                break;
+            case ScheduleModel.ALARM_CUSTOM_BEFORE:
+                mSelectedIdx = 4;
                 break;
         }
     }
