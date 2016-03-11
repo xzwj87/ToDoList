@@ -31,6 +31,7 @@ public class ScheduleContract {
         public static final String COLUMN_DATE_END = "date_end";
         public static final String COLUMN_REPEAT_SCHEDULE = "repeat_schedule";
 
+        public static final String COLUMN_ALARM_TYPE = "alarm_type";
         public static final String COLUMN_ALARM_TIME = "alarm_time";
         public static final String COLUMN_REPEAT_ALARM_TIMES = "repeat_alarm_times";
         public static final String COLUMN_REPEAT_ALARM_INTERVAL = "repeat_alarm_interval";

@@ -20,6 +20,7 @@ public class ScheduleModelDataMapper {
             ScheduleContract.ScheduleEntry.COLUMN_DATE_START,
             ScheduleContract.ScheduleEntry.COLUMN_DATE_END,
             ScheduleContract.ScheduleEntry.COLUMN_REPEAT_SCHEDULE,
+            ScheduleContract.ScheduleEntry.COLUMN_ALARM_TYPE,
             ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME,
             ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES,
             ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL
@@ -32,9 +33,10 @@ public class ScheduleModelDataMapper {
     public static final int COL_SCHEDULE_DATE_START = 4;
     public static final int COL_SCHEDULE_DATE_END = 5;
     public static final int COL_SCHEDULE_REPEAT_SCHEDULE = 6;
-    public static final int COL_SCHEDULE_ALARM_TIME = 7;
-    public static final int COL_SCHEDULE_REPEAT_ALARM_TIMES = 8;
-    public static final int COL_SCHEDULE_REPEAT_ALARM_INTERVAL = 9;
+    public static final int COL_SCHEDULE_ALARM_TYPE = 7;
+    public static final int COL_SCHEDULE_ALARM_TIME = 8;
+    public static final int COL_SCHEDULE_REPEAT_ALARM_TIMES = 9;
+    public static final int COL_SCHEDULE_REPEAT_ALARM_INTERVAL = 10;
 
 
     public ScheduleModelDataMapper() {}
@@ -58,6 +60,8 @@ public class ScheduleModelDataMapper {
         scheduleModel.setScheduleEnd(end);
 
         scheduleModel.setScheduleRepeatType(cursor.getString(COL_SCHEDULE_REPEAT_SCHEDULE));
+
+        scheduleModel.setAlarmType(cursor.getString(COL_SCHEDULE_ALARM_TYPE));
 
         Date alarm = new Date(cursor.getLong(COL_SCHEDULE_ALARM_TIME));
         scheduleModel.setAlarmTime(alarm);

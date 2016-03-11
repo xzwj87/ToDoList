@@ -202,6 +202,7 @@ public class TestProvider extends AndroidTestCase {
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_START, 1700 + i);
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_END, 1900 - i);
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_SCHEDULE, i);
+            scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TYPE, "custom");
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME, 1640 + i);
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES, 20 + i);
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL, 40 + i);

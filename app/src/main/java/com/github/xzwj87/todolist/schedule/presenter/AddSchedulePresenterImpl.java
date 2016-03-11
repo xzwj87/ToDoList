@@ -138,6 +138,7 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         schedule.setScheduleStart(mScheduleStart.getTime());
         schedule.setScheduleEnd(mScheduleEnd.getTime());
         schedule.setScheduleRepeatType(ScheduleModel.SCHEDULE_REPEAT_EVERY_DAY);
+        schedule.setAlarmType(ScheduleModel.ALARM_10_MINUTES_BEFORE);
         schedule.setAlarmTime(mScheduleStart.getTime());
         schedule.setRepeatAlarmTimes(1);
         schedule.setRepeatAlarmInterval(10);

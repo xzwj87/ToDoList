@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Todo List</string>
     <string name="title_schedule_detail">Schedule Detail</string>
-    <string name="content_authority">com.github.xzwj87.todolist</string>
+    <string name="content_authority" translatable="false">com.github.xzwj87.todolist</string>
     <string name="title_activity_add_fragment">AddFragmentActivity</string>
     <string name="action_settings">Settings</string>
 
-    <string name="schedule_title_hint">Enter titles, people and places...</string>
+    <string name="schedule_title_hint">Enter titles, people and places&#8230;</string>
     <string name="schedule_save">Save</string>
     <string name="schedule_all_day">All day</string>
     <string name="schedule_start">Start</string>
@@ -14,5 +14,6 @@
 
     <string name="time_period_separator">-</string>
     <string name="action_search">search</string>
+    <string name="title_activity_edit_schedule">EditScheduleActivity</string>
 
 </resources>
