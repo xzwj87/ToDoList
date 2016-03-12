@@ -4,21 +4,21 @@ import android.content.Context;
 
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
-import java.util.Date;
-
 public interface AddScheduleView {
 
     void showPickStartDateDlg(int year, int monthOfYear, int dayOfMonth);
     void showPickEndDateDlg(int year, int monthOfYear, int dayOfMonth);
     void showPickStartTimeDlg(int hourOfDay, int minute, int second);
     void showPickEndTimeDlg(int hourOfDay, int minute, int second);
-    void showPickAlarmTimeDlg(@ScheduleModel.AlarmType String alarmType, Date alarmTime);
+    void showPickAlarmTypeDlg(@ScheduleModel.AlarmType String alarmType);
+    void showPickScheduleTypeDlg(@ScheduleModel.ScheduleType String scheduleType);
 
     void updateStartDateDisplay(String startDate);
     void updateEndDateDisplay(String endDate);
     void updateStartTimeDisplay(String startTime);
     void updateEndTimeDisplay(String endTime);
-    void updateAlarmTimeDisplay(String alarmTime);
+    void updateAlarmTypeDisplay(String alarmTypeText);
+    void updateScheduleTypeDisplay(String scheduleTypeText);
 
     String getScheduleTitle();
     // TODO: Inject context to Presenter

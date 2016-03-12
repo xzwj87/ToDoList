@@ -8,10 +8,9 @@ import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 
-import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -22,11 +21,11 @@ public class AlarmService implements AlarmCommandsInterface{
 
     private AlarmManager mAlarmMgr;
     private Context mContext;
-    private ScheduleEntity mSchedule;
+    private ScheduleModel mSchedule;
     // an observer to observe the state of alarm(add/delete/cancel)
     private Uri mUri;
     private AlarmObserver mAlarmObserver;
-    private HashMap<String,ScheduleEntity> mAlarmSchedule = new HashMap<>();
+    private HashMap<String,ScheduleModel> mAlarmSchedule = new HashMap<>();
 
     public AlarmService(){
         // empty constructor
@@ -42,14 +41,14 @@ public class AlarmService implements AlarmCommandsInterface{
     }
 
     @Override
-    public void addScheduleEntity(ScheduleEntity entity){
+    public void addScheduleEntity(ScheduleModel entity){
         mSchedule = entity;
         mAlarmSchedule.put(entity.getTitle(),entity);
     }
 
     @Override
-    public ScheduleEntity getScheduleEntity(String title){
-        ScheduleEntity schedule = mAlarmSchedule.get(title);
+    public ScheduleModel getScheduleEntity(String title){
+        ScheduleModel schedule = mAlarmSchedule.get(title);
 
         return schedule;
     }

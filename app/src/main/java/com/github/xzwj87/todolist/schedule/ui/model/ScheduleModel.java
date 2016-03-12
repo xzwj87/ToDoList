@@ -10,8 +10,8 @@ public class ScheduleModel {
 
     public static final String SCHEDULE_TYPE_DEFAULT = "default";
     public static final String SCHEDULE_TYPE_MEETING = "meeting";
-    public static final String SCHEDULE_TYPE_DATE = "date";
     public static final String SCHEDULE_TYPE_ENTERTAINMENT = "entertainment";
+    public static final String SCHEDULE_TYPE_DATE = "date";
 
     @StringDef({SCHEDULE_TYPE_DEFAULT, SCHEDULE_TYPE_MEETING, SCHEDULE_TYPE_DATE,
             SCHEDULE_TYPE_ENTERTAINMENT})
@@ -33,10 +33,10 @@ public class ScheduleModel {
     public static final String ALARM_10_MINUTES_BEFORE = "10_minutes_before";
     public static final String ALARM_30_MINUTES_BEFORE = "30_minutes_before";
     public static final String ALARM_1_HOUR_BEFORE = "1_hour_before";
-    public static final String ALARM_CUSTOM_BEFORE = "custom";
+    public static final String ALARM_CUSTOM = "custom";
 
     @StringDef({ALARM_NONE, ALARM_10_MINUTES_BEFORE, ALARM_30_MINUTES_BEFORE, ALARM_1_HOUR_BEFORE,
-            ALARM_CUSTOM_BEFORE})
+            ALARM_CUSTOM})
     @Retention(RetentionPolicy.SOURCE)
     public @interface AlarmType {}
 
@@ -154,6 +154,7 @@ public class ScheduleModel {
         stringBuilder.append("***** ScheduleModel Details *****\n");
         stringBuilder.append("id = " + mId + "\n");
         stringBuilder.append("title = " + mTitle + "\n");
+        stringBuilder.append("type = " + mType + "\n");
         stringBuilder.append("start = " + mScheduleStart + "\n");
         stringBuilder.append("end = " + mScheduleEnd + "\n");
         stringBuilder.append("alarm type = " + mAlarmType + "\n");
