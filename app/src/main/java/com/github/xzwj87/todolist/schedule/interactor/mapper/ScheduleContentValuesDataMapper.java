@@ -15,7 +15,7 @@ public class ScheduleContentValuesDataMapper {
     public ContentValues transform(ScheduleModel scheduleModel) {
         ContentValues scheduleValues = new ContentValues();
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TITLE, scheduleModel.getTitle());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DETAIL, scheduleModel.getDetail());
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_NOTE, scheduleModel.getNote());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TYPE, scheduleModel.getType());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_START, scheduleModel.getScheduleStart().getTime());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_END,  scheduleModel.getScheduleEnd().getTime());

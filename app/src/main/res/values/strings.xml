@@ -6,6 +6,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="schedule_title_hint">Enter titles, people and places&#8230;</string>
+    <string name="schedule_note_hint">Add note</string>
     <string name="schedule_save">Save</string>
     <string name="schedule_all_day">All day</string>
     <string name="schedule_start">Start</string>

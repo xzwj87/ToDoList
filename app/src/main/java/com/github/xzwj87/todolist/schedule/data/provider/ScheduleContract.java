@@ -24,7 +24,7 @@ public class ScheduleContract {
         public static final String TABLE_NAME = "schedule";
 
         public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_DETAIL = "detail";
+        public static final String COLUMN_NOTE = "note";
         public static final String COLUMN_TYPE = "type";
 
         public static final String COLUMN_DATE_START = "date_start";
