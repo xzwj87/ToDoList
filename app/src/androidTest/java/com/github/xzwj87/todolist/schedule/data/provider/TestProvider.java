@@ -197,7 +197,7 @@ public class TestProvider extends AndroidTestCase {
         for (int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++) {
             ContentValues scheduleValues = new ContentValues();
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TITLE, "Watch movie " + i);
-            scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DETAIL, "Watch movie at " + i);
+            scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_NOTE, "Watch movie at " + i);
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TYPE, "Movie");
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_START, 1700 + i);
             scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_END, 1900 - i);

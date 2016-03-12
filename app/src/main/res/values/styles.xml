@@ -17,4 +17,42 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="ScheduleDetailItemContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/schedule_detail_item_margin</item>
+        <item name="android:layout_marginRight">@dimen/schedule_detail_item_margin</item>
+        <item name="android:minHeight">@dimen/schedule_detail_item_min_height</item>
+    </style>
+
+    <style name="ScheduleDetailItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/schedule_detail_item_text_size</item>
+    </style>
+
+    <style name="ScheduleDetailSwitch" parent="ScheduleDetailItem">
+        <item name="android:layout_gravity">start|center_vertical</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="ScheduleDetailButton" parent="ScheduleDetailItem">
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:textAllCaps">false</item>
+
+    </style>
+
+    <style name="ScheduleDetailEdit" parent="ScheduleDetailItem">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="ScheduleDetailIcon">
+        <item name="android:layout_width">@dimen/schedule_detail_item_icon_size</item>
+        <item name="android:layout_height">@dimen/schedule_detail_item_icon_size</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginRight">@dimen/schedule_detail_item_margin</item>
+    </style>
+
 </resources>

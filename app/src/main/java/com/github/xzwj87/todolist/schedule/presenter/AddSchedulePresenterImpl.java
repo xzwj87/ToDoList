@@ -177,7 +177,7 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         ScheduleModel schedule = new ScheduleModel();
 
         schedule.setTitle(mAddScheduleView.getScheduleTitle());
-        schedule.setDetail("None");
+        schedule.setNote("None");
         schedule.setType(mScheduleType);
         schedule.setScheduleStart(mScheduleStart.getTime());
         schedule.setScheduleEnd(mScheduleEnd.getTime());

@@ -15,7 +15,7 @@ public class ScheduleModelDataMapper {
     public static final String[] SCHEDULE_COLUMNS = {
             ScheduleContract.ScheduleEntry._ID,
             ScheduleContract.ScheduleEntry.COLUMN_TITLE,
-            ScheduleContract.ScheduleEntry.COLUMN_DETAIL,
+            ScheduleContract.ScheduleEntry.COLUMN_NOTE,
             ScheduleContract.ScheduleEntry.COLUMN_TYPE,
             ScheduleContract.ScheduleEntry.COLUMN_DATE_START,
             ScheduleContract.ScheduleEntry.COLUMN_DATE_END,
@@ -28,7 +28,7 @@ public class ScheduleModelDataMapper {
 
     public static final int COL_SCHEDULE_ID = 0;
     public static final int COL_SCHEDULE_TITLE = 1;
-    public static final int COL_SCHEDULE_DETAIL = 2;
+    public static final int COL_SCHEDULE_NOTE = 2;
     public static final int COL_SCHEDULE_TYPE = 3;
     public static final int COL_SCHEDULE_DATE_START = 4;
     public static final int COL_SCHEDULE_DATE_END = 5;
@@ -50,7 +50,7 @@ public class ScheduleModelDataMapper {
         ScheduleModel scheduleModel = new ScheduleModel();
         scheduleModel.setId(cursor.getLong(COL_SCHEDULE_ID));
         scheduleModel.setTitle(cursor.getString(COL_SCHEDULE_TITLE));
-        scheduleModel.setDetail(cursor.getString(COL_SCHEDULE_DETAIL));
+        scheduleModel.setNote(cursor.getString(COL_SCHEDULE_NOTE));
         scheduleModel.setType(cursor.getString(COL_SCHEDULE_TYPE));
 
         Date start = new Date(cursor.getLong(COL_SCHEDULE_DATE_START));

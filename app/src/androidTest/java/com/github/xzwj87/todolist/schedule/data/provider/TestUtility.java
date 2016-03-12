@@ -21,7 +21,7 @@ public class TestUtility extends AndroidTestCase {
         ContentValues scheduleValues = new ContentValues();
 
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TITLE, "Watch movie");
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DETAIL, "Watch movie at five");
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_NOTE, "Watch movie at five");
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TYPE, "Movie");
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_START, 1700);
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_END, 1900);

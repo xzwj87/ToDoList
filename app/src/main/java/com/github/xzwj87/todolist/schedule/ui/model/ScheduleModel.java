@@ -43,7 +43,7 @@ public class ScheduleModel {
     private long mId;
 
     private String mTitle;
-    private String mDetail;
+    private String mNote;
     @ScheduleType private String mType;
 
     private Date mScheduleStart;
@@ -72,12 +72,12 @@ public class ScheduleModel {
         this.mTitle = title;
     }
 
-    public String getDetail() {
-        return mDetail;
+    public String getNote() {
+        return mNote;
     }
 
-    public void setDetail(String detail) {
-        this.mDetail = detail;
+    public void setNote(String detail) {
+        this.mNote = detail;
     }
 
     @ScheduleType
