@@ -1,6 +1,5 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,21 +22,31 @@ public class AlarmTypePickerDialogFragment extends DialogFragment
     private static List<String> sAlarmTypeArray = null;
     private static List<String> sAlarmTypeTextArray = null;
 
-    private OnPickAlertTimeListener mListener;
+    private OnPickAlertTypeListener mListener;
     private int mSelectedIdx = 0;
-    @ScheduleModel.AlarmType private String mAlarmType = ScheduleModel.ALARM_10_MINUTES_BEFORE;
+    @ScheduleModel.AlarmType private String mAlarmType;
 
-    public interface OnPickAlertTimeListener {
+    public interface OnPickAlertTypeListener {
         void onAlertTimePicked(@ScheduleModel.AlarmType String alarmType);
+    }
+
+    public AlarmTypePickerDialogFragment() {
+        if (sAlarmTypeArray == null || sAlarmTypeTextArray == null) {
+            buildAlarmTypeLists();
+        }
+    }
+
+    public static AlarmTypePickerDialogFragment newInstance(
+            OnPickAlertTypeListener listener, @ScheduleModel.AlarmType String alarmType) {
+        AlarmTypePickerDialogFragment fragment = new AlarmTypePickerDialogFragment();
+        fragment.setOnPickAlertTypeListener(listener);
+        fragment.setInitialAlarmType(alarmType);
+        return fragment;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        if (sAlarmTypeTextArray == null || sAlarmTypeArray == null) {
-            buildAlarmTypeLists();
-        }
 
         String[] items = sAlarmTypeTextArray.toArray(new String[sAlarmTypeTextArray.size()]);
         builder.setSingleChoiceItems(items, mSelectedIdx, this);
@@ -49,42 +58,17 @@ public class AlarmTypePickerDialogFragment extends DialogFragment
     public void onClick(DialogInterface dialog, int which) {
         Log.v(LOG_TAG, "onClick(): which = " + which);
         mAlarmType = sAlarmTypeArray.get(which);
-
         mListener.onAlertTimePicked(mAlarmType);
         dismiss();
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnPickAlertTimeListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnPickAlertTimeListener");
-        }
-    }
-
     public void setInitialAlarmType(@ScheduleModel.AlarmType String alarmType) {
         mAlarmType = alarmType;
+        mSelectedIdx = sAlarmTypeArray.indexOf(mAlarmType);
+    }
 
-        switch (mAlarmType) {
-            case ScheduleModel.ALARM_NONE:
-                mSelectedIdx = 0;
-                break;
-            case ScheduleModel.ALARM_10_MINUTES_BEFORE:
-                mSelectedIdx = 1;
-                break;
-            case ScheduleModel.ALARM_30_MINUTES_BEFORE:
-                mSelectedIdx = 2;
-                break;
-            case ScheduleModel.ALARM_1_HOUR_BEFORE:
-                mSelectedIdx = 3;
-                break;
-            case ScheduleModel.ALARM_CUSTOM:
-                mSelectedIdx = 4;
-                break;
-        }
+    public void setOnPickAlertTypeListener(OnPickAlertTypeListener listener) {
+        mListener = listener;
     }
 
     private void buildAlarmTypeLists() {
