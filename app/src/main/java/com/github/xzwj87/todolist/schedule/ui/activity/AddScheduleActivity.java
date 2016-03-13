@@ -88,6 +88,7 @@ public class AddScheduleActivity extends AppCompatActivity
         ScheduleContentValuesDataMapper mapper = new ScheduleContentValuesDataMapper();
         mAddSchedulePresenter = new AddSchedulePresenterImpl(addSchedule, mapper);
         mAddSchedulePresenter.setView(this);
+        mAddSchedulePresenter.initialize();
     }
 
     @Override
@@ -100,6 +101,7 @@ public class AddScheduleActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+                mAddSchedulePresenter.onTitleSet(mEditScheduleTitle.getText().toString());
                 mAddSchedulePresenter.onSave();
                 finish();
                 return true;
