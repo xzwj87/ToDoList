@@ -29,8 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AddScheduleActivity extends AppCompatActivity
-        implements AddScheduleView, DatePickerDialog.OnDateSetListener,
-        AlarmTypePickerDialogFragment.OnPickAlertTimeListener {
+        implements AddScheduleView, DatePickerDialog.OnDateSetListener {
     private static final String LOG_TAG = AddScheduleActivity.class.getSimpleName();
 
     private static final String START_DATE_PICK_DLG_TAG = "start_date_pick_dlg";
@@ -177,9 +176,14 @@ public class AddScheduleActivity extends AppCompatActivity
 
     @Override
     public void showPickAlarmTypeDlg(@ScheduleModel.AlarmType String alarmType) {
-        AlarmTypePickerDialogFragment fragment = new AlarmTypePickerDialogFragment();
-        fragment.setInitialAlarmType(alarmType);
-        fragment.show(getSupportFragmentManager(), ALARM_TYPE_PICK_DLG_TAG);
+        AlarmTypePickerDialogFragment fragment = AlarmTypePickerDialogFragment.newInstance(
+                new AlarmTypePickerDialogFragment.OnPickAlertTypeListener() {
+                    @Override
+                    public void onAlertTimePicked(@ScheduleModel.AlarmType String alarmType) {
+                        mAddSchedulePresenter.onAlarmTypeSet(alarmType);
+                    }
+                }, alarmType);
+        fragment.show(getSupportFragmentManager(), SCHEDULE_TYPE_PICK_DLG_TAG);
     }
 
     @Override
@@ -232,13 +236,6 @@ public class AddScheduleActivity extends AppCompatActivity
     @Override
     public Context getViewContext() {
         return this;
-    }
-
-    @Override
-    public void onAlertTimePicked(@ScheduleModel.AlarmType String alarmType) {
-        Log.v(LOG_TAG, "onAlertTimePicked(): alarmType = " + alarmType +
-                ", alarmTime = ");
-        mAddSchedulePresenter.onAlarmTypeSet(alarmType);
     }
 
     @OnClick(R.id.btn_schedule_date_start)

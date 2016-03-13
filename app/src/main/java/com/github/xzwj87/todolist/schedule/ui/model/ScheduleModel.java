@@ -4,6 +4,7 @@ import android.support.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Calendar;
 import java.util.Date;
 
 public class ScheduleModel {
@@ -40,6 +41,8 @@ public class ScheduleModel {
     @Retention(RetentionPolicy.SOURCE)
     public @interface AlarmType {}
 
+    private static final long MILLISECONDS_IN_10_MINUTES = 10 * 60 * 1000;
+
     private long mId;
 
     private String mTitle;
@@ -55,6 +58,34 @@ public class ScheduleModel {
     private Date mAlarmTime;
     private int mRepeatAlarmTimes;
     private int mRepeatAlarmInterval;
+
+    public static ScheduleModel createDefaultSchedule() {
+        ScheduleModel schedule = new ScheduleModel();
+        schedule.setTitle("");
+        schedule.setNote("");
+        schedule.setType(SCHEDULE_TYPE_DEFAULT);
+
+        Calendar current = Calendar.getInstance();
+        int minute = current.get(Calendar.MINUTE);
+        int hour = current.get(Calendar.HOUR_OF_DAY);
+
+        current.set(Calendar.MINUTE, minute + 10);
+        schedule.setScheduleStart(current.getTime());
+
+        current.set(Calendar.HOUR_OF_DAY, hour + 1);
+        schedule.setScheduleEnd(current.getTime());
+
+        schedule.setScheduleRepeatType(SCHEDULE_REPEAT_NONE);
+
+        schedule.setAlarmType(ALARM_10_MINUTES_BEFORE);
+        schedule.setAlarmTime(
+                new Date(schedule.getScheduleStart().getTime() - MILLISECONDS_IN_10_MINUTES));
+
+        schedule.setRepeatAlarmTimes(0);
+        schedule.setRepeatAlarmInterval(0);
+
+        return schedule;
+    }
 
     public long getId() {
         return mId;
