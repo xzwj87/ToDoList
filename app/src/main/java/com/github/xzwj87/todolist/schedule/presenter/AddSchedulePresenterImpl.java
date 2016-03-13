@@ -27,12 +27,8 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private InsertUseCase mUseCase;
     private ScheduleContentValuesDataMapper mMapper;
     private AddScheduleView mAddScheduleView;
-    private Calendar mScheduleStart;
-    private Calendar mScheduleEnd;
-    @ScheduleModel.AlarmType private String mAlarmType;
-    private Date mAlarmTime;
-    @ScheduleModel.ScheduleType private String mScheduleType;
 
+    private ScheduleModel mSchedule;
 
     public AddSchedulePresenterImpl(InsertUseCase useCase,
                                     ScheduleContentValuesDataMapper mapper) {
@@ -43,98 +39,123 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     @Override
     public void setView(@NonNull AddScheduleView view) {
         mAddScheduleView = view;
+    }
 
-        initCalendarsWithCurrentTime();
+    @Override
+    public void initialize() {
+        mSchedule = ScheduleModel.createDefaultSchedule();
+        Log.v(LOG_TAG, "initialize(): mSchedule = " + mSchedule);
 
-        mAddScheduleView.updateStartDateDisplay(DATE_FORMAT.format(mScheduleStart.getTime()));
-        mAddScheduleView.updateEndDateDisplay(DATE_FORMAT.format(mScheduleEnd.getTime()));
-        mAddScheduleView.updateStartTimeDisplay(TIME_FORMAT.format(mScheduleStart.getTime()));
-        mAddScheduleView.updateEndTimeDisplay(TIME_FORMAT.format(mScheduleEnd.getTime()));
-        mAddScheduleView.updateAlarmTypeDisplay(ScheduleUtility.getAlarmTypeText(mAlarmType));
+        mAddScheduleView.updateStartDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleStart()));
+        mAddScheduleView.updateEndDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleEnd()));
+
+        mAddScheduleView.updateStartTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleStart()));
+        mAddScheduleView.updateEndTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleEnd()));
+
+        mAddScheduleView.updateAlarmTypeDisplay(
+                ScheduleUtility.getAlarmTypeText(mSchedule.getAlarmType()));
+
         mAddScheduleView.updateScheduleTypeDisplay(
-                ScheduleUtility.getScheduleTypeText(mScheduleType));
+                ScheduleUtility.getScheduleTypeText(mSchedule.getType()));
     }
 
     @Override
     public void setStartDate() {
-        mAddScheduleView.showPickStartDateDlg(mScheduleStart.get(Calendar.YEAR),
-                mScheduleStart.get(Calendar.MONTH), mScheduleStart.get(Calendar.DAY_OF_MONTH));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(mSchedule.getScheduleStart());
+        mAddScheduleView.showPickStartDateDlg(calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
     public void setEndDate() {
-        mAddScheduleView.showPickEndDateDlg(mScheduleStart.get(Calendar.YEAR),
-                mScheduleStart.get(Calendar.MONTH), mScheduleStart.get(Calendar.DAY_OF_MONTH));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(mSchedule.getScheduleEnd());
+        mAddScheduleView.showPickEndDateDlg(calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
     public void setStartTime() {
-        mAddScheduleView.showPickStartTimeDlg(mScheduleStart.get(Calendar.HOUR_OF_DAY),
-                mScheduleStart.get(Calendar.MINUTE), mScheduleStart.get(Calendar.SECOND));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(mSchedule.getScheduleStart());
+        mAddScheduleView.showPickStartTimeDlg(calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
     }
 
     @Override
     public void setEndTime() {
-        mAddScheduleView.showPickEndTimeDlg(mScheduleStart.get(Calendar.HOUR_OF_DAY),
-                mScheduleStart.get(Calendar.MINUTE), mScheduleStart.get(Calendar.SECOND));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(mSchedule.getScheduleEnd());
+        mAddScheduleView.showPickEndTimeDlg(calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
     }
 
     @Override
     public void setAlarmType() {
-        mAddScheduleView.showPickAlarmTypeDlg(mAlarmType);
+        mAddScheduleView.showPickAlarmTypeDlg(mSchedule.getAlarmType());
     }
 
     @Override
     public void setScheduleType() {
-        mAddScheduleView.showPickScheduleTypeDlg(mScheduleType);
+        mAddScheduleView.showPickScheduleTypeDlg(mSchedule.getType());
+    }
+
+    @Override
+    public void onTitleSet(String title) {
+        mSchedule.setTitle(title);
     }
 
     @Override
     public void onStartDateSet(int year, int monthOfYear, int dayOfMonth) {
-        mScheduleStart.set(Calendar.YEAR, year);
-        mScheduleStart.set(Calendar.MONTH, monthOfYear);
-        mScheduleStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        mAddScheduleView.updateStartDateDisplay(DATE_FORMAT.format(mScheduleStart.getTime()));
-    }
-
-    @Override
-    public void onEndDateSet(int year, int monthOfYear, int dayOfMonth) {
-        mScheduleEnd.set(Calendar.YEAR, year);
-        mScheduleEnd.set(Calendar.MONTH, monthOfYear);
-        mScheduleEnd.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        mAddScheduleView.updateEndDateDisplay(DATE_FORMAT.format(mScheduleEnd.getTime()));
+        Date startDate = updateDateFromBase(mSchedule.getScheduleStart(),
+                year, monthOfYear, dayOfMonth);
+        mSchedule.setScheduleStart(startDate);
+        mAddScheduleView.updateStartDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleStart()));
     }
 
     @Override
     public void onStartTimeSet(int hourOfDay, int minute, int second) {
-        mScheduleStart.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        mScheduleStart.set(Calendar.MINUTE, minute);
-        mScheduleStart.set(Calendar.SECOND, second);
-        mAddScheduleView.updateStartTimeDisplay(TIME_FORMAT.format(mScheduleStart.getTime()));
+        Date startTime = updateTimeFromBase(mSchedule.getScheduleStart(),
+                hourOfDay, minute, second);
+        mSchedule.setScheduleStart(startTime);
+        mAddScheduleView.updateStartTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleStart()));
+    }
+
+    @Override
+    public void onEndDateSet(int year, int monthOfYear, int dayOfMonth) {
+        Date endDate = updateDateFromBase(mSchedule.getScheduleEnd(),
+                year, monthOfYear, dayOfMonth);
+        mSchedule.setScheduleEnd(endDate);
+        mAddScheduleView.updateEndDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleEnd()));
     }
 
     @Override
     public void onEndTimeSet(int hourOfDay, int minute, int second) {
-        mScheduleEnd.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        mScheduleEnd.set(Calendar.MINUTE, minute);
-        mScheduleEnd.set(Calendar.SECOND, second);
-        mAddScheduleView.updateEndTimeDisplay(TIME_FORMAT.format(mScheduleEnd.getTime()));
+        Date endTime = updateTimeFromBase(mSchedule.getScheduleEnd(),
+                hourOfDay, minute, second);
+        mSchedule.setScheduleEnd(endTime);
+        mAddScheduleView.updateEndTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleEnd()));
     }
 
     @Override
     public void onAlarmTypeSet(@ScheduleModel.AlarmType String alarmType) {
         Log.v(LOG_TAG, "onAlarmTypeSet(): alarmType = " + alarmType);
-        mAlarmType = alarmType;
-        mAlarmTime = getAlarmTimeByType(mScheduleStart.getTime(), mAlarmType);
-        mAddScheduleView.updateAlarmTypeDisplay(ScheduleUtility.getAlarmTypeText(mAlarmType));
+        mSchedule.setAlarmType(alarmType);
+
+        Date alarmTime = getAlarmTimeByType(mSchedule.getScheduleStart(), alarmType);
+        mSchedule.setAlarmTime(alarmTime);
+
+        mAddScheduleView.updateAlarmTypeDisplay(
+                ScheduleUtility.getAlarmTypeText(mSchedule.getAlarmType()));
     }
 
     @Override
     public void onScheduleTypeSet(@ScheduleModel.AlarmType String scheduleType) {
         Log.v(LOG_TAG, "onScheduleTypeSet(): scheduleType = " + scheduleType);
-        mScheduleType = scheduleType;
+        mSchedule.setType(scheduleType);
         mAddScheduleView.updateScheduleTypeDisplay(
-                ScheduleUtility.getScheduleTypeText(mScheduleType));
+                ScheduleUtility.getScheduleTypeText(mSchedule.getType()));
     }
 
     @Override
@@ -151,43 +172,7 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
 
     @Override
     public void onSave() {
-        mUseCase.execute(mMapper.transform(getSchedule()), new AddScheduleSubscriber());
-    }
-
-    private void initCalendarsWithCurrentTime() {
-        mScheduleStart = Calendar.getInstance();
-        int minute = mScheduleStart.get(Calendar.MINUTE);
-        mScheduleStart.set(Calendar.MINUTE, minute + 10);
-
-        mScheduleEnd = Calendar.getInstance();
-        int hourOfDay = mScheduleEnd.get(Calendar.HOUR_OF_DAY);
-        mScheduleEnd.set(Calendar.HOUR_OF_DAY, hourOfDay + 1);
-        mScheduleEnd.set(Calendar.MINUTE, minute + 10);
-
-        mAlarmType = ScheduleModel.ALARM_10_MINUTES_BEFORE;
-        mAlarmTime = getAlarmTimeByType(mScheduleStart.getTime(), mAlarmType);
-
-        mScheduleType = ScheduleModel.SCHEDULE_TYPE_DEFAULT;
-
-        Log.v(LOG_TAG, "initCalendarsWithCurrentTime(): mScheduleStart = "
-                + mScheduleStart.getTime() + ", mScheduleEnd = " + mScheduleEnd.getTime());
-    }
-
-    private ScheduleModel getSchedule() {
-        ScheduleModel schedule = new ScheduleModel();
-
-        schedule.setTitle(mAddScheduleView.getScheduleTitle());
-        schedule.setNote("None");
-        schedule.setType(mScheduleType);
-        schedule.setScheduleStart(mScheduleStart.getTime());
-        schedule.setScheduleEnd(mScheduleEnd.getTime());
-        schedule.setScheduleRepeatType(ScheduleModel.SCHEDULE_REPEAT_EVERY_DAY);
-        schedule.setAlarmType(mAlarmType);
-        schedule.setAlarmTime(mAlarmTime);
-        schedule.setRepeatAlarmTimes(1);
-        schedule.setRepeatAlarmInterval(10);
-
-        return schedule;
+        mUseCase.execute(mMapper.transform(mSchedule), new AddScheduleSubscriber());
     }
 
     private final class AddScheduleSubscriber extends DefaultSubscriber<Long> {
@@ -212,6 +197,28 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
             default:
                 return new Date(schedule.getTime());
         }
+    }
+
+    private Date updateDateFromBase(Date base, int year, int monthOfYear, int dayOfMonth) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(base);
+
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        return calendar.getTime();
+    }
+
+    private Date updateTimeFromBase(Date base, int hourOfDay, int minute, int second) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(base);
+
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
+
+        return calendar.getTime();
     }
 
 }

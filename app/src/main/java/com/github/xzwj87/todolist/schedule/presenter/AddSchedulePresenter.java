@@ -8,6 +8,7 @@ import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 public interface AddSchedulePresenter extends Presenter {
 
     void setView(@NonNull AddScheduleView view);
+    void initialize();
 
     void setStartDate();
     void setEndDate();
@@ -16,6 +17,7 @@ public interface AddSchedulePresenter extends Presenter {
     void setAlarmType();
     void setScheduleType();
 
+    void onTitleSet(String title);
     void onStartDateSet(int year, int monthOfYear, int dayOfMonth);
     void onEndDateSet(int year, int monthOfYear, int dayOfMonth);
     void onStartTimeSet(int hourOfDay, int minute, int second);
