@@ -10,14 +10,17 @@ import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.schedule.utility.ScheduleUtility;
+
+import java.text.SimpleDateFormat;
 
 public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     private static final String LOG_TAG = ScheduleDetailPresenterImpl.class.getSimpleName();
 
-    private static final int INVALID_ID = -1;
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM d, yyyy");
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
     private ScheduleDetailView mScheduleDetailView;
-    private int mScheduleId = INVALID_ID;
     private QueryUseCase mUseCase;
     private ScheduleModelDataMapper mMapper;
 
@@ -49,6 +52,26 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
         mScheduleDetailView = null;
     }
 
+    private void updateScheduleToView(ScheduleModel schedule) {
+        mScheduleDetailView.updateScheduleTitle(schedule.getTitle());
+
+        String scheduleDate = DATE_FORMAT.format(schedule.getScheduleStart()) + "-" +
+                DATE_FORMAT.format(schedule.getScheduleEnd());
+        mScheduleDetailView.updateScheduleDate(scheduleDate);
+
+        String scheduleTime = TIME_FORMAT.format(schedule.getScheduleStart()) + "-" +
+                TIME_FORMAT.format(schedule.getScheduleEnd());
+        mScheduleDetailView.updateScheduleTime(scheduleTime);
+
+        mScheduleDetailView.updateAlarmTime(TIME_FORMAT.format(schedule.getAlarmTime()));
+
+        mScheduleDetailView.updateScheduleType(
+                ScheduleUtility.getScheduleTypeText(schedule.getType()));
+
+        mScheduleDetailView.updateScheduleNote(schedule.getNote());
+
+    }
+
     private void loadScheduleDetails() {
         mUseCase.execute(new ScheduleDetailsSubscriber());
     }
@@ -64,7 +87,7 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
             ScheduleModel scheduleModel = mMapper.transform(cursor);
             Log.v(LOG_TAG, "onNext(): scheduleModel = " + scheduleModel);
             cursor.close();
-            mScheduleDetailView.renderSchedule(scheduleModel);
+            updateScheduleToView(scheduleModel);
         }
     }
 }

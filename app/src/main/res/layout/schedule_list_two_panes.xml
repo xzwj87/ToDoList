@@ -10,7 +10,7 @@
     android:layout_marginRight="4dp"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".schedule.ui.activity.MovieGridActivity">
+    tools:context=".schedule.ui.activity.ScheduleListActivity">
 
     <fragment
         android:id="@+id/fragment"

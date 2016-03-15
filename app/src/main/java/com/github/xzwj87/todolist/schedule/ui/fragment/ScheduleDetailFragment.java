@@ -1,6 +1,7 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +29,12 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     private long mScheduleId = 0;
     private ScheduleDetailPresenter mScheduleDetailPresenter;
 
-    @Bind(R.id.tv_schedule_detail) TextView mTvScheduleDetail;
+    private CollapsingToolbarLayout mAppBarLayout;
+    @Bind(R.id.tv_schedule_date) TextView mTvScheduleDate;
+    @Bind(R.id.tv_schedule_time) TextView mTvScheduleTime;
+    @Bind(R.id.tv_schedule_alarm_time) TextView mTvAlarmTime;
+    @Bind(R.id.tv_schedule_type) TextView mTvScheduleType;
+    @Bind(R.id.tv_schedule_note) TextView mTvScheduleNote;
 
     public ScheduleDetailFragment() { }
 
@@ -46,11 +52,7 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (getArguments().containsKey(ARG_ITEM_ID)) {
-//            Activity activity = this.getActivity();
-//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-//        }
-
+        mAppBarLayout = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
     }
 
     @Override
@@ -93,10 +95,35 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     }
 
     @Override
-    public void renderSchedule(ScheduleModel schedule) {
-        String text = "Schedule id: " + schedule.getId() + ", title = " + schedule.getTitle();
-        mTvScheduleDetail.setText(text);
+    public void updateScheduleTitle(String title) {
+        mAppBarLayout.setTitle(title);
     }
+
+    @Override
+    public void updateScheduleDate(String datePeriod) {
+        mTvScheduleDate.setText(datePeriod);
+    }
+
+    @Override
+    public void updateScheduleTime(String timePeriod) {
+        mTvScheduleTime.setText(timePeriod);
+    }
+
+    @Override
+    public void updateAlarmTime(String time) {
+        mTvAlarmTime.setText(time);
+    }
+
+    @Override
+    public void updateScheduleType(String type) {
+        mTvScheduleType.setText(type);
+    }
+
+    @Override
+    public void updateScheduleNote(String note) {
+        mTvScheduleNote.setText(note);
+    }
+
 
     private void initialize() {
         QueryUseCase useCase = new GetScheduleDetail(mScheduleId);
