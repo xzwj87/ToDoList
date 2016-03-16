@@ -48,6 +48,7 @@ public class AddScheduleActivity extends AppCompatActivity
     @Bind(R.id.btn_schedule_time_end) Button mBtnScheduleTimeEnd;
     @Bind(R.id.btn_alarm_time) Button mBtnAlarmTime;
     @Bind(R.id.btn_schedule_type) Button mBtnScheduleType;
+    @Bind(R.id.edit_schedule_note) EditText mBtnScheduleNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,7 @@ public class AddScheduleActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.action_save:
                 mAddSchedulePresenter.onTitleSet(mEditScheduleTitle.getText().toString());
+                mAddSchedulePresenter.onNoteSet(mBtnScheduleNote.getText().toString());
                 mAddSchedulePresenter.onSave();
                 finish();
                 return true;
