@@ -159,6 +159,11 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     }
 
     @Override
+    public void onNoteSet(String note) {
+        mSchedule.setNote(note);
+    }
+
+    @Override
     public void resume() {}
 
     @Override

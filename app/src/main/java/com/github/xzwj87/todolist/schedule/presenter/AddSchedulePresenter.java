@@ -24,6 +24,7 @@ public interface AddSchedulePresenter extends Presenter {
     void onEndTimeSet(int hourOfDay, int minute, int second);
     void onAlarmTypeSet(@ScheduleModel.AlarmType String alarmType);
     void onScheduleTypeSet(@ScheduleModel.AlarmType String scheduleType);
+    void onNoteSet(String note);
 
     void onSave();
 
