@@ -30,6 +30,7 @@ public class TestUtility extends AndroidTestCase {
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME, 1640);
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES, 1);
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL, 10);
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_IS_DONE, 0);
 
         return scheduleValues;
     }

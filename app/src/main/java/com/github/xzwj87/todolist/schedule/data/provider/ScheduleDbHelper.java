@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract.ScheduleEntry;
 
 public class ScheduleDbHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     static final String DATABASE_NAME = "schedule.db";
 
@@ -28,7 +28,8 @@ public class ScheduleDbHelper extends SQLiteOpenHelper {
                 ScheduleEntry.COLUMN_ALARM_TYPE + " TEXT NOT NULL, " +
                 ScheduleEntry.COLUMN_ALARM_TIME + " INTEGER, " +
                 ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES + " INTEGER, " +
-                ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL + " INTEGER " +
+                ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL + " INTEGER, " +
+                ScheduleEntry.COLUMN_IS_DONE + " INTEGER " +
                 " );";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE);

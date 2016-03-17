@@ -23,7 +23,8 @@ public class ScheduleModelDataMapper {
             ScheduleContract.ScheduleEntry.COLUMN_ALARM_TYPE,
             ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME,
             ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES,
-            ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL
+            ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL,
+            ScheduleContract.ScheduleEntry.COLUMN_IS_DONE
     };
 
     public static final int COL_SCHEDULE_ID = 0;
@@ -37,6 +38,7 @@ public class ScheduleModelDataMapper {
     public static final int COL_SCHEDULE_ALARM_TIME = 8;
     public static final int COL_SCHEDULE_REPEAT_ALARM_TIMES = 9;
     public static final int COL_SCHEDULE_REPEAT_ALARM_INTERVAL = 10;
+    public static final int COL_SCHEDULE_IS_DONE = 11;
 
 
     public ScheduleModelDataMapper() {}
@@ -68,6 +70,8 @@ public class ScheduleModelDataMapper {
 
         scheduleModel.setRepeatAlarmTimes(cursor.getInt(COL_SCHEDULE_REPEAT_ALARM_TIMES));
         scheduleModel.setRepeatAlarmInterval(cursor.getInt(COL_SCHEDULE_REPEAT_ALARM_INTERVAL));
+
+        scheduleModel.setDone(cursor.getInt(COL_SCHEDULE_IS_DONE) == 1);
 
         Log.v(LOG_TAG, "transform(): scheduleModel = " + scheduleModel);
 

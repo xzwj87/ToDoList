@@ -2,6 +2,8 @@ package com.github.xzwj87.todolist.schedule.utility;
 
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.app.App;
@@ -43,6 +45,23 @@ public class ScheduleUtility {
             default:
                 return context.getString(R.string.schedule_type_default);
         }
+    }
+
+    public static int getScheduleColor(@ScheduleModel.ScheduleType String scheduleType) {
+        Context context = App.getAppContext();
+        switch (scheduleType) {
+            case ScheduleModel.SCHEDULE_TYPE_DEFAULT:
+                return ContextCompat.getColor(context, R.color.colorDefault);
+            case ScheduleModel.SCHEDULE_TYPE_MEETING:
+                return ContextCompat.getColor(context, R.color.colorMeeting);
+            case ScheduleModel.SCHEDULE_TYPE_ENTERTAINMENT:
+                return ContextCompat.getColor(context, R.color.colorEntertainment);
+            case ScheduleModel.SCHEDULE_TYPE_DATE:
+                return ContextCompat.getColor(context, R.color.colorDate);
+            default:
+                return ContextCompat.getColor(context, R.color.colorDefault);
+        }
+
     }
 
 }
