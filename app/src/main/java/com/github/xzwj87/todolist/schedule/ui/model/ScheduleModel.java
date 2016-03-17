@@ -59,6 +59,8 @@ public class ScheduleModel {
     private int mRepeatAlarmTimes;
     private int mRepeatAlarmInterval;
 
+    private boolean mIsDone;
+
     public static ScheduleModel createDefaultSchedule() {
         ScheduleModel schedule = new ScheduleModel();
         schedule.setTitle("");
@@ -176,6 +178,14 @@ public class ScheduleModel {
 
     public void setRepeatAlarmInterval(int repeatAlarmInterval) {
         this.mRepeatAlarmInterval = repeatAlarmInterval;
+    }
+
+    public boolean isDone() {
+        return mIsDone;
+    }
+
+    public void setDone(boolean isDone) {
+        mIsDone = isDone;
     }
 
     @Override

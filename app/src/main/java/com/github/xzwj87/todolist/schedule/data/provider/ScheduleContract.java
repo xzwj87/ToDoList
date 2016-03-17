@@ -36,6 +36,8 @@ public class ScheduleContract {
         public static final String COLUMN_REPEAT_ALARM_TIMES = "repeat_alarm_times";
         public static final String COLUMN_REPEAT_ALARM_INTERVAL = "repeat_alarm_interval";
 
+        public static final String COLUMN_IS_DONE = "is_done";
+
         public static Uri buildScheduleUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
