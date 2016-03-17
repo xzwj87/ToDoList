@@ -6,10 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.schedule.utility.ScheduleUtility;
 
 import java.text.SimpleDateFormat;
 
@@ -19,8 +21,10 @@ import butterknife.ButterKnife;
 public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
     private static final String LOG_TAG = ScheduleAdapter.class.getSimpleName();
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM d, yyyy");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/d");
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
+    private static final SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("MMM");
+    private static final SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("d");
 
     private static OnItemClickListener mListener;
 
@@ -51,14 +55,17 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
         ScheduleModel schedule = mDataSourse.getItemAtPosition(position);
         Log.v(LOG_TAG, "onBindViewHolder(): position = " + position + ", schedule = " + schedule);
 
+        Log.v(LOG_TAG, "onBindViewHolder(): color = " + ScheduleUtility.getScheduleColor(schedule.getType()));
+        holder.mIvColorStrip.setBackgroundColor(
+                ScheduleUtility.getScheduleColor(schedule.getType()));
 
-        holder.mTvScheduleTitle.setText(schedule.getTitle());
+        String startDate = DATE_FORMAT.format(schedule.getScheduleStart());
+        holder.mTvScheduleStartDate.setText(startDate);
 
         String startTime = TIME_FORMAT.format(schedule.getScheduleStart());
         holder.mTvScheduleStartTime.setText(startTime);
 
-        String endTime = TIME_FORMAT.format(schedule.getScheduleEnd());
-        holder.mTvScheduleEndTime.setText(endTime);
+        holder.mTvScheduleTitle.setText(schedule.getTitle());
     }
 
     @Override
@@ -76,9 +83,10 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.tv_schedule_item_start_date) public TextView mTvScheduleStartDate;
         @Bind(R.id.tv_schedule_title) public TextView mTvScheduleTitle;
         @Bind(R.id.tv_schedule_start_time) public TextView mTvScheduleStartTime;
-        @Bind(R.id.tv_schedule_end_time) public TextView mTvScheduleEndTime;
+        @Bind(R.id.iv_schedule_item_color_strip) public ImageView mIvColorStrip;
 
         public ViewHolder(View view) {
             super(view);
