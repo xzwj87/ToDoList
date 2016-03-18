@@ -63,8 +63,8 @@ public class ScheduleDetailActivity extends AppCompatActivity {
     @OnClick(R.id.fab)
     public void editSchedule(View view) {
         Log.v(LOG_TAG, "editSchedule()");
-        Intent intent = new Intent(this, EditScheduleActivity.class);
-        intent.putExtra(EditScheduleActivity.SCHEDULE_ID, mScheduleId);
+        Intent intent = new Intent(this, AddScheduleActivity.class);
+        intent.putExtra(AddScheduleActivity.SCHEDULE_ID, mScheduleId);
         startActivity(intent);
     }
 }
