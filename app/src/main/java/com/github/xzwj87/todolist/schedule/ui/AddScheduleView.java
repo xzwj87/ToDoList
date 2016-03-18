@@ -13,6 +13,8 @@ public interface AddScheduleView {
     void showPickAlarmTypeDlg(@ScheduleModel.AlarmType String alarmType);
     void showPickScheduleTypeDlg(@ScheduleModel.ScheduleType String scheduleType);
 
+    void updateScheduleTitle(String title);
+    void updateScheduleNote(String note);
     void updateStartDateDisplay(String startDate);
     void updateEndDateDisplay(String endDate);
     void updateStartTimeDisplay(String startTime);
