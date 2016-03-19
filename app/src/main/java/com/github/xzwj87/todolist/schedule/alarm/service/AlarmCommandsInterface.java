@@ -19,8 +19,10 @@ public interface AlarmCommandsInterface {
 
     void addScheduleEntity(ScheduleEntity entity);
     ScheduleEntity getScheduleEntity(String title);
-    void setAlarm();
-    void setRepeatAlarm();
-    void cancelAlarm(String type);
-    void onDestroy();
+    void setAlarm(String title);
+    void setRepeatAlarm(String title);
+    void cancelAlarm(String title,String type);
+    /* whether AlarmService has such alarm */
+    boolean hasAlarm(String title);
+    void destroy();
 }
