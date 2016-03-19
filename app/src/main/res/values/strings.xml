@@ -5,6 +5,9 @@
     <string name="title_activity_add_fragment">AddFragmentActivity</string>
     <string name="action_settings">Settings</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="schedule_title_hint">Enter titles, people and places&#8230;</string>
     <string name="schedule_note_hint">Add note</string>
     <string name="schedule_save">Save</string>
@@ -23,6 +26,7 @@
     <string name="alarm_type_1_hour_before">1 hour before</string>
     <string name="alarm_type_custom">Custom&#8230;</string>
 
+    <string name="schedule_type_all">All</string>
     <string name="schedule_type_default">Default</string>
     <string name="schedule_type_meeting">Meeting</string>
     <string name="schedule_type_entertainment">Entertainment</string>
