@@ -27,6 +27,9 @@ public class ScheduleListFragment extends Fragment implements
         ScheduleAdapter.DataSource, ScheduleListView {
     private static final String LOG_TAG = ScheduleListFragment.class.getSimpleName();
 
+    private static final String SCHEDULE_TYPE = "schedule_type";
+
+    private String mScheduleType;
     private Callbacks mCallbacks = sDummyCallbacks;
     private ScheduleAdapter mScheduleAdapter;
     private ScheduleListPresenter mScheduleListPresenter;
@@ -44,11 +47,27 @@ public class ScheduleListFragment extends Fragment implements
 
     public ScheduleListFragment() {}
 
+    public static ScheduleListFragment newInstance(String scheduleType) {
+        ScheduleListFragment fragment = new ScheduleListFragment();
+
+        Bundle args = new Bundle();
+        args.putString(SCHEDULE_TYPE, scheduleType);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_schedule_list, container, false);
         ButterKnife.bind(this, rootView);
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mScheduleType = arguments.getString(SCHEDULE_TYPE);
+            Log.v(LOG_TAG, "onCreateView(): mScheduleType = " + mScheduleType);
+        }
 
         return rootView;
     }
