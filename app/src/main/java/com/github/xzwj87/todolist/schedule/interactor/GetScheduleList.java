@@ -6,6 +6,7 @@ import android.support.annotation.StringDef;
 import com.github.xzwj87.todolist.app.App;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.squareup.sqlbrite.BriteContentResolver;
 import com.squareup.sqlbrite.SqlBrite;
 
@@ -29,6 +30,7 @@ public class GetScheduleList extends QueryUseCase {
 
     private final BriteContentResolver mBriteContentResolver;
     @SortOrder private final String mSortOrder;
+    private String mScheduleType;
 
     public GetScheduleList(@SortOrder String sortOrder) {
         SqlBrite sqlBrite = SqlBrite.create();
@@ -38,12 +40,32 @@ public class GetScheduleList extends QueryUseCase {
         mSortOrder = sortOrder;
     }
 
+    public GetScheduleList(@SortOrder String sortOrder, String scheduleType) {
+        SqlBrite sqlBrite = SqlBrite.create();
+        mBriteContentResolver = sqlBrite.wrapContentProvider(
+                App.getAppContext().getContentResolver(), Schedulers.io());
+
+        mSortOrder = sortOrder;
+        mScheduleType = scheduleType;
+    }
+
     @Override
     protected Observable buildUseCaseObservable() {
-        return mBriteContentResolver
-                .createQuery(
-                        ScheduleContract.ScheduleEntry.CONTENT_URI,
-                        ScheduleModelDataMapper.SCHEDULE_COLUMNS, null, null, mSortOrder, true)
-                .map(SqlBrite.Query::run);
+        if (mScheduleType == null)
+            return mBriteContentResolver
+                    .createQuery(
+                            ScheduleContract.ScheduleEntry.CONTENT_URI,
+                            ScheduleModelDataMapper.SCHEDULE_COLUMNS, null, null, mSortOrder, true)
+                    .map(SqlBrite.Query::run);
+        else
+            return mBriteContentResolver
+                    .createQuery(
+                            ScheduleContract.ScheduleEntry.CONTENT_URI,
+                            ScheduleModelDataMapper.SCHEDULE_COLUMNS,
+                            ScheduleContract.ScheduleEntry.COLUMN_TYPE + " = ?",
+                            new String[]{mScheduleType},
+                            mSortOrder,
+                            true)
+                    .map(SqlBrite.Query::run);
     }
 }

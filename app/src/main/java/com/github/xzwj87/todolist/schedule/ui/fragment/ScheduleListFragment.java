@@ -129,7 +129,12 @@ public class ScheduleListFragment extends Fragment implements
     }
 
     private void initialize() {
-        QueryUseCase useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC);
+        QueryUseCase useCase;
+        if (mScheduleType != null) {
+            useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC, mScheduleType);
+        } else {
+            useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC);
+        }
         ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
         mScheduleListPresenter = new ScheduleListPresenterImpl(useCase, mapper);
         mScheduleListPresenter.setView(this);

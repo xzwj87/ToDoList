@@ -56,7 +56,7 @@ public class ScheduleListActivity extends AppCompatActivity
         Log.v(LOG_TAG, "onCreate(): mTwoPane = " + mTwoPane);
 
         if (savedInstanceState == null) {
-            ScheduleListFragment fragment = ScheduleListFragment.newInstance("test");
+            ScheduleListFragment fragment = ScheduleListFragment.newInstance(null);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.schedule_list_container, fragment)
                     .commit();
