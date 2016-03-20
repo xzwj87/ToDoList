@@ -18,6 +18,7 @@ import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -53,6 +54,13 @@ public class ScheduleListActivity extends AppCompatActivity
 
         mTwoPane = findViewById(R.id.schedule_detail_container) != null;
         Log.v(LOG_TAG, "onCreate(): mTwoPane = " + mTwoPane);
+
+        if (savedInstanceState == null) {
+            ScheduleListFragment fragment = ScheduleListFragment.newInstance(null);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.schedule_list_container, fragment)
+                    .commit();
+        }
     }
 
     @Override
@@ -71,12 +79,16 @@ public class ScheduleListActivity extends AppCompatActivity
 
         if (id == R.id.nav_schedule_type_all) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_all");
+            replaceScheduleListWithType(null);
         } else if (id == R.id.nav_schedule_type_meeting) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_meeting");
+            replaceScheduleListWithType(ScheduleModel.SCHEDULE_TYPE_MEETING);
         } else if (id == R.id.nav_schedule_type_entertainment) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_entertainment");
+            replaceScheduleListWithType(ScheduleModel.SCHEDULE_TYPE_ENTERTAINMENT);
         } else if (id == R.id.nav_date) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_date");
+            replaceScheduleListWithType(ScheduleModel.SCHEDULE_TYPE_DATE);
         } else if (id == R.id.nav_settings) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_settings");
         }
@@ -125,5 +137,12 @@ public class ScheduleListActivity extends AppCompatActivity
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void replaceScheduleListWithType(String scheduleType) {
+        ScheduleListFragment fragment = ScheduleListFragment.newInstance(scheduleType);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.schedule_list_container, fragment)
+                .commit();
     }
 }
