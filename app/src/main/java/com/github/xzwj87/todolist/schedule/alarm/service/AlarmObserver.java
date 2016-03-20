@@ -82,7 +82,7 @@ public class AlarmObserver extends ContentObserver {
         entity.setTitle(cursor.getString(cursor.getColumnIndex(ScheduleContract.ScheduleEntry.COLUMN_TITLE)));
         entity.setAlarmTime(new Date(cursor.getLong(cursor.getColumnIndex(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME))));
         entity.setRepeatAlarmInterval(cursor.getInt(cursor.getColumnIndex(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL)));
-        entity.setDetail(cursor.getString(cursor.getColumnIndex(ScheduleContract.ScheduleEntry.COLUMN_DETAIL)));
+        entity.setDetail(cursor.getString(cursor.getColumnIndex(ScheduleContract.ScheduleEntry.COLUMN_NOTE)));
         entity.setRepeatAlarmTimes(cursor.getInt(cursor.getColumnIndex(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES)));
         String scheduleType = cursor.getString(cursor.getColumnIndex(ScheduleContract.ScheduleEntry.COLUMN_TYPE));
         if(scheduleType == ScheduleEntity.SCHEDULE_TYPE_DEFAULT)

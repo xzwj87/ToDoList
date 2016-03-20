@@ -5,6 +5,7 @@ import android.test.AndroidTestCase;
 
 import com.github.xzwj87.todolist.schedule.alarm.service.AlarmCommandsInterface;
 import com.github.xzwj87.todolist.schedule.alarm.service.AlarmService;
+import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.Date;
 public class TestAlarmService extends AndroidTestCase {
     static final String TAG = "TestAlarmService";
     AlarmCommandsInterface mAlarmCommandsInterface;
-    ScheduleModel mSchedule = new ScheduleModel();
+    ScheduleEntity mSchedule = new ScheduleEntity();
 
     String title = "you got to do this!";
     long timeInterval = 5*1000;
@@ -31,13 +32,13 @@ public class TestAlarmService extends AndroidTestCase {
         mSchedule.setRepeatAlarmInterval(repeatInterval);
 
         mAlarmCommandsInterface.addScheduleEntity(mSchedule);
-        mAlarmCommandsInterface.setAlarm();
-        mAlarmCommandsInterface.setRepeatAlarm();
+        mAlarmCommandsInterface.setAlarm(title);
+        mAlarmCommandsInterface.setRepeatAlarm(title);
 
         SystemClock.sleep(timeInterval * 5);
 
         //mAlarmCommandsInterface.cancelAlarm(title, startTime, AlarmCommandsInterface.ALARM_TYPE_ONE_TIME);
-        mAlarmCommandsInterface.cancelAlarm(AlarmCommandsInterface.ALARM_TYPE_REPEAT);
+        mAlarmCommandsInterface.cancelAlarm(title,AlarmCommandsInterface.ALARM_TYPE_REPEAT);
     }
 
 
