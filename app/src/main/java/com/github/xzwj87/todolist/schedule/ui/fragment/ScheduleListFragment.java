@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.GetScheduleList;
-import com.github.xzwj87.todolist.schedule.interactor.ReadDataUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
@@ -34,12 +34,12 @@ public class ScheduleListFragment extends Fragment implements
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
 
     public interface Callbacks {
-        void onItemSelected(int id, ScheduleAdapter.ViewHolder vh);
+        void onItemSelected(long id, ScheduleAdapter.ViewHolder vh);
     }
 
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(int id, ScheduleAdapter.ViewHolder vh) { }
+        public void onItemSelected(long id, ScheduleAdapter.ViewHolder vh) { }
     };
 
     public ScheduleListFragment() {}
@@ -110,7 +110,7 @@ public class ScheduleListFragment extends Fragment implements
     }
 
     private void initialize() {
-        ReadDataUseCase useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC);
+        QueryUseCase useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC);
         ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
         mScheduleListPresenter = new ScheduleListPresenterImpl(useCase, mapper);
         mScheduleListPresenter.setView(this);
@@ -129,7 +129,7 @@ public class ScheduleListFragment extends Fragment implements
         mScheduleAdapter.setOnItemClickListener(new ScheduleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, ScheduleAdapter.ViewHolder vh) {
-                int id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
+                long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
                 Log.v(LOG_TAG, "onItemClick(): position = " + position + ", id = " + id);
 
                 mCallbacks.onItemSelected(id, vh);

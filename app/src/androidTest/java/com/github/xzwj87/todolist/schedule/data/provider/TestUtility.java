@@ -21,14 +21,16 @@ public class TestUtility extends AndroidTestCase {
         ContentValues scheduleValues = new ContentValues();
 
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TITLE, "Watch movie");
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DETAIL, "Watch movie at five");
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_NOTE, "Watch movie at five");
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TYPE, "Movie");
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_START, 1700);
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_END, 1900);
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_SCHEDULE, 1);
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TYPE, "custom");
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME, 1640);
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES, 1);
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL, 10);
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_IS_DONE, 0);
 
         return scheduleValues;
     }

@@ -1,6 +1,7 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.GetScheduleDetail;
-import com.github.xzwj87.todolist.schedule.interactor.ReadDataUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
@@ -25,18 +26,23 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
 
     public static final String SCHEDULE_ID = "id";
 
-    private int mScheduleId = 0;
+    private long mScheduleId = 0;
     private ScheduleDetailPresenter mScheduleDetailPresenter;
 
-    @Bind(R.id.tv_schedule_detail) TextView mTvScheduleDetail;
+    private CollapsingToolbarLayout mAppBarLayout;
+    @Bind(R.id.tv_schedule_date) TextView mTvScheduleDate;
+    @Bind(R.id.tv_schedule_time) TextView mTvScheduleTime;
+    @Bind(R.id.tv_schedule_alarm_time) TextView mTvAlarmTime;
+    @Bind(R.id.tv_schedule_type) TextView mTvScheduleType;
+    @Bind(R.id.tv_schedule_note) TextView mTvScheduleNote;
 
     public ScheduleDetailFragment() { }
 
-    public static ScheduleDetailFragment newInstance(int scheduleId) {
+    public static ScheduleDetailFragment newInstance(long scheduleId) {
         ScheduleDetailFragment fragment = new ScheduleDetailFragment();
 
         Bundle args = new Bundle();
-        args.putInt(SCHEDULE_ID, scheduleId);
+        args.putLong(SCHEDULE_ID, scheduleId);
         fragment.setArguments(args);
 
         return fragment;
@@ -46,11 +52,7 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (getArguments().containsKey(ARG_ITEM_ID)) {
-//            Activity activity = this.getActivity();
-//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-//        }
-
+        mAppBarLayout = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mScheduleId = arguments.getInt(SCHEDULE_ID);
+            mScheduleId = arguments.getLong(SCHEDULE_ID);
             Log.v(LOG_TAG, "onCreateView(): mScheduleId = " + mScheduleId);
         }
 
@@ -93,13 +95,38 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     }
 
     @Override
-    public void renderSchedule(ScheduleModel schedule) {
-        String text = "Schedule id: " + schedule.getId() + ", title = " + schedule.getTitle();
-        mTvScheduleDetail.setText(text);
+    public void updateScheduleTitle(String title) {
+        mAppBarLayout.setTitle(title);
     }
 
+    @Override
+    public void updateScheduleDate(String datePeriod) {
+        mTvScheduleDate.setText(datePeriod);
+    }
+
+    @Override
+    public void updateScheduleTime(String timePeriod) {
+        mTvScheduleTime.setText(timePeriod);
+    }
+
+    @Override
+    public void updateAlarmTime(String time) {
+        mTvAlarmTime.setText(time);
+    }
+
+    @Override
+    public void updateScheduleType(String type) {
+        mTvScheduleType.setText(type);
+    }
+
+    @Override
+    public void updateScheduleNote(String note) {
+        mTvScheduleNote.setText(note);
+    }
+
+
     private void initialize() {
-        ReadDataUseCase useCase = new GetScheduleDetail(mScheduleId);
+        QueryUseCase useCase = new GetScheduleDetail(mScheduleId);
         ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
         mScheduleDetailPresenter = new ScheduleDetailPresenterImpl(useCase, mapper);
         mScheduleDetailPresenter.setView(this);

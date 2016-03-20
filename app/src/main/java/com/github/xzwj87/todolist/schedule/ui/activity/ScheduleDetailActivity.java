@@ -22,6 +22,8 @@ public class ScheduleDetailActivity extends AppCompatActivity {
 
     public static final String SCHEDULE_ID = "id";
 
+    private long mScheduleId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,14 +40,10 @@ public class ScheduleDetailActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            Bundle arguments = new Bundle();
-            Log.v(LOG_TAG, "onCreate(): intent = " + getIntent().getData());
-            int id = getIntent().getIntExtra(SCHEDULE_ID, 0);
-            Log.v(LOG_TAG, "onCreate(): id = " + id);
-            arguments.putInt(ScheduleDetailFragment.SCHEDULE_ID, id);
+            mScheduleId = getIntent().getLongExtra(SCHEDULE_ID, 0);
+            Log.v(LOG_TAG, "onCreate(): mScheduleId = " + mScheduleId);
 
-            ScheduleDetailFragment fragment = new ScheduleDetailFragment();
-            fragment.setArguments(arguments);
+            ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(mScheduleId);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.schedule_detail_container, fragment)
                     .commit();
@@ -65,5 +63,8 @@ public class ScheduleDetailActivity extends AppCompatActivity {
     @OnClick(R.id.fab)
     public void editSchedule(View view) {
         Log.v(LOG_TAG, "editSchedule()");
+        Intent intent = new Intent(this, AddScheduleActivity.class);
+        intent.putExtra(AddScheduleActivity.SCHEDULE_ID, mScheduleId);
+        startActivity(intent);
     }
 }

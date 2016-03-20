@@ -16,7 +16,7 @@
         <receiver android:name=".schedule.alarm.service.AlarmReceiver" />
 
         <activity
-            android:name="com.github.xzwj87.todolist.schedule.ui.activity.ScheduleListActivity"
+            android:name=".schedule.ui.activity.ScheduleListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,9 +26,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.github.xzwj87.todolist.schedule.ui.activity.ScheduleDetailActivity"
+            android:name=".schedule.ui.activity.ScheduleDetailActivity"
             android:label="@string/title_schedule_detail"
-            android:parentActivityName="com.github.xzwj87.todolist.schedule.ui.activity.ScheduleListActivity"
+            android:parentActivityName=".schedule.ui.activity.ScheduleListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -42,9 +42,9 @@
             android:syncable="true" />
 
         <activity
-            android:name="com.github.xzwj87.todolist.schedule.ui.activity.AddScheduleActivity"
+            android:name=".schedule.ui.activity.AddScheduleActivity"
             android:label="@string/title_activity_add"
-            android:parentActivityName="com.github.xzwj87.todolist.schedule.ui.activity.ScheduleListActivity"
+            android:parentActivityName=".schedule.ui.activity.ScheduleListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

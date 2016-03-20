@@ -13,10 +13,19 @@ import android.widget.EditText;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.AddSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.GetScheduleDetail;
+import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.UpdateSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.UpdateUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
+import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenter;
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenterImpl;
+import com.github.xzwj87.todolist.schedule.presenter.EditSchedulePresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
+import com.github.xzwj87.todolist.schedule.ui.fragment.AlarmTypePickerDialogFragment;
+import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleTypePickerDialogFragment;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -26,21 +35,30 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AddScheduleActivity extends AppCompatActivity
-        implements AddScheduleView,DatePickerDialog.OnDateSetListener {
+        implements AddScheduleView, DatePickerDialog.OnDateSetListener {
     private static final String LOG_TAG = AddScheduleActivity.class.getSimpleName();
+
+    public static final String SCHEDULE_ID = "id";
 
     private static final String START_DATE_PICK_DLG_TAG = "start_date_pick_dlg";
     private static final String END_DATE_PICK_DLG_TAG = "end_date_pick_dlg";
     private static final String START_TIME_PICK_DLG_TAG = "start_date_pick_dlg";
     private static final String END_TIME_PICK_DLG_TAG = "end_date_pick_dlg";
+    private static final String ALARM_TYPE_PICK_DLG_TAG = "alarm_time_pick_dlg";
+    private static final String SCHEDULE_TYPE_PICK_DLG_TAG = "schedule_type_pick_dlg";
 
-    private AddSchedulePresenter mAddSchedulePresenter;
+    private AddSchedulePresenter mPresenter;
+    private boolean mIsEditMode = false;
+    private long mScheduleId;
 
     @Bind(R.id.edit_schedule_title) EditText mEditScheduleTitle;
     @Bind(R.id.btn_schedule_date_start) Button mBtnScheduleDateStart;
     @Bind(R.id.btn_schedule_time_start) Button mBtnScheduleTimeStart;
     @Bind(R.id.btn_schedule_date_end) Button mBtnScheduleDateEnd;
     @Bind(R.id.btn_schedule_time_end) Button mBtnScheduleTimeEnd;
+    @Bind(R.id.btn_alarm_time) Button mBtnAlarmTime;
+    @Bind(R.id.btn_schedule_type) Button mBtnScheduleType;
+    @Bind(R.id.edit_schedule_note) EditText mEditScheduleNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,32 +73,52 @@ public class AddScheduleActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_24dp);
 
+        if (savedInstanceState == null) {
+            mScheduleId = getIntent().getLongExtra(SCHEDULE_ID, -1);
+            Log.v(LOG_TAG, "onCreate(): mScheduleId = " + mScheduleId);
+            if (mScheduleId != -1) {
+                mIsEditMode = true;
+            } else {
+                mIsEditMode = false;
+            }
+        }
+
         initialize();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mAddSchedulePresenter.resume();
+        mPresenter.resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mAddSchedulePresenter.pause();
+        mPresenter.pause();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mAddSchedulePresenter.destroy();
+        mPresenter.destroy();
     }
 
     private void initialize() {
-        AddSchedule addSchedule = new AddSchedule();
-        ScheduleContentValuesDataMapper mapper = new ScheduleContentValuesDataMapper();
-        mAddSchedulePresenter = new AddSchedulePresenterImpl(addSchedule, mapper);
-        mAddSchedulePresenter.setView(this);
+        if (mIsEditMode) {
+            QueryUseCase queryUseCase = new GetScheduleDetail(mScheduleId);
+            UpdateUseCase updateUseCase = new UpdateSchedule();
+            ScheduleContentValuesDataMapper contentValueMapper = new ScheduleContentValuesDataMapper();
+            ScheduleModelDataMapper modelMapper = new ScheduleModelDataMapper();
+            mPresenter = new EditSchedulePresenterImpl(updateUseCase, queryUseCase,
+                    contentValueMapper, modelMapper);
+        } else {
+            AddSchedule addSchedule = new AddSchedule();
+            ScheduleContentValuesDataMapper mapper = new ScheduleContentValuesDataMapper();
+            mPresenter = new AddSchedulePresenterImpl(addSchedule, mapper);
+        }
+        mPresenter.setView(this);
+        mPresenter.initialize();
     }
 
     @Override
@@ -93,7 +131,9 @@ public class AddScheduleActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                mAddSchedulePresenter.onSave();
+                mPresenter.onTitleSet(mEditScheduleTitle.getText().toString());
+                mPresenter.onNoteSet(mEditScheduleNote.getText().toString());
+                mPresenter.onSave();
                 finish();
                 return true;
             default:
@@ -111,10 +151,10 @@ public class AddScheduleActivity extends AppCompatActivity
 
         switch (view.getTag()) {
             case START_DATE_PICK_DLG_TAG:
-                mAddSchedulePresenter.onStartDateSet(year, monthOfYear, dayOfMonth);
+                mPresenter.onStartDateSet(year, monthOfYear, dayOfMonth);
                 break;
             case END_DATE_PICK_DLG_TAG:
-                mAddSchedulePresenter.onEndDateSet(year, monthOfYear, dayOfMonth);
+                mPresenter.onEndDateSet(year, monthOfYear, dayOfMonth);
                 break;
         }
     }
@@ -138,7 +178,7 @@ public class AddScheduleActivity extends AppCompatActivity
                     @Override
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute,
                                           int second) {
-                        mAddSchedulePresenter.onStartTimeSet(hourOfDay, minute, second);
+                        mPresenter.onStartTimeSet(hourOfDay, minute, second);
                     }
                 },
                 hourOfDay,
@@ -156,7 +196,7 @@ public class AddScheduleActivity extends AppCompatActivity
                     @Override
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute,
                                           int second) {
-                        mAddSchedulePresenter.onEndTimeSet(hourOfDay, minute, second);
+                        mPresenter.onEndTimeSet(hourOfDay, minute, second);
                     }
                 },
                 hourOfDay,
@@ -165,6 +205,30 @@ public class AddScheduleActivity extends AppCompatActivity
         );
 
         tpd.show(getFragmentManager(), END_TIME_PICK_DLG_TAG);
+    }
+
+    @Override
+    public void showPickAlarmTypeDlg(@ScheduleModel.AlarmType String alarmType) {
+        AlarmTypePickerDialogFragment fragment = AlarmTypePickerDialogFragment.newInstance(
+                new AlarmTypePickerDialogFragment.OnPickAlertTypeListener() {
+                    @Override
+                    public void onAlertTimePicked(@ScheduleModel.AlarmType String alarmType) {
+                        mPresenter.onAlarmTypeSet(alarmType);
+                    }
+                }, alarmType);
+        fragment.show(getSupportFragmentManager(), SCHEDULE_TYPE_PICK_DLG_TAG);
+    }
+
+    @Override
+    public void showPickScheduleTypeDlg(@ScheduleModel.ScheduleType String scheduleType) {
+        ScheduleTypePickerDialogFragment fragment = ScheduleTypePickerDialogFragment.newInstance(
+                new ScheduleTypePickerDialogFragment.OnScheduleTypeSetListener() {
+                    @Override
+                    public void onScheduleTypeSet(@ScheduleModel.ScheduleType String scheduleType) {
+                        mPresenter.onScheduleTypeSet(scheduleType);
+                    }
+                }, scheduleType);
+        fragment.show(getSupportFragmentManager(), SCHEDULE_TYPE_PICK_DLG_TAG);
     }
 
     @Override
@@ -183,8 +247,28 @@ public class AddScheduleActivity extends AppCompatActivity
     }
 
     @Override
+    public void updateAlarmTypeDisplay(String alarmTypeText) {
+        mBtnAlarmTime.setText(alarmTypeText);
+    }
+
+    @Override
+    public void updateScheduleTypeDisplay(String scheduleTypeText) {
+        mBtnScheduleType.setText(scheduleTypeText);
+    }
+
+    @Override
     public void updateEndTimeDisplay(String endTime) {
         mBtnScheduleTimeEnd.setText(endTime);
+    }
+
+    @Override
+    public void updateScheduleTitle(String title) {
+        mEditScheduleTitle.setText(title);
+    }
+
+    @Override
+    public void updateScheduleNote(String note) {
+        mEditScheduleNote.setText(note);
     }
 
     @Override
@@ -199,22 +283,32 @@ public class AddScheduleActivity extends AppCompatActivity
 
     @OnClick(R.id.btn_schedule_date_start)
     public void pickStartDate(View view) {
-        mAddSchedulePresenter.setStartDate();
+        mPresenter.setStartDate();
     }
 
     @OnClick(R.id.btn_schedule_date_end)
     public void pickEndDate(View view) {
-        mAddSchedulePresenter.setEndDate();
+        mPresenter.setEndDate();
     }
 
     @OnClick(R.id.btn_schedule_time_start)
     public void pickStartTime(View view) {
-        mAddSchedulePresenter.setStartTime();
+        mPresenter.setStartTime();
     }
 
     @OnClick(R.id.btn_schedule_time_end)
     public void pickEndTime(View view) {
-        mAddSchedulePresenter.setEndTime();
+        mPresenter.setEndTime();
+    }
+
+    @OnClick(R.id.btn_alarm_time)
+    public void pickAlarmType(View view) {
+        mPresenter.setAlarmType();
+    }
+
+    @OnClick(R.id.btn_schedule_type)
+    public void pickScheduleType(View view) {
+        mPresenter.setScheduleType();
     }
 
 }

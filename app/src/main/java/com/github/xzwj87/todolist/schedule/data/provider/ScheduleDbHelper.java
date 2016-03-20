@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract.ScheduleEntry;
 
 public class ScheduleDbHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
     static final String DATABASE_NAME = "schedule.db";
 
@@ -20,14 +20,16 @@ public class ScheduleDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + ScheduleEntry.TABLE_NAME + " (" +
                 ScheduleEntry._ID + " INTEGER PRIMARY KEY," +
                 ScheduleEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
-                ScheduleEntry.COLUMN_DETAIL + " TEXT NOT NULL, " +
+                ScheduleEntry.COLUMN_NOTE + " TEXT NOT NULL, " +
                 ScheduleEntry.COLUMN_TYPE + " TEXT NOT NULL, " +
                 ScheduleEntry.COLUMN_DATE_START + " INTEGER NOT NULL, " +
                 ScheduleEntry.COLUMN_DATE_END + " INTEGER NOT NULL, " +
                 ScheduleEntry.COLUMN_REPEAT_SCHEDULE + " TEXT NOT NULL, " +
-                ScheduleEntry.COLUMN_ALARM_TIME + " INTEGER NOT NULL, " +
-                ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES + " INTEGER NOT NULL, " +
-                ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL + " INTEGER NOT NULL " +
+                ScheduleEntry.COLUMN_ALARM_TYPE + " TEXT NOT NULL, " +
+                ScheduleEntry.COLUMN_ALARM_TIME + " INTEGER, " +
+                ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES + " INTEGER, " +
+                ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL + " INTEGER, " +
+                ScheduleEntry.COLUMN_IS_DONE + " INTEGER " +
                 " );";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE);

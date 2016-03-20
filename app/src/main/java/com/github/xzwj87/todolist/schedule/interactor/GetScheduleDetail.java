@@ -13,13 +13,13 @@ import com.squareup.sqlbrite.SqlBrite;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-public class GetScheduleDetail extends ReadDataUseCase {
+public class GetScheduleDetail extends QueryUseCase {
     private final String LOG_TAG = GetScheduleDetail.class.getSimpleName();
 
-    private final int mScheduleId;
+    private final long mScheduleId;
     private final BriteContentResolver mBriteContentResolver;
 
-    public GetScheduleDetail(int scheduleId) {
+    public GetScheduleDetail(long scheduleId) {
         mScheduleId = scheduleId;
         SqlBrite sqlBrite = SqlBrite.create();
         mBriteContentResolver = sqlBrite.wrapContentProvider(

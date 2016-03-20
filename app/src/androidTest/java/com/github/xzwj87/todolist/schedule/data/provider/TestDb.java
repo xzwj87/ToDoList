@@ -45,7 +45,7 @@ public class TestDb extends AndroidTestCase {
         final HashSet<String> scheduleColumnHashSet = new HashSet<String>();
         scheduleColumnHashSet.add(ScheduleContract.ScheduleEntry._ID);
         scheduleColumnHashSet.add(ScheduleContract.ScheduleEntry.COLUMN_TITLE);
-        scheduleColumnHashSet.add(ScheduleContract.ScheduleEntry.COLUMN_DETAIL);
+        scheduleColumnHashSet.add(ScheduleContract.ScheduleEntry.COLUMN_NOTE);
         scheduleColumnHashSet.add(ScheduleContract.ScheduleEntry.COLUMN_TYPE);
         scheduleColumnHashSet.add(ScheduleContract.ScheduleEntry.COLUMN_DATE_START);
         scheduleColumnHashSet.add(ScheduleContract.ScheduleEntry.COLUMN_DATE_END);
