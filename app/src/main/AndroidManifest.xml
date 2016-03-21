@@ -12,18 +12,24 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <receiver android:name=".schedule.alarm.service.AlarmReceiver" />
 
         <activity
             android:name=".schedule.ui.activity.ScheduleListActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".schedule.ui.activity.ScheduleDetailActivity"
@@ -44,6 +50,16 @@
         <activity
             android:name=".schedule.ui.activity.AddScheduleActivity"
             android:label="@string/title_activity_add"
+            android:parentActivityName=".schedule.ui.activity.ScheduleListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.github.xzwj87.todolist.schedule.ui.activity.ScheduleListActivity" />
+        </activity>
+        <activity
+            android:name=".schedule.ui.activity.SearchScheduleActivity"
+            android:launchMode="singleTop"
+            android:label="@string/title_activity_search_schedule"
             android:parentActivityName=".schedule.ui.activity.ScheduleListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

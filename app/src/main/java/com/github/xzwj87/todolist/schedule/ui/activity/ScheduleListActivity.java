@@ -1,5 +1,7 @@
 package com.github.xzwj87.todolist.schedule.ui.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -7,8 +9,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,6 +63,8 @@ public class ScheduleListActivity extends AppCompatActivity
                     .add(R.id.schedule_list_container, fragment)
                     .commit();
         }
+
+        handleIntent(getIntent());
     }
 
     @Override
@@ -98,6 +102,26 @@ public class ScheduleListActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_schedule_list, menu);
+
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.v(LOG_TAG, "onNewIntent()");
+        handleIntent(intent);
+    }
+
     @SuppressWarnings("unused")
     @OnClick(R.id.fab)
     public void pickStartDate(View view) {
@@ -122,27 +146,22 @@ public class ScheduleListActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        Log.v(LOG_TAG, "onOptionsItemSelected(): item = " + item);
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void replaceScheduleListWithType(String scheduleType) {
         ScheduleListFragment fragment = ScheduleListFragment.newInstance(scheduleType);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.schedule_list_container, fragment)
                 .commit();
+    }
+
+    private void handleIntent(Intent intent) {
+        Log.v(LOG_TAG, "handleIntent()");
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.v(LOG_TAG, "handleIntent(): query = " + query);
+
+            Intent searchActivityIntent = new Intent(this, SearchScheduleActivity.class);
+            searchActivityIntent.putExtra(SearchScheduleActivity.QUERY, query);
+            startActivity(searchActivityIntent);
+        }
     }
 }
