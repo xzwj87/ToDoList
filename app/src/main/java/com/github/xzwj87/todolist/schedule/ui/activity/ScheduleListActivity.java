@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +32,9 @@ public class ScheduleListActivity extends AppCompatActivity
     private static final String LOG_TAG = ScheduleListActivity.class.getSimpleName();
 
     private static final String DETAIL_FRAGMENT_TAG = "detail_fragment";
+    private static final String SEARCH_RESULT_FRAGMENT_TAG = "search_result_fragment";
     private boolean mTwoPane;
+    private String mTypeFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class ScheduleListActivity extends AppCompatActivity
         Log.v(LOG_TAG, "onCreate(): mTwoPane = " + mTwoPane);
 
         if (savedInstanceState == null) {
-            ScheduleListFragment fragment = ScheduleListFragment.newInstance(null);
+            ScheduleListFragment fragment = ScheduleListFragment.newInstanceByType(null);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.schedule_list_container, fragment)
                     .commit();
@@ -83,16 +86,20 @@ public class ScheduleListActivity extends AppCompatActivity
 
         if (id == R.id.nav_schedule_type_all) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_all");
-            replaceScheduleListWithType(null);
+            mTypeFilter = null;
+            replaceScheduleListWithType(mTypeFilter);
         } else if (id == R.id.nav_schedule_type_meeting) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_meeting");
-            replaceScheduleListWithType(ScheduleModel.SCHEDULE_TYPE_MEETING);
+            mTypeFilter = ScheduleModel.SCHEDULE_TYPE_MEETING;
+            replaceScheduleListWithType(mTypeFilter);
         } else if (id == R.id.nav_schedule_type_entertainment) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_entertainment");
-            replaceScheduleListWithType(ScheduleModel.SCHEDULE_TYPE_ENTERTAINMENT);
+            mTypeFilter = ScheduleModel.SCHEDULE_TYPE_ENTERTAINMENT;
+            replaceScheduleListWithType(mTypeFilter);
         } else if (id == R.id.nav_date) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_date");
-            replaceScheduleListWithType(ScheduleModel.SCHEDULE_TYPE_DATE);
+            mTypeFilter = ScheduleModel.SCHEDULE_TYPE_DATE;
+            replaceScheduleListWithType(mTypeFilter);
         } else if (id == R.id.nav_settings) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_settings");
         }
@@ -108,17 +115,30 @@ public class ScheduleListActivity extends AppCompatActivity
 
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItemCompat.setOnActionExpandListener(searchItem,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                        return true;
+                    }
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                        Log.v(LOG_TAG, "onMenuItemActionCollapse()");
+                        replaceScheduleListWithType(mTypeFilter);
+                        return true;
+                    }
+                });
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         return true;
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.v(LOG_TAG, "onNewIntent()");
         handleIntent(intent);
     }
 
@@ -147,21 +167,22 @@ public class ScheduleListActivity extends AppCompatActivity
     }
 
     private void replaceScheduleListWithType(String scheduleType) {
-        ScheduleListFragment fragment = ScheduleListFragment.newInstance(scheduleType);
+        ScheduleListFragment fragment = ScheduleListFragment.newInstanceByType(scheduleType);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.schedule_list_container, fragment)
                 .commit();
     }
 
     private void handleIntent(Intent intent) {
-        Log.v(LOG_TAG, "handleIntent()");
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.v(LOG_TAG, "handleIntent(): query = " + query);
 
-            Intent searchActivityIntent = new Intent(this, SearchScheduleActivity.class);
-            searchActivityIntent.putExtra(SearchScheduleActivity.QUERY, query);
-            startActivity(searchActivityIntent);
+            ScheduleListFragment fragment = ScheduleListFragment.newInstanceByQuery(query);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.schedule_list_container, fragment, SEARCH_RESULT_FRAGMENT_TAG)
+                    .commit();
+
         }
     }
 }

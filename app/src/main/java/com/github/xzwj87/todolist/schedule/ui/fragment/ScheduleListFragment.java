@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.GetScheduleList;
 import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.SearchSchedule;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
@@ -28,11 +29,14 @@ public class ScheduleListFragment extends Fragment implements
     private static final String LOG_TAG = ScheduleListFragment.class.getSimpleName();
 
     private static final String SCHEDULE_TYPE = "schedule_type";
+    private static final String QUERY = "query";
 
     private String mScheduleType;
     private Callbacks mCallbacks = sDummyCallbacks;
     private ScheduleAdapter mScheduleAdapter;
     private ScheduleListPresenter mScheduleListPresenter;
+    private boolean mIsSearchMode = false;
+    private String mQuery;
 
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
 
@@ -47,11 +51,21 @@ public class ScheduleListFragment extends Fragment implements
 
     public ScheduleListFragment() {}
 
-    public static ScheduleListFragment newInstance(String scheduleType) {
+    public static ScheduleListFragment newInstanceByType(String scheduleType) {
         ScheduleListFragment fragment = new ScheduleListFragment();
 
         Bundle args = new Bundle();
         args.putString(SCHEDULE_TYPE, scheduleType);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    public static ScheduleListFragment newInstanceByQuery(String query) {
+        ScheduleListFragment fragment = new ScheduleListFragment();
+
+        Bundle args = new Bundle();
+        args.putString(QUERY, query);
         fragment.setArguments(args);
 
         return fragment;
@@ -65,8 +79,15 @@ public class ScheduleListFragment extends Fragment implements
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mScheduleType = arguments.getString(SCHEDULE_TYPE);
-            Log.v(LOG_TAG, "onCreateView(): mScheduleType = " + mScheduleType);
+            if (arguments.containsKey(SCHEDULE_TYPE)) {
+                mScheduleType = arguments.getString(SCHEDULE_TYPE);
+                Log.v(LOG_TAG, "onCreateView(): mScheduleType = " + mScheduleType);
+            } else  if (arguments.containsKey(QUERY)) {
+                mIsSearchMode = true;
+                mQuery = arguments.getString(QUERY);
+                Log.v(LOG_TAG, "onCreateView(): mQuery = " + mQuery);
+            }
+
         }
 
         return rootView;
@@ -130,11 +151,17 @@ public class ScheduleListFragment extends Fragment implements
 
     private void initialize() {
         QueryUseCase useCase;
-        if (mScheduleType != null) {
-            useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC, mScheduleType);
+        if (mIsSearchMode) {
+            useCase = new SearchSchedule(mQuery);
         } else {
-            useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC);
+            if (mScheduleType != null) {
+                useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC,
+                        mScheduleType);
+            } else {
+                useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC);
+            }
         }
+
         ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
         mScheduleListPresenter = new ScheduleListPresenterImpl(useCase, mapper);
         mScheduleListPresenter.setView(this);
