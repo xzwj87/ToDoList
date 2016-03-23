@@ -46,12 +46,15 @@ public class SearchSchedule extends QueryUseCase {
 
     @Override
     protected Observable buildUseCaseObservable() {
+        String selection = ScheduleContract.ScheduleEntry.COLUMN_TITLE + " like ? OR " +
+                ScheduleContract.ScheduleEntry.COLUMN_NOTE + " like ?";
+        String[] selectionArgs = new String[]{ "%" + mQuery + "%", "%" + mQuery + "%"};
         return mBriteContentResolver
                 .createQuery(
                         ScheduleContract.ScheduleEntry.CONTENT_URI,
                         ScheduleModelDataMapper.SCHEDULE_COLUMNS,
-                        ScheduleContract.ScheduleEntry.COLUMN_TITLE + " like ?",
-                        new String[]{ "%" + mQuery + "%"},
+                        selection,
+                        selectionArgs,
                         mSortOrder,
                         true)
                 .map(SqlBrite.Query::run);
