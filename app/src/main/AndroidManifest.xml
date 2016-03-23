@@ -47,6 +47,10 @@
             android:exported="false"
             android:syncable="true" />
 
+        <provider
+            android:name=".schedule.data.provider.ScheduleSuggestionProvider"
+            android:authorities="com.github.xzwj87.todolist.ScheduleSuggestionProvider" />
+
         <activity
             android:name=".schedule.ui.activity.AddScheduleActivity"
             android:label="@string/title_activity_add"
