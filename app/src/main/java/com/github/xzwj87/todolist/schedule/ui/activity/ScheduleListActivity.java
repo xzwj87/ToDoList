@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleSuggestionProvider;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
@@ -177,6 +179,10 @@ public class ScheduleListActivity extends AppCompatActivity
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.v(LOG_TAG, "handleIntent(): query = " + query);
+
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    ScheduleSuggestionProvider.AUTHORITY, ScheduleSuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
 
             ScheduleListFragment fragment = ScheduleListFragment.newInstanceByQuery(query);
             getSupportFragmentManager().beginTransaction()
