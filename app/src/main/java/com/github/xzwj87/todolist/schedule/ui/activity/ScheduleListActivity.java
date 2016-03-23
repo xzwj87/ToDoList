@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -25,6 +26,7 @@ import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -37,6 +39,8 @@ public class ScheduleListActivity extends AppCompatActivity
     private static final String SEARCH_RESULT_FRAGMENT_TAG = "search_result_fragment";
     private boolean mTwoPane;
     private String mTypeFilter;
+
+    @Bind(R.id.fab) FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +177,15 @@ public class ScheduleListActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.schedule_list_container, fragment)
                 .commit();
+        mFab.show();
+    }
+
+    private void replaceScheduleListWithSearchResult(String query) {
+        ScheduleListFragment fragment = ScheduleListFragment.newInstanceByQuery(query);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.schedule_list_container, fragment, SEARCH_RESULT_FRAGMENT_TAG)
+                .commit();
+        mFab.hide();
     }
 
     private void handleIntent(Intent intent) {
@@ -184,11 +197,7 @@ public class ScheduleListActivity extends AppCompatActivity
                     ScheduleSuggestionProvider.AUTHORITY, ScheduleSuggestionProvider.MODE);
             suggestions.saveRecentQuery(query, null);
 
-            ScheduleListFragment fragment = ScheduleListFragment.newInstanceByQuery(query);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.schedule_list_container, fragment, SEARCH_RESULT_FRAGMENT_TAG)
-                    .commit();
-
+            replaceScheduleListWithSearchResult(query);
         }
     }
 }
