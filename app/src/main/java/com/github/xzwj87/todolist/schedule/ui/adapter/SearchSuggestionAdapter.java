@@ -44,6 +44,15 @@ public class SearchSuggestionAdapter extends CursorAdapter {
         viewHolder.mTitle.setText(cursor.getString(cursor.getColumnIndex("suggest_text_1")));
     }
 
+    public String getSuggestionText(int position) {
+        if (position >= 0 && position < getCursor().getCount()) {
+            Cursor cursor = getCursor();
+            cursor.moveToPosition(position);
+            return cursor.getString(cursor.getColumnIndex("suggest_text_1"));
+        }
+        return null;
+    }
+
     public static class ViewHolder {
         @Bind(R.id.iv_suggestion_item_icon) ImageView mIcon;
         @Bind(R.id.tv_suggestion_item_title) TextView mTitle;

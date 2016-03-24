@@ -226,5 +226,18 @@ public class ScheduleListActivity extends AppCompatActivity
                 return false;
             }
         });
+
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                searchView.setQuery(mSuggestionAdapter.getSuggestionText(position), true);
+                return true;
+            }
+        });
     }
 }
