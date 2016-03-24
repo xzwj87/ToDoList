@@ -1,8 +1,11 @@
 package com.github.xzwj87.todolist.schedule.ui.activity;
 
 import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.design.widget.FloatingActionButton;
@@ -22,9 +25,11 @@ import android.view.View;
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleSuggestionProvider;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
+import com.github.xzwj87.todolist.schedule.ui.adapter.SearchSuggestionAdapter;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.schedule.utility.ScheduleSuggestionUtility;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,6 +44,7 @@ public class ScheduleListActivity extends AppCompatActivity
     private static final String SEARCH_RESULT_FRAGMENT_TAG = "search_result_fragment";
     private boolean mTwoPane;
     private String mTypeFilter;
+    private SearchSuggestionAdapter mSuggestionAdapter;
 
     @Bind(R.id.fab) FloatingActionButton mFab;
 
@@ -119,26 +125,8 @@ public class ScheduleListActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_schedule_list, menu);
 
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        MenuItemCompat.setOnActionExpandListener(searchItem,
-                new MenuItemCompat.OnActionExpandListener() {
-                    @Override
-                    public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                        return true;
-                    }
-                    @Override
-                    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                        Log.v(LOG_TAG, "onMenuItemActionCollapse()");
-                        replaceScheduleListWithType(mTypeFilter);
-                        return true;
-                    }
-                });
-
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        setupSearchView(searchItem);
 
         return true;
     }
@@ -199,5 +187,44 @@ public class ScheduleListActivity extends AppCompatActivity
 
             replaceScheduleListWithSearchResult(query);
         }
+    }
+
+    private void setupSearchView(MenuItem searchItem) {
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        MenuItemCompat.setOnActionExpandListener(searchItem,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                        Log.v(LOG_TAG, "onMenuItemActionCollapse()");
+                        replaceScheduleListWithType(mTypeFilter);
+                        return true;
+                    }
+                });
+
+        mSuggestionAdapter = new SearchSuggestionAdapter(this, null, 0);
+        searchView.setSuggestionsAdapter(mSuggestionAdapter);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Cursor cursor = ScheduleSuggestionUtility.getRecentSuggestions(
+                        ScheduleListActivity.this, newText, 10);
+                mSuggestionAdapter.swapCursor(cursor);
+                return false;
+            }
+        });
     }
 }
