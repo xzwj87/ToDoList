@@ -61,6 +61,8 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
-
-
+    <style name="AlarmAlertDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@color/colorWhite</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>

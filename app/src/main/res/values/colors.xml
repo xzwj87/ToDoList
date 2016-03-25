@@ -12,4 +12,6 @@
     <color name="colorDate">#E91E63</color>
 
     <color name="colorScheduleItemHeaderDivider">#E0E0E0</color>
+
+    <color name="colorWhite">#FFFFFF</color>
 </resources>

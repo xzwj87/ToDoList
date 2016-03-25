@@ -86,7 +86,7 @@ public class AlarmService implements AlarmCommandsInterface{
             //ACTION_ONE_TIME_ALARM;
             setOneTimeAlarm(entity);
             entity.setRepeatAlarmInterval(10 * 1000);
-            setRepeatAlarm(entity);
+            //setRepeatAlarm(entity);
         }else{
             setRepeatAlarm(entity);
         }
