@@ -13,7 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <receiver android:name=".schedule.alarm.service.AlarmReceiver" />
+        <receiver android:name=".schedule.alarm.service.AlarmReceiver">
+            <intent-filter>
+                <action android:name="com.github.xzwj87.action.one_time_alarm"></action>
+                <action android:name="com.github.xzwj87.action.repeat_alarm"></action>
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".schedule.ui.activity.ScheduleListActivity"

@@ -6,7 +6,6 @@ import android.test.AndroidTestCase;
 import com.github.xzwj87.todolist.schedule.alarm.service.AlarmCommandsInterface;
 import com.github.xzwj87.todolist.schedule.alarm.service.AlarmService;
 import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
-import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.util.Date;
 
@@ -30,15 +29,18 @@ public class TestAlarmService extends AndroidTestCase {
         mSchedule.setTitle(title);
         mSchedule.setAlarmTime(new Date(startTime));
         mSchedule.setRepeatAlarmInterval(repeatInterval);
+        mSchedule.setScheduleRepeatType(ScheduleEntity.SCHEDULE_REPEAT_NONE);
 
-        mAlarmCommandsInterface.addScheduleEntity(mSchedule);
-        mAlarmCommandsInterface.setAlarm(title);
-        mAlarmCommandsInterface.setRepeatAlarm(title);
+       // mAlarmCommandsInterface.addScheduleEntity(mSchedule);
+        mAlarmCommandsInterface.setAlarm(mSchedule);
 
-        SystemClock.sleep(timeInterval * 5);
+        mSchedule.setScheduleRepeatType(ScheduleEntity.SCHEDULE_REPEAT_EVERY_DAY);
+        mAlarmCommandsInterface.setAlarm(mSchedule);
 
-        //mAlarmCommandsInterface.cancelAlarm(title, startTime, AlarmCommandsInterface.ALARM_TYPE_ONE_TIME);
-        mAlarmCommandsInterface.cancelAlarm(title,AlarmCommandsInterface.ALARM_TYPE_REPEAT);
+        SystemClock.sleep(timeInterval * 50);
+
+        //mAlarmCommandsInterface.cancelAlarm(title, startTime, AlarmCommandsInterface.ACTION_ONE_TIME_ALARM);
+        mAlarmCommandsInterface.cancelAlarm(mSchedule);
     }
 
 

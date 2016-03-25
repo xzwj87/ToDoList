@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Display;
 import android.widget.Toast;
 
+import com.github.xzwj87.todolist.app.App;
 import com.github.xzwj87.todolist.schedule.ui.fragment.AlarmDialogFragment;
 
 /**
@@ -20,7 +21,6 @@ public class AlarmReceiver extends BroadcastReceiver{
 
     private DisplayManager mDisplayMgr;
     private PowerManager pm;
-    private PowerManager.WakeLock mWakeLock = null;
     private Context mContext = null;
     private AlarmDialogFragment mAlarmDialog;
 
@@ -28,9 +28,11 @@ public class AlarmReceiver extends BroadcastReceiver{
     }
 
     public AlarmReceiver(Context context) {
+        Log.d(LOG_TAG,"creating AlarmReceiver");
         this.mContext = context;
     }
 
+    @Deprecated
     private boolean isScreenOn(){
         // for API level >= 20(KK watch)
         if(Build.VERSION.SDK_INT >= 20){
@@ -52,18 +54,20 @@ public class AlarmReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v(LOG_TAG, "onReceive(): action = " + intent.getAction().toString());
-
+        mContext = context;
+        /*mDisplayMgr = (DisplayManager)mContext.getSystemService(Context.DISPLAY_SERVICE);
         if(isScreenOn()){
             startAlarmDialog(mContext);
             return;
-        }
-        pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,AlarmReceiver.class.getName());
-        mWakeLock.acquire();
+        }*/
+
+        pm = (PowerManager)mContext.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,AlarmReceiver.class.getName());
+        wl.acquire();
         // now present a alarm dialog to user
-        Toast.makeText(context,"Something you need to do!!!",Toast.LENGTH_LONG).show();
+        Toast.makeText(App.getAppContext(),"Something you need to do!!!",Toast.LENGTH_LONG).show();
         startAlarmDialog(mContext);
-        mWakeLock.release();
+        wl.release();
     }
 
     private void startAlarmDialog(Context context){

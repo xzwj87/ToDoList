@@ -4,15 +4,12 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Handler;
 import android.util.Log;
 
 import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
-import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by JasonWang on 2016/3/6.
@@ -22,54 +19,89 @@ public class AlarmService implements AlarmCommandsInterface{
 
     private AlarmManager mAlarmMgr;
     private Context mContext;
+    private volatile static AlarmService mInstance;
     // an observer to observe the state of alarm(add/delete/cancel)
-    private Uri mUri;
-    private AlarmObserver mAlarmObserver;
-    private HashMap<String,ScheduleEntity> mAlarmSchedule = new HashMap<>();
+    static HashMap<Long,ScheduleEntity> AlarmSchedule = new HashMap<>();
 
     public AlarmService(){
         // empty constructor
     }
 
+    public static AlarmService getInstance(Context context){
+        if(mInstance == null){
+            synchronized (AlarmService.class) {
+                if(mInstance == null)
+                    mInstance = new AlarmService(context);
+            }
+        }
+
+        return mInstance;
+    }
+
+
     public AlarmService(Context context){
         this.mContext = context;
         mAlarmMgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-        // initialize the observer
-        mUri = ScheduleContract.ScheduleEntry.CONTENT_URI;
-        mAlarmObserver = new AlarmObserver(context,new Handler());
-        mContext.getContentResolver().registerContentObserver(mUri,true,mAlarmObserver);
     }
 
     @Override
-    public void addScheduleEntity(ScheduleEntity entity){
-        mAlarmSchedule.put(entity.getTitle(), entity);
+    public void addScheduleEntity(long id,ScheduleEntity entity){
+        AlarmSchedule.put(id, entity);
     }
 
     @Override
-    public ScheduleEntity getScheduleEntity(String title){
-        ScheduleEntity schedule = mAlarmSchedule.get(title);
-
-        return schedule;
+    public void updateScheduleEntity(long id,ScheduleEntity entity){
+        Iterator iterator = AlarmSchedule.entrySet().iterator();
+        HashMap.Entry entry;
+        while(iterator.hasNext()) {
+            entry = (HashMap.Entry)iterator.next();
+            if(Long.getLong(entry.getKey().toString()) == id){
+                entry.setValue(entity);
+                break;
+            }
+        }
     }
 
     @Override
-    public boolean hasAlarm(String title){
-        if(mAlarmSchedule.get(title) != null){
+    public void deleteScheduleEntity(long id,ScheduleEntity entity){
+        AlarmSchedule.remove(id);
+    }
+
+    @Override
+    public boolean hasAlarm(long id){
+        if(AlarmSchedule.get(id) != null){
             return true;
         }
         return false;
     }
 
     @Override
-    public void setAlarm(String title) {
-        Log.v(LOG_TAG, "setAlarm(): title = " + title );
+    public void setAlarm(ScheduleEntity entity){
+        Log.d(LOG_TAG, "setAlarm(): title = " + entity.getTitle()
+                + "alarmType = " +  entity.getType() + "repeatType = " + entity.getScheduleRepeatType());
+
+       // String repeatType = entity.getScheduleRepeatType();
+        // just for test; need to change if condition in future
+        if(true){
+            //ACTION_ONE_TIME_ALARM;
+            setOneTimeAlarm(entity);
+            entity.setRepeatAlarmInterval(10 * 1000);
+            setRepeatAlarm(entity);
+        }else{
+            setRepeatAlarm(entity);
+        }
+    }
+
+    @Override
+    public void setOneTimeAlarm(ScheduleEntity entity) {
+        Log.v(LOG_TAG, "setOneTimeAlarm(): title = " + entity.getTitle());
 
         Intent alarmIntent = new Intent(mContext,AlarmReceiver.class);
-        alarmIntent.setAction(ALARM_TYPE_ONE_TIME);
+        alarmIntent.setAction(ACTION_ONE_TIME_ALARM);
         // put extra information to the intent
-        alarmIntent.putExtra(ALARM_TITLE, title);
+        alarmIntent.putExtra(ALARM_TITLE, entity.getTitle());
+        alarmIntent.putExtra(ALARM_START_TIME,entity.getAlarmTime());
         // a dummy data to keep consistent extra
-        ScheduleEntity entity = mAlarmSchedule.get(title);
         int repeatAlarmInterval = entity.getRepeatAlarmInterval();
         alarmIntent.putExtra(ALARM_REPEAT_INTERVAL,repeatAlarmInterval);
 
@@ -77,42 +109,43 @@ public class AlarmService implements AlarmCommandsInterface{
         try {
             mAlarmMgr.set(AlarmManager.RTC_WAKEUP, entity.getAlarmTime().getTime(), pendingIntent);
         }catch (Exception e){
-            Log.e(LOG_TAG,"setAlarm(): fail to set alarm");
+            Log.e(LOG_TAG,"setOneTimeAlarm(): fail to set alarm");
         }
     }
 
     @Override
-    public void setRepeatAlarm(String title){
-        Log.e(LOG_TAG, "setRepeatAlarm(): " + title);
+    public void setRepeatAlarm(ScheduleEntity entity) {
+        Log.e(LOG_TAG, "setRepeatAlarm(): " + entity.getTitle());
 
         Intent alarmIntent = new Intent(mContext,AlarmReceiver.class);
-        alarmIntent.setAction(ALARM_TYPE_REPEAT);
+        alarmIntent.setAction(ACTION_REPEAT_ALARM);
         // put extra information to intent
-        ScheduleEntity entity = mAlarmSchedule.get(title);
         alarmIntent.putExtra(ALARM_TITLE, entity.getTitle());
+        alarmIntent.putExtra(ALARM_START_TIME,entity.getAlarmTime());
         alarmIntent.putExtra(ALARM_REPEAT_INTERVAL, entity.getRepeatAlarmInterval());
 
         PendingIntent pi = PendingIntent.getBroadcast(mContext,0,alarmIntent,0);
         try{
             mAlarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, entity.getAlarmTime().getTime(), entity.getRepeatAlarmInterval(), pi);
         }catch (Exception e){
-            Log.e(LOG_TAG,"setRepeatAlarm(): fail to set repeating alarm");
+            Log.e(LOG_TAG,"setRepeatAlarm(): fail to set repeat alarm");
         }
     }
 
     @Override
-    public void cancelAlarm(String title,String type) {
-        Log.v(LOG_TAG, "cancelAlarm(): type =  " + type + " title = ");
-        if(!(type.equals(ALARM_TYPE_ONE_TIME) || type.equals(ALARM_TYPE_REPEAT))){
-            Log.e(LOG_TAG,"cancelAlarm(): wrong alarm type");
-            return;
-        }
+    public void cancelAlarm(ScheduleEntity entity) {
+        Log.v(LOG_TAG, "cancelAlarm(): type =  " + entity.getType() + " title = " + entity.getTitle());
+        String type = entity.getType();
+        String alarmType;
+        if(type == ScheduleEntity.SCHEDULE_REPEAT_NONE){
+            alarmType = ACTION_ONE_TIME_ALARM;
+        }else{ alarmType = ACTION_REPEAT_ALARM; }
 
         Intent cancelIntent = new Intent(mContext,AlarmReceiver.class);
-        cancelIntent.setAction(type);
+        cancelIntent.setAction(alarmType);
         // put extra data to intent
-        ScheduleEntity entity = mAlarmSchedule.get(title);
-        cancelIntent.putExtra(ALARM_TITLE, title);
+        cancelIntent.putExtra(ALARM_TITLE, entity.getTitle());
+        cancelIntent.putExtra(ALARM_START_TIME,entity.getAlarmTime());
         cancelIntent.putExtra(ALARM_REPEAT_INTERVAL,entity.getRepeatAlarmInterval());
 
         PendingIntent sender = PendingIntent.getBroadcast(mContext,0,cancelIntent,0);
@@ -121,11 +154,5 @@ public class AlarmService implements AlarmCommandsInterface{
         }catch (Exception e){
             Log.e(LOG_TAG,"cancelAlarm(): fail to cancel the alarm");
         }
-    }
-
-    @Override
-    public void destroy(){
-        // unreigster the observers
-        mContext.getContentResolver().unregisterContentObserver(mAlarmObserver);
     }
 }
