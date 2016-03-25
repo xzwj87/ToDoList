@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -161,18 +162,22 @@ public class ScheduleListActivity extends AppCompatActivity
     }
 
     private void replaceScheduleListWithType(String scheduleType) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+
         ScheduleListFragment fragment = ScheduleListFragment.newInstanceByType(scheduleType);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.schedule_list_container, fragment)
-                .commit();
+        ft.replace(R.id.schedule_list_container, fragment).commit();
+
         mFab.show();
     }
 
     private void replaceScheduleListWithSearchResult(String query) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+
         ScheduleListFragment fragment = ScheduleListFragment.newInstanceByQuery(query);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.schedule_list_container, fragment, SEARCH_RESULT_FRAGMENT_TAG)
-                .commit();
+        ft.replace(R.id.schedule_list_container, fragment, SEARCH_RESULT_FRAGMENT_TAG).commit();
+
         mFab.hide();
     }
 
