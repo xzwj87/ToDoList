@@ -17,14 +17,6 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="AppTheme.AppBarOverlay.SearchViewLight" parent="AppTheme.AppBarOverlay">
-        <item name="searchViewStyle">@style/AppTheme.SearchViewLight</item>
-    </style>
-
-    <style name="AppTheme.SearchViewLight" parent="Base.Widget.AppCompat.SearchView.ActionBar">
-        <item name="suggestionRowLayout">@layout/search_dropdown_item</item>
-    </style>
-
     <style name="ScheduleDetailItemContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
