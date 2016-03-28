@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
 import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
@@ -15,11 +16,11 @@ public class ScheduleListPresenterImpl implements ScheduleListPresenter {
     private static final String LOG_TAG = ScheduleListPresenterImpl.class.getSimpleName();
 
     private ScheduleListView mScheduleListView;
-    private QueryUseCase mUseCase;
+    private UseCase mUseCase;
     private ScheduleModelDataMapper mMapper;
     private Cursor mCursor;
 
-    public ScheduleListPresenterImpl(QueryUseCase useCase, ScheduleModelDataMapper mapper) {
+    public ScheduleListPresenterImpl(UseCase useCase, ScheduleModelDataMapper mapper) {
         mUseCase = useCase;
         mMapper = mapper;
     }

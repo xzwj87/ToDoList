@@ -11,10 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.interactor.GetScheduleList;
-import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
-import com.github.xzwj87.todolist.schedule.interactor.SearchSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
+import com.github.xzwj87.todolist.schedule.interactor.query.GetAllSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByType;
+import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByTypeArg;
+import com.github.xzwj87.todolist.schedule.interactor.query.SearchSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.query.SearchScheduleArg;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
@@ -150,15 +153,14 @@ public class ScheduleListFragment extends Fragment implements
     }
 
     private void initialize() {
-        QueryUseCase useCase;
+        UseCase useCase;
         if (mIsSearchMode) {
-            useCase = new SearchSchedule(mQuery);
+            useCase = new SearchSchedule(new SearchScheduleArg(mQuery));
         } else {
             if (mScheduleType != null) {
-                useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC,
-                        mScheduleType);
+                useCase = new GetScheduleListByType(new GetScheduleListByTypeArg(mScheduleType));
             } else {
-                useCase = new GetScheduleList(GetScheduleList.SORT_BY_START_DATE_ASC);
+                useCase = new GetAllSchedule();
             }
         }
 
