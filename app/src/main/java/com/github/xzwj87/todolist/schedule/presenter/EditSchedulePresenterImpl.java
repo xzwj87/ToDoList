@@ -8,6 +8,7 @@ import android.util.Log;
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
 import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.UpdateUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
@@ -30,7 +31,7 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
     private static final long MILLISECONDS_IN_1_HOUR = MILLISECONDS_IN_30_MINUTES * 2;
 
     private UpdateUseCase mUpdateUseCase;
-    private QueryUseCase mQueryUseCase;
+    private UseCase mQueryUseCase;
     private ScheduleContentValuesDataMapper mContentValueMapper;
     private ScheduleModelDataMapper mModelMapper;
     private AddScheduleView mView;
@@ -39,7 +40,7 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
 
     public EditSchedulePresenterImpl() {}
 
-    public EditSchedulePresenterImpl(UpdateUseCase updateUseCase, QueryUseCase queryUseCase,
+    public EditSchedulePresenterImpl(UpdateUseCase updateUseCase, UseCase queryUseCase,
                                      ScheduleContentValuesDataMapper contentValueMapper,
                                      ScheduleModelDataMapper modelDataMapper) {
         mUpdateUseCase = updateUseCase;

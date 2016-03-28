@@ -10,13 +10,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.interactor.GetScheduleDetail;
-import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
+import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleById;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
-import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -126,9 +125,9 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
 
 
     private void initialize() {
-        QueryUseCase useCase = new GetScheduleDetail(mScheduleId);
+        UseCase getScheduleById = new GetScheduleById(mScheduleId);
         ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
-        mScheduleDetailPresenter = new ScheduleDetailPresenterImpl(useCase, mapper);
+        mScheduleDetailPresenter = new ScheduleDetailPresenterImpl(getScheduleById, mapper);
         mScheduleDetailPresenter.setView(this);
 
         loadScheduleData();
