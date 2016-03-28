@@ -23,5 +23,5 @@
 
     <dimen name="alarm_alert_title_size">24dp</dimen>
     <dimen name="alarm_event_title_size">20dp</dimen>
-    <dimen name="alarm_item_margin_size">16dp></dimen>
+    <dimen name="alarm_item_margin_size">16dp</dimen>
 </resources>
