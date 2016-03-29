@@ -1,11 +1,9 @@
 package com.github.xzwj87.todolist.schedule.ui.activity;
 
 import android.app.SearchManager;
-import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.design.widget.FloatingActionButton;
@@ -100,7 +98,7 @@ public class ScheduleListActivity extends AppCompatActivity
         if (id == R.id.nav_schedule_type_all) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_all");
             mTypeFilter = null;
-            replaceScheduleListWithType(mTypeFilter);
+            replaceScheduleListWithType(null);
         } else if (id == R.id.nav_schedule_type_meeting) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_meeting");
             mTypeFilter = ScheduleModel.SCHEDULE_TYPE_MEETING;

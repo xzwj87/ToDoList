@@ -4,7 +4,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
-import com.github.xzwj87.todolist.schedule.interactor.InsertUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.UseCase;
+import com.github.xzwj87.todolist.schedule.interactor.insert.AddScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
@@ -24,13 +25,13 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private static final long MILLISECONDS_IN_30_MINUTES = MILLISECONDS_IN_10_MINUTES * 3;
     private static final long MILLISECONDS_IN_1_HOUR = MILLISECONDS_IN_30_MINUTES * 2;
 
-    private InsertUseCase mUseCase;
+    private UseCase mUseCase;
     private ScheduleContentValuesDataMapper mMapper;
     private AddScheduleView mAddScheduleView;
 
     private ScheduleModel mSchedule;
 
-    public AddSchedulePresenterImpl(InsertUseCase useCase,
+    public AddSchedulePresenterImpl(UseCase useCase,
                                     ScheduleContentValuesDataMapper mapper) {
         mUseCase = useCase;
         mMapper = mapper;
@@ -175,9 +176,10 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         mUseCase.unsubscribe();
     }
 
-    @Override
+    @Override @SuppressWarnings("unchecked")
     public void onSave() {
-        mUseCase.execute(mMapper.transform(mSchedule), new AddScheduleSubscriber());
+        mUseCase.init(new AddScheduleArg(mMapper.transform(mSchedule)))
+                .execute(new AddScheduleSubscriber());
     }
 
     private final class AddScheduleSubscriber extends DefaultSubscriber<Long> {

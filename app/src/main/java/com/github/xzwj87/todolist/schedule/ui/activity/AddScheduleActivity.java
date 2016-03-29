@@ -12,13 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.interactor.AddSchedule;
-import com.github.xzwj87.todolist.schedule.interactor.UpdateSchedule;
-import com.github.xzwj87.todolist.schedule.interactor.UpdateUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
+import com.github.xzwj87.todolist.schedule.interactor.insert.AddSchedule;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleById;
+import com.github.xzwj87.todolist.schedule.interactor.update.UpdateSchedule;
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenter;
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenterImpl;
 import com.github.xzwj87.todolist.schedule.presenter.EditSchedulePresenterImpl;
@@ -107,13 +106,13 @@ public class AddScheduleActivity extends AppCompatActivity
     private void initialize() {
         if (mIsEditMode) {
             UseCase queryUseCase = new GetScheduleById(mScheduleId);
-            UpdateUseCase updateUseCase = new UpdateSchedule();
+            UseCase updateUseCase = new UpdateSchedule();
             ScheduleContentValuesDataMapper contentValueMapper = new ScheduleContentValuesDataMapper();
             ScheduleModelDataMapper modelMapper = new ScheduleModelDataMapper();
             mPresenter = new EditSchedulePresenterImpl(updateUseCase, queryUseCase,
                     contentValueMapper, modelMapper);
         } else {
-            AddSchedule addSchedule = new AddSchedule();
+            UseCase addSchedule = new AddSchedule();
             ScheduleContentValuesDataMapper mapper = new ScheduleContentValuesDataMapper();
             mPresenter = new AddSchedulePresenterImpl(addSchedule, mapper);
         }
