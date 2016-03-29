@@ -21,7 +21,7 @@ public abstract class GetScheduleListArg {
     protected boolean mIsDoneFilter;
 
     public GetScheduleListArg() {
-        this(SORT_BY_START_DATE_DESC);
+        this(SORT_BY_START_DATE_ASC);
     }
 
     public GetScheduleListArg(@SortOrder String sortOrder) {

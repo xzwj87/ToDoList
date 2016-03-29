@@ -6,11 +6,10 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
-import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
-import com.github.xzwj87.todolist.schedule.interactor.UpdateUseCase;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
+import com.github.xzwj87.todolist.schedule.interactor.update.UpdateScheduleArg;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.github.xzwj87.todolist.schedule.utility.ScheduleUtility;
@@ -30,7 +29,7 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
     private static final long MILLISECONDS_IN_30_MINUTES = MILLISECONDS_IN_10_MINUTES * 3;
     private static final long MILLISECONDS_IN_1_HOUR = MILLISECONDS_IN_30_MINUTES * 2;
 
-    private UpdateUseCase mUpdateUseCase;
+    private UseCase mUpdateUseCase;
     private UseCase mQueryUseCase;
     private ScheduleContentValuesDataMapper mContentValueMapper;
     private ScheduleModelDataMapper mModelMapper;
@@ -40,7 +39,7 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
 
     public EditSchedulePresenterImpl() {}
 
-    public EditSchedulePresenterImpl(UpdateUseCase updateUseCase, UseCase queryUseCase,
+    public EditSchedulePresenterImpl(UseCase updateUseCase, UseCase queryUseCase,
                                      ScheduleContentValuesDataMapper contentValueMapper,
                                      ScheduleModelDataMapper modelDataMapper) {
         mUpdateUseCase = updateUseCase;
@@ -177,9 +176,9 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
 
     @Override
     public void onSave() {
-        mUpdateUseCase.execute(
-                mSchedule.getId(), mContentValueMapper.transform(mSchedule),
-                new UpdateScheduleSubscriber());
+        mUpdateUseCase.init(
+                new UpdateScheduleArg(mSchedule.getId(), mContentValueMapper.transform(mSchedule)))
+                .execute(new UpdateScheduleSubscriber());
     }
 
     private void updateScheduleToView(ScheduleModel schedule) {
