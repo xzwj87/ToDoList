@@ -38,15 +38,15 @@ public class ScheduleSuggestionUtility {
         return context.getContentResolver().query(uri, null, selection, selArgs, null);
     }
 
-    public static Cursor convertSuggestionListToCursor(List<ScheduleSuggestionModel> suggestions) {
-        MatrixCursor cursor = new MatrixCursor(SearchSuggestionAdapter.COLUMNS);
-        for (ScheduleSuggestionModel suggestion : suggestions) {
-            cursor.addRow(new Object[] {
-                    suggestion.getId(),
-                    suggestion.getType(),
-                    suggestion.getTitle(),
-                    suggestion.getDetail()});
-        }
-        return cursor;
-    }
+//    public static Cursor convertSuggestionListToCursor(List<ScheduleSuggestionModel> suggestions) {
+//        MatrixCursor cursor = new MatrixCursor(SearchSuggestionAdapter.COLUMNS);
+//        for (ScheduleSuggestionModel suggestion : suggestions) {
+//            cursor.addRow(new Object[] {
+//                    suggestion.getId(),
+//                    suggestion.getType(),
+//                    suggestion.getTitle(),
+//                    suggestion.getDetail()});
+//        }
+//        return cursor;
+//    }
 }

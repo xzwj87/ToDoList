@@ -28,7 +28,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
     private static OnItemClickListener mListener;
 
-    private DataSource mDataSourse;
+    private DataSource mDataSource;
 
     public interface DataSource {
         ScheduleModel getItemAtPosition(int position);
@@ -36,7 +36,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
     }
 
     public ScheduleAdapter(DataSource dataSource) {
-        mDataSourse = dataSource;
+        mDataSource = dataSource;
     }
 
 
@@ -52,7 +52,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ScheduleModel schedule = mDataSourse.getItemAtPosition(position);
+        ScheduleModel schedule = mDataSource.getItemAtPosition(position);
         Log.v(LOG_TAG, "onBindViewHolder(): position = " + position + ", schedule = " + schedule);
 
         Log.v(LOG_TAG, "onBindViewHolder(): color = " + ScheduleUtility.getScheduleColor(schedule.getType()));
@@ -70,7 +70,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return mDataSourse.getItemCount();
+        return mDataSource.getItemCount();
     }
 
 
