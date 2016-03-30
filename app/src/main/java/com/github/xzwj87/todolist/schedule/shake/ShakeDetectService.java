@@ -30,16 +30,26 @@ public class ShakeDetectService  implements SensorEventListener{
         Log.d(TAG,"creating ShakeDetectService");
 
         mSensorMgr = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mShakeTimestamp = System.currentTimeMillis();
         mShakeCount = 0;
         mListener = null;
-
-        mSensorMgr.registerListener(this,mAccelerometer,SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void setShakeListener(IShakeListener listener){
         this.mListener = listener;
+    }
+
+    public void start(){
+        mAccelerometer = mSensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if(mAccelerometer != null) {
+            mSensorMgr.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        }
+    }
+
+    public void stop(){
+        Log.d(TAG,"onDestroy()");
+
+        mSensorMgr.unregisterListener(this);
     }
 
     @Override
@@ -49,10 +59,8 @@ public class ShakeDetectService  implements SensorEventListener{
 
     @Override
     public void onSensorChanged(SensorEvent event){
-        Log.d(TAG, "onSensorChanged(): event " + event.getClass().getSimpleName());
-
         if(mListener == null){
-            Log.e(TAG,"listener should be implemented");
+            Log.e(TAG, "listener should be implemented");
             return;
         }
 
@@ -68,6 +76,8 @@ public class ShakeDetectService  implements SensorEventListener{
         float gForce = (float)Math.sqrt(gx*gx + gy*gy + gz*gz);
 
         if(gForce > SHAKE_THRESHOLD_GRAVITY){
+            Log.d(TAG, "onSensorChanged(): event " + event.getClass().getSimpleName());
+
             final long now = System.currentTimeMillis();
 
             /* ignore event too close to each other */
@@ -82,11 +92,5 @@ public class ShakeDetectService  implements SensorEventListener{
             mShakeTimestamp = now;
             mListener.onShake(++mShakeCount);
         }
-    }
-
-    public void onDestroy(){
-        Log.d(TAG,"onDestroy()");
-
-        mSensorMgr.unregisterListener(this);
     }
 }

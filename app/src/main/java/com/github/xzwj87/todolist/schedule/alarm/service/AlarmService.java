@@ -85,7 +85,7 @@ public class AlarmService implements AlarmCommandsInterface{
         if(true){
             //ACTION_ONE_TIME_ALARM;
             setOneTimeAlarm(entity);
-            entity.setRepeatAlarmInterval(10 * 1000);
+            //entity.setRepeatAlarmInterval(10 * 1000);
             //setRepeatAlarm(entity);
         }else{
             setRepeatAlarm(entity);
@@ -100,7 +100,7 @@ public class AlarmService implements AlarmCommandsInterface{
         alarmIntent.setAction(ACTION_ONE_TIME_ALARM);
         // put extra information to the intent
         alarmIntent.putExtra(ALARM_TITLE, entity.getTitle());
-        alarmIntent.putExtra(ALARM_START_TIME,entity.getAlarmTime());
+        alarmIntent.putExtra(ALARM_START_TIME,entity.getAlarmTime().getTime());
         // a dummy data to keep consistent extra
         int repeatAlarmInterval = entity.getRepeatAlarmInterval();
         alarmIntent.putExtra(ALARM_REPEAT_INTERVAL,repeatAlarmInterval);

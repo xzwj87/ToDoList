@@ -46,6 +46,7 @@ public class AudioPlayerService extends Service{
     protected void play(){
         Log.d(TAG,"play()");
         mPlayer.start();
+        mPlayer.setLooping(true);
     }
 
     protected void stop(){
