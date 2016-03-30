@@ -14,10 +14,12 @@ public class DeleteSchedule extends UseCase<DeleteScheduleArg> {
 
     @Override
     protected Observable buildUseCaseObservable() {
-        return Observable.<Integer>create(subscriber -> {
-                    long id = mArg.getId();
-                    Uri uri = ScheduleContract.ScheduleEntry.buildScheduleUri(id);
+        if (mArg == null) {
+            throw new IllegalArgumentException("mArg cannot be null.");
+        }
+        Uri uri = ScheduleContract.ScheduleEntry.buildScheduleUri(mArg.getId());
 
+        return Observable.<Integer>create(subscriber -> {
                     int deleted = App.getAppContext()
                             .getContentResolver()
                             .delete(uri, null, null);

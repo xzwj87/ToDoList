@@ -5,10 +5,15 @@ import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.net.Uri;
 import android.util.Log;
 
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleSuggestionProvider;
+import com.github.xzwj87.todolist.schedule.ui.adapter.SearchSuggestionAdapter;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleSuggestionModel;
+
+import java.util.List;
 
 public class ScheduleSuggestionUtility {
     private static final String LOG_TAG = ScheduleSuggestionUtility.class.getSimpleName();
@@ -31,5 +36,17 @@ public class ScheduleSuggestionUtility {
         Uri uri = uriBuilder.build();
 
         return context.getContentResolver().query(uri, null, selection, selArgs, null);
+    }
+
+    public static Cursor convertSuggestionListToCursor(List<ScheduleSuggestionModel> suggestions) {
+        MatrixCursor cursor = new MatrixCursor(SearchSuggestionAdapter.COLUMNS);
+        for (ScheduleSuggestionModel suggestion : suggestions) {
+            cursor.addRow(new Object[] {
+                    suggestion.getId(),
+                    suggestion.getType(),
+                    suggestion.getTitle(),
+                    suggestion.getDetail()});
+        }
+        return cursor;
     }
 }
