@@ -88,11 +88,15 @@
             <ImageView
                 android:id="@+id/iv_schedule_note"
                 style="@style/ScheduleDetailIcon"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/schedule_detail_item_note_margin_top"
                 android:src="@drawable/ic_subject_24dp" />
 
             <TextView
                 android:id="@+id/tv_schedule_note"
                 style="@style/ScheduleDetailText"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/schedule_detail_item_note_margin_top"
                 tools:text="Default"/>
 
         </LinearLayout>

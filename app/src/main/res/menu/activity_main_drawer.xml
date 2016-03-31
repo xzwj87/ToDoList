@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group_schedule_type"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_schedule_type_all"
             android:icon="@drawable/ic_drawer_type_all_24dp"
@@ -20,13 +22,13 @@
             android:title="@string/schedule_type_date" />
     </group>
 
-    <group>
-        <menu>
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_drawer_settings_24dp"
-                android:title="@string/action_settings" />
-        </menu>
+    <group
+        android:id="@+id/group_function"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_drawer_settings_24dp"
+            android:title="@string/action_settings" />
     </group>
 
 </menu>

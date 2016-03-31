@@ -65,7 +65,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
         String startTime = TIME_FORMAT.format(schedule.getScheduleStart());
         holder.mTvScheduleStartTime.setText(startTime);
 
-        holder.mTvScheduleTitle.setText(schedule.getTitle());
+        holder.mTvScheduleTitle.setText(schedule.getTitle().replaceAll("\n", " "));
     }
 
     @Override
