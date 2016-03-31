@@ -3,9 +3,7 @@ package com.github.xzwj87.todolist.schedule.ui.activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.SearchRecentSuggestions;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -22,13 +20,20 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.data.provider.ScheduleSuggestionProvider;
+import com.github.xzwj87.todolist.schedule.interactor.UseCase;
+import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleSuggestionModelDataMapper;
+import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleSuggestion;
+import com.github.xzwj87.todolist.schedule.presenter.SearchSuggestionPresenter;
+import com.github.xzwj87.todolist.schedule.presenter.SearchSuggestionPresenterImpl;
+import com.github.xzwj87.todolist.schedule.ui.SearchSuggestionView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
 import com.github.xzwj87.todolist.schedule.ui.adapter.SearchSuggestionAdapter;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
-import com.github.xzwj87.todolist.schedule.utility.ScheduleSuggestionUtility;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleSuggestionModel;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -36,14 +41,18 @@ import butterknife.OnClick;
 
 public class ScheduleListActivity extends AppCompatActivity
         implements ScheduleListFragment.
-        Callbacks, NavigationView.OnNavigationItemSelectedListener {
+        Callbacks, NavigationView.OnNavigationItemSelectedListener,
+        SearchSuggestionView {
     private static final String LOG_TAG = ScheduleListActivity.class.getSimpleName();
 
     private static final String DETAIL_FRAGMENT_TAG = "detail_fragment";
     private static final String SEARCH_RESULT_FRAGMENT_TAG = "search_result_fragment";
     private boolean mTwoPane;
     private String mTypeFilter;
+    private SearchView mSearchView;
     private SearchSuggestionAdapter mSuggestionAdapter;
+
+    private SearchSuggestionPresenter mPresenter;
 
     @Bind(R.id.fab) FloatingActionButton mFab;
 
@@ -79,6 +88,8 @@ public class ScheduleListActivity extends AppCompatActivity
         }
 
         handleIntent(getIntent());
+
+        initialize();
     }
 
     @Override
@@ -159,6 +170,30 @@ public class ScheduleListActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void updateSuggestions(List<ScheduleSuggestionModel> suggestions) {
+        mSuggestionAdapter.swapSuggestions(suggestions);
+    }
+
+    @Override
+    public void updateSearchText(String query) {
+        mSearchView.setQuery(query, true);
+    }
+
+    @Override
+    public Context getViewContext() {
+        return this;
+    }
+
+    private void initialize() {
+        UseCase useCase = new GetAllScheduleSuggestion();
+        ScheduleSuggestionModelDataMapper mapper = new ScheduleSuggestionModelDataMapper();
+        mPresenter = new SearchSuggestionPresenterImpl(useCase, mapper);
+
+        mPresenter.setView(this);
+        mPresenter.initialize();
+    }
+
     private void replaceScheduleListWithType(String scheduleType) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
@@ -184,9 +219,7 @@ public class ScheduleListActivity extends AppCompatActivity
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.v(LOG_TAG, "handleIntent(): query = " + query);
 
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-                    ScheduleSuggestionProvider.AUTHORITY, ScheduleSuggestionProvider.MODE);
-            suggestions.saveRecentQuery(query, null);
+            mPresenter.saveRecent(query);
 
             replaceScheduleListWithSearchResult(query);
         }
@@ -195,8 +228,8 @@ public class ScheduleListActivity extends AppCompatActivity
     private void setupSearchView(MenuItem searchItem) {
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         MenuItemCompat.setOnActionExpandListener(searchItem,
                 new MenuItemCompat.OnActionExpandListener() {
@@ -214,8 +247,9 @@ public class ScheduleListActivity extends AppCompatActivity
                 });
 
         mSuggestionAdapter = new SearchSuggestionAdapter(this, null, 0);
-        searchView.setSuggestionsAdapter(mSuggestionAdapter);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setSuggestionsAdapter(mSuggestionAdapter);
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -223,14 +257,12 @@ public class ScheduleListActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Cursor cursor = ScheduleSuggestionUtility.getRecentSuggestions(
-                        ScheduleListActivity.this, newText, 10);
-                mSuggestionAdapter.swapCursor(cursor);
+                mPresenter.requestSuggestion(newText);
                 return false;
             }
         });
 
-        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+        mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionSelect(int position) {
                 return false;
@@ -238,7 +270,7 @@ public class ScheduleListActivity extends AppCompatActivity
 
             @Override
             public boolean onSuggestionClick(int position) {
-                searchView.setQuery(mSuggestionAdapter.getSuggestionText(position), true);
+                mPresenter.onSuggestionSelected(position);
                 return true;
             }
         });
