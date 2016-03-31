@@ -60,9 +60,6 @@ public class SearchSuggestionAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        Log.v(LOG_TAG, "bindView(): cursor = " + cursor.getCount());
-        Log.v(LOG_TAG, "bindView(): cursor = " + cursor);
-
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
 //        Log.v(LOG_TAG, "bindView(): cursor.getColumnNames() = " + Arrays.toString(cursor.getColumnNames()));

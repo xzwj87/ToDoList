@@ -235,6 +235,7 @@ public class ScheduleListActivity extends AppCompatActivity
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                        mFab.hide();
                         return true;
                     }
 

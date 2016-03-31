@@ -138,11 +138,15 @@
 
             <ImageView
                 style="@style/ScheduleDetailIcon"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/schedule_detail_item_note_margin_top"
                 android:src="@drawable/ic_subject_24dp"/>
 
             <EditText
                 android:id="@+id/edit_schedule_note"
                 style="@style/ScheduleDetailEdit"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/schedule_detail_item_note_margin_top"
                 android:hint="@string/schedule_note_hint"/>
 
         </LinearLayout>

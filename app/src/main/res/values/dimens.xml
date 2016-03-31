@@ -18,6 +18,7 @@
     <dimen name="schedule_detail_item_margin">16dp</dimen>
     <dimen name="schedule_detail_item_icon_size">24dp</dimen>
     <dimen name="schedule_detail_item_text_size">16sp</dimen>
+    <dimen name="schedule_detail_item_note_margin_top">12dp</dimen>
 
     <dimen name="schedule_item_color_strip_width">4dp</dimen>
     <dimen name="schedule_item_header_container_margin_left">10dp</dimen>
