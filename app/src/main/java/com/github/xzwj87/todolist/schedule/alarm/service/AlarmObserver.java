@@ -49,7 +49,7 @@ public class AlarmObserver extends ContentObserver {
 
     @Override
     public void onChange(boolean selfChange,Uri uri){
-        Log.d(LOG_TAG, "schedule :" + uri.toString() + " is selfChange: " + selfChange);
+        Log.d(LOG_TAG, "onChange(): schedule :" + uri.toString() + " is selfChange: " + selfChange);
         mUri = uri;
         int match = mUriMatcher.match(uri);
         mContentResolver = mContext.getContentResolver();

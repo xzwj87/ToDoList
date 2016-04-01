@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:layout_margin="@dimen/activity_horizontal_margin"
-    android:keepScreenOn="true">
+    android:layout_margin="@dimen/alarm_item_margin_size"
+    android:keepScreenOn="true"
+    android:id="@+id/alarm_alert">
 
     <TextView android:id="@+id/alert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorAccent"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="@dimen/alarm_item_margin_size"
-        android:textSize="@dimen/alarm_alert_title_size"/>
+        android:textSize="@dimen/alarm_alert_title_size"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold"/>
 
     <TextView android:id="@+id/event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorAccent"
-        android:layout_alignParentLeft="true"
         android:layout_below="@id/alert"
+        android:layout_alignLeft="@id/alert"
         android:layout_marginBottom="@dimen/alarm_item_margin_size"
         android:textSize="@dimen/alarm_event_title_size"
+        android:textColor="@color/colorBlack"
         android:maxLines="3"/>
 
     <Button android:id="@+id/ok"
@@ -29,7 +31,8 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/event"
         android:text="@string/button_ok"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/button_text_size"/>
 
     <Button android:id="@+id/cancel"
         android:layout_width="wrap_content"
@@ -39,6 +42,7 @@
         android:layout_marginRight="@dimen/alarm_item_margin_size"
         android:layout_alignBottom="@id/ok"
         android:text="@string/button_cancel"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/button_text_size"/>
 
 </RelativeLayout>

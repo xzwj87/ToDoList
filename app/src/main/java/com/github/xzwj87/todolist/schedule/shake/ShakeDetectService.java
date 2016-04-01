@@ -13,7 +13,7 @@ import android.util.Log;
 public class ShakeDetectService  implements SensorEventListener{
     public static final String TAG = "ShakeDetectService";
 
-    private static final float SHAKE_THRESHOLD_GRAVITY = 2.6F;
+    private static final float SHAKE_THRESHOLD_GRAVITY = 2.5F;
     private static final int SHAKE_SLOP_TIME = 500; // 500ms interval to detect
     /* after 3s,reset the shake count */
     private static final int SHAKE_COUNT_RESET_TIME = 3*1000;

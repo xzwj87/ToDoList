@@ -78,7 +78,7 @@ public class AlarmService implements AlarmCommandsInterface{
     @Override
     public void setAlarm(ScheduleEntity entity){
         Log.d(LOG_TAG, "setAlarm(): title = " + entity.getTitle()
-                + "alarmType = " +  entity.getType() + "repeatType = " + entity.getScheduleRepeatType());
+                + " alarmType = " +  entity.getType() + " alarmTime = " + entity.getAlarmTime());
 
        // String repeatType = entity.getScheduleRepeatType();
         // just for test; need to change if condition in future

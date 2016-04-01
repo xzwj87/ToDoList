@@ -53,7 +53,8 @@ public class AlarmReceiver extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.v(LOG_TAG, "onReceive(): action = " + intent.getAction().toString());
+        Log.d(LOG_TAG, "onReceive(): action = " + intent.getAction().toString()
+        + " title = " + intent.getStringExtra(AlarmCommandsInterface.ALARM_TITLE));
         mContext = context;
         /*mDisplayMgr = (DisplayManager)mContext.getSystemService(Context.DISPLAY_SERVICE);
         if(isScreenOn()){

@@ -201,16 +201,16 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
             @Override
             public void handleMessage(Message message){
-                Log.d(LOG_TAG,"message: " + message.obj + "is handled");
+                Log.d(LOG_TAG,"message: " + message.obj + " is handled");
 
                 switch (message.what){
                     case EVENT_USER_CLICK_OK:
                     case EVENT_USER_CLICK_CANCEL:
                     case EVENT_USER_SHAKE:
                     case EVENT_USER_ALARM_TIME_UP:
-                    default:
                         stopServices();
                         finish();
+                        break;
                 }
             }
         }
