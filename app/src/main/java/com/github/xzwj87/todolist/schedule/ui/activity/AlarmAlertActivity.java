@@ -151,8 +151,8 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     public class ShakeListener implements IShakeListener{
 
         @Override
-        public void onShake(int count) {
-            Log.d(ShakeListener.class.getSimpleName(),"count = " + count);
+        public void onShake() {
+            Log.d(ShakeListener.class.getSimpleName(),"onShake()");
 
             /* send message */
             Message msg = mHandler.obtainMessage(EVENT_USER_SHAKE, getEventName(EVENT_USER_SHAKE));

@@ -13,15 +13,14 @@ import android.util.Log;
 public class ShakeDetectService  implements SensorEventListener{
     public static final String TAG = "ShakeDetectService";
 
-    private static final float SHAKE_THRESHOLD_GRAVITY = 2.5F;
-    private static final int SHAKE_SLOP_TIME = 500; // 500ms interval to detect
-    /* after 3s,reset the shake count */
-    private static final int SHAKE_COUNT_RESET_TIME = 3*1000;
+    private static final float SHAKE_THRESHOLD_SPEED = 4000;
+    private static final int SHAKE_SLOP_TIME = 50; // 50ms interval to detect
+
+    private float lastX,lastY,lastZ;
 
     private SensorManager mSensorMgr;
     private Sensor mAccelerometer;
     private long mShakeTimestamp;
-    private int mShakeCount;
     /* onShake callback listener */
     private IShakeListener mListener;
 
@@ -31,7 +30,6 @@ public class ShakeDetectService  implements SensorEventListener{
 
         mSensorMgr = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
         mShakeTimestamp = System.currentTimeMillis();
-        mShakeCount = 0;
         mListener = null;
     }
 
@@ -40,6 +38,7 @@ public class ShakeDetectService  implements SensorEventListener{
     }
 
     public void start(){
+        Log.d(TAG,"start()");
         mAccelerometer = mSensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if(mAccelerometer != null) {
             mSensorMgr.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
@@ -47,7 +46,7 @@ public class ShakeDetectService  implements SensorEventListener{
     }
 
     public void stop(){
-        Log.d(TAG,"onDestroy()");
+        Log.d(TAG,"stop()");
 
         mSensorMgr.unregisterListener(this);
     }
@@ -64,33 +63,33 @@ public class ShakeDetectService  implements SensorEventListener{
             return;
         }
 
+        final long now = System.currentTimeMillis();
+        final long interval = now - mShakeTimestamp;
+
+        if(interval < SHAKE_SLOP_TIME) return;
+
+        long diff = now - mShakeTimestamp;
+        mShakeTimestamp = now;
+
         float x = event.values[0];
         float y = event.values[1];
         float z = event.values[2];
 
-        float gx = x/SensorManager.GRAVITY_EARTH;
-        float gy = y/SensorManager.GRAVITY_EARTH;
-        float gz = z/SensorManager.GRAVITY_EARTH;
+        float deltaX = x - lastX;
+        float deltaY = y - lastY;
+        float deltaZ = z - lastZ;
 
-        /* gForce will be equal to 1 if there is no movement */
-        float gForce = (float)Math.sqrt(gx*gx + gy*gy + gz*gz);
+        float speed = (float)Math.sqrt(deltaX*deltaX + deltaY*deltaY +
+                deltaZ*deltaZ)/diff * 10000;
 
-        if(gForce > SHAKE_THRESHOLD_GRAVITY){
-            Log.d(TAG, "onSensorChanged(): event " + event.getClass().getSimpleName());
+        if(speed > SHAKE_THRESHOLD_SPEED){
+            Log.d(TAG, "onSensorChanged(): speed =  " + speed);
 
-            final long now = System.currentTimeMillis();
-
-            /* ignore event too close to each other */
-            if(mShakeTimestamp + SHAKE_SLOP_TIME > now){
-                return;
-            }
-            /* reset the shake count */
-            if(mShakeTimestamp + SHAKE_COUNT_RESET_TIME < now){
-                mShakeCount = 0;
-            }
-
-            mShakeTimestamp = now;
-            mListener.onShake(++mShakeCount);
+            mListener.onShake();
         }
+
+        lastX = x;
+        lastY = y;
+        lastZ = z;
     }
 }
