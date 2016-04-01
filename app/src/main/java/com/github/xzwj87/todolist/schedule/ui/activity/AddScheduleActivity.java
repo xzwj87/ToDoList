@@ -2,6 +2,8 @@ package com.github.xzwj87.todolist.schedule.ui.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -133,7 +135,7 @@ public class AddScheduleActivity extends AppCompatActivity
                 mPresenter.onTitleSet(mEditScheduleTitle.getText().toString());
                 mPresenter.onNoteSet(mEditScheduleNote.getText().toString());
                 mPresenter.onSave();
-                finish();
+                // finish();
                 return true;
             default:
                 break;
@@ -228,6 +230,32 @@ public class AddScheduleActivity extends AppCompatActivity
                     }
                 }, scheduleType);
         fragment.show(getSupportFragmentManager(), SCHEDULE_TYPE_PICK_DLG_TAG);
+    }
+
+    @Override
+    public void showMessageDialog(String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {})
+                .show();
+    }
+
+    @Override
+    public void showErrorIndicationOnStartTime(boolean isError) {
+        int color;
+        if (isError) {
+            color = ContextCompat.getColor(this, R.color.colorTextErrorIndication);
+        } else {
+            color = ContextCompat.getColor(this, R.color.colorText);
+        }
+        mBtnScheduleDateStart.setTextColor(color);
+        mBtnScheduleTimeStart.setTextColor(color);
+    }
+
+    @Override
+    public void finishView() {
+        finish();
     }
 
     @Override

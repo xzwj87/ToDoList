@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.github.xzwj87.todolist.schedule.ui.SearchSuggestionView;
 
-public interface SearchSuggestionPresenter {
+public interface SearchSuggestionPresenter extends Presenter {
 
     void setView(@NonNull SearchSuggestionView view);
 

@@ -41,6 +41,7 @@ public class SearchSuggestionPresenterImpl implements SearchSuggestionPresenter 
 
     @Override @SuppressWarnings("unchecked")
     public void requestSuggestion(String query) {
+        mUseCase.unsubscribe();
         mUseCase.init(new GetAllScheduleSuggestionArg(query))
                 .execute(new SearchSuggestionSubscriber());
     }
@@ -59,6 +60,18 @@ public class SearchSuggestionPresenterImpl implements SearchSuggestionPresenter 
         mSearchSuggestionView.updateSearchText(mSuggestions.get(position).getTitle());
     }
 
+    @Override
+    public void resume() {}
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void destroy() {
+        mSearchSuggestionView = null;
+        mUseCase.unsubscribe();
+    }
+
     private final class SearchSuggestionSubscriber extends DefaultSubscriber<Cursor> {
 
         @Override public void onCompleted() {}
@@ -66,7 +79,6 @@ public class SearchSuggestionPresenterImpl implements SearchSuggestionPresenter 
         @Override public void onError(Throwable e) {}
 
         @Override public void onNext(Cursor cursor) {
-            Log.v(LOG_TAG, "onNext(): cursor size = " + cursor.getCount());
             mSuggestions = mMapper.transformList(cursor);
             Log.v(LOG_TAG, "onNext(): mSuggestions.size() = " + mSuggestions.size());
             mSearchSuggestionView.updateSuggestions(mSuggestions);

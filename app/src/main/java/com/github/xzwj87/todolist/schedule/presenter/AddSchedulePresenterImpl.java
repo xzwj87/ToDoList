@@ -3,6 +3,7 @@ package com.github.xzwj87.todolist.schedule.presenter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.insert.AddScheduleArg;
@@ -24,12 +25,14 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private static final long MILLISECONDS_IN_10_MINUTES = 10 * 60 * 1000;
     private static final long MILLISECONDS_IN_30_MINUTES = MILLISECONDS_IN_10_MINUTES * 3;
     private static final long MILLISECONDS_IN_1_HOUR = MILLISECONDS_IN_30_MINUTES * 2;
+    private static final long DEFAULT_SCHEDULE_DURATION = MILLISECONDS_IN_1_HOUR;
 
     private UseCase mUseCase;
     private ScheduleContentValuesDataMapper mMapper;
     private AddScheduleView mAddScheduleView;
 
     private ScheduleModel mSchedule;
+    private boolean mIsEndDateTimeManuallySet = false;
 
     public AddSchedulePresenterImpl(UseCase useCase,
                                     ScheduleContentValuesDataMapper mapper) {
@@ -44,7 +47,7 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
 
     @Override
     public void initialize() {
-        mSchedule = ScheduleModel.createDefaultSchedule();
+        mSchedule = createDefaultSchedule();
         Log.v(LOG_TAG, "initialize(): mSchedule = " + mSchedule);
 
         mAddScheduleView.updateStartDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleStart()));
@@ -58,6 +61,8 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
 
         mAddScheduleView.updateScheduleTypeDisplay(
                 ScheduleUtility.getScheduleTypeText(mSchedule.getType()));
+
+        mIsEndDateTimeManuallySet = false;
     }
 
     @Override
@@ -111,16 +116,30 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     public void onStartDateSet(int year, int monthOfYear, int dayOfMonth) {
         Date startDate = updateDateFromBase(mSchedule.getScheduleStart(),
                 year, monthOfYear, dayOfMonth);
+
         mSchedule.setScheduleStart(startDate);
         mAddScheduleView.updateStartDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleStart()));
+
+        if (!mIsEndDateTimeManuallySet) {
+            mSchedule.setScheduleEnd(calculateEndDateByDefault(startDate));
+            mAddScheduleView.updateEndDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleEnd()));
+        }
+        checkScheduleDateValidity(mSchedule);
     }
 
     @Override
     public void onStartTimeSet(int hourOfDay, int minute, int second) {
         Date startTime = updateTimeFromBase(mSchedule.getScheduleStart(),
                 hourOfDay, minute, second);
+
         mSchedule.setScheduleStart(startTime);
         mAddScheduleView.updateStartTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleStart()));
+
+        if (!mIsEndDateTimeManuallySet) {
+            mSchedule.setScheduleEnd(calculateEndDateByDefault(startTime));
+            mAddScheduleView.updateEndTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleEnd()));
+        }
+        checkScheduleDateValidity(mSchedule);
     }
 
     @Override
@@ -129,6 +148,9 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
                 year, monthOfYear, dayOfMonth);
         mSchedule.setScheduleEnd(endDate);
         mAddScheduleView.updateEndDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleEnd()));
+
+        mIsEndDateTimeManuallySet = true;
+        checkScheduleDateValidity(mSchedule);
     }
 
     @Override
@@ -137,6 +159,9 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
                 hourOfDay, minute, second);
         mSchedule.setScheduleEnd(endTime);
         mAddScheduleView.updateEndTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleEnd()));
+
+        mIsEndDateTimeManuallySet = true;
+        checkScheduleDateValidity(mSchedule);
     }
 
     @Override
@@ -178,8 +203,11 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
 
     @Override @SuppressWarnings("unchecked")
     public void onSave() {
-        mUseCase.init(new AddScheduleArg(mMapper.transform(mSchedule)))
-                .execute(new AddScheduleSubscriber());
+        if (checkScheduleIntegrity(mSchedule)) {
+            mUseCase.init(new AddScheduleArg(mMapper.transform(mSchedule)))
+                    .execute(new AddScheduleSubscriber());
+            mAddScheduleView.finishView();
+        }
     }
 
     private final class AddScheduleSubscriber extends DefaultSubscriber<Long> {
@@ -226,6 +254,46 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         calendar.set(Calendar.SECOND, second);
 
         return calendar.getTime();
+    }
+
+    private ScheduleModel createDefaultSchedule() {
+        ScheduleModel schedule = ScheduleModel.createDefaultSchedule();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(schedule.getScheduleStart());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        schedule.setScheduleStart(calendar.getTime());
+
+        schedule.setScheduleEnd(calculateEndDateByDefault(calendar.getTime()));
+
+        return schedule;
+    }
+
+    private Date calculateEndDateByDefault(Date start) {
+        Date end = new Date();
+        end.setTime(start.getTime() + DEFAULT_SCHEDULE_DURATION);
+        return end;
+    }
+
+    private boolean checkScheduleIntegrity(ScheduleModel schedule) {
+        if (!checkScheduleDateValidity(schedule)) {
+            mAddScheduleView.showMessageDialog(null,
+                    mAddScheduleView.getViewContext().getString(
+                            R.string.schedule_date_invalid_message));
+            return false;
+        }
+       if (schedule.getTitle() == null || schedule.getTitle().equals("")) {
+            schedule.setTitle(mAddScheduleView.getViewContext().getString(
+                    R.string.schedule_no_title));
+        }
+        return true;
+    }
+
+    private boolean checkScheduleDateValidity(ScheduleModel schedule) {
+        boolean isValid = schedule.getScheduleStart().compareTo(schedule.getScheduleEnd()) <= 0;
+        mAddScheduleView.showErrorIndicationOnStartTime(!isValid);
+        return isValid;
     }
 
 }
