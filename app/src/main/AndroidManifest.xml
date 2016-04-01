@@ -14,6 +14,7 @@
         android:theme="@style/AppTheme">
 
         <receiver android:name=".schedule.alarm.service.AlarmReceiver" />
+        <service android:name=".schedule.media.AudioPlayerService" />
 
         <activity
             android:name=".schedule.ui.activity.ScheduleListActivity"
@@ -52,7 +53,7 @@
         </activity>
 
         <activity android:name=".schedule.ui.activity.AlarmAlertActivity"
-            android:theme="@style/Theme.AppCompat.Dialog">
+            android:theme="@style/AlarmAlertDialog">
         </activity>
 
     </application>
