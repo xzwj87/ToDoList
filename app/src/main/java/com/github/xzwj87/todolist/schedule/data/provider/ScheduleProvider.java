@@ -8,16 +8,20 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
+
+import com.github.xzwj87.todolist.schedule.alarm.service.AlarmObserver;
 
 public class ScheduleProvider extends ContentProvider {
     public static final String LOG_TAG = ScheduleProvider.class.getSimpleName();
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private ScheduleDbHelper mOpenHelper;
+    private AlarmObserver mAlarmObserver;
 
-    static final int SCHEDULE = 100;
-    static final int SCHEDULE_WITH_ID = 101;
+    public static final int SCHEDULE = 100;
+    public static final int SCHEDULE_WITH_ID = 101;
 
     private static final String sScheduleIdSelection =
             ScheduleContract.ScheduleEntry.TABLE_NAME +
@@ -26,6 +30,7 @@ public class ScheduleProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mOpenHelper = new ScheduleDbHelper(getContext());
+        registerContentObserver();
         return true;
     }
 
@@ -144,11 +149,13 @@ public class ScheduleProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsUpdated;
+        Uri returnUri = uri;
 
         switch (match) {
             case SCHEDULE:
                 rowsUpdated = db.update(ScheduleContract.ScheduleEntry.TABLE_NAME, values,
                         selection, selectionArgs);
+
                 break;
             case SCHEDULE_WITH_ID:
                 long id = ScheduleContract.ScheduleEntry.getScheduleIdFromUri(uri);
@@ -162,7 +169,8 @@ public class ScheduleProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            returnUri = ScheduleContract.ScheduleEntry.buildScheduleUri(rowsUpdated);
+            getContext().getContentResolver().notifyChange(returnUri, null);
         }
         return rowsUpdated;
     }
@@ -171,6 +179,7 @@ public class ScheduleProvider extends ContentProvider {
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+        Uri returnUri = uri;
         switch (match) {
             case SCHEDULE:
                 db.beginTransaction();
@@ -180,20 +189,21 @@ public class ScheduleProvider extends ContentProvider {
                         long id = db.insert(ScheduleContract.ScheduleEntry.TABLE_NAME, null, value);
                         if (id != -1) {
                             returnCount++;
+                            returnUri = ScheduleContract.ScheduleEntry.buildScheduleUri(id);
                         }
                     }
                     db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
                 }
-                getContext().getContentResolver().notifyChange(uri, null);
+                getContext().getContentResolver().notifyChange(returnUri, null);
                 return returnCount;
             default:
                 return super.bulkInsert(uri, values);
         }
     }
 
-    static UriMatcher buildUriMatcher() {
+    public static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = ScheduleContract.CONTENT_AUTHORITY;
 
@@ -207,6 +217,18 @@ public class ScheduleProvider extends ContentProvider {
     @TargetApi(11)
     public void shutdown() {
         mOpenHelper.close();
+        unregisterContentObserver();
         super.shutdown();
     }
+
+    public void registerContentObserver(){
+        Uri uri = ScheduleContract.ScheduleEntry.CONTENT_URI;
+        mAlarmObserver = new AlarmObserver(getContext(), new Handler());
+        getContext().getContentResolver().registerContentObserver(uri, true, mAlarmObserver);
+    }
+
+    public void unregisterContentObserver(){
+        getContext().getContentResolver().unregisterContentObserver(mAlarmObserver);
+    }
 }
+
