@@ -16,6 +16,8 @@
     <string name="schedule_start">Start</string>
     <string name="schedule_end">End</string>
     <string name="title_activity_add"> </string>
+    <string name="schedule_no_title">(No title)</string>
+    <string name="schedule_date_invalid_message">Change the start time to be before the end of the event.</string>
 
     <string name="time_period_separator">-</string>
     <string name="action_search">search</string>

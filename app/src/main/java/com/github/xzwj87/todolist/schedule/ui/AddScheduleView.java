@@ -12,6 +12,8 @@ public interface AddScheduleView {
     void showPickEndTimeDlg(int hourOfDay, int minute, int second);
     void showPickAlarmTypeDlg(@ScheduleModel.AlarmType String alarmType);
     void showPickScheduleTypeDlg(@ScheduleModel.ScheduleType String scheduleType);
+    void showMessageDialog(String title, String message);
+    void showErrorIndicationOnStartTime(boolean isError);
 
     void updateScheduleTitle(String title);
     void updateScheduleNote(String note);
@@ -22,6 +24,7 @@ public interface AddScheduleView {
     void updateAlarmTypeDisplay(String alarmTypeText);
     void updateScheduleTypeDisplay(String scheduleTypeText);
 
+    void finishView();
     String getScheduleTitle();
     // TODO: Inject context to Presenter
     Context getViewContext();
