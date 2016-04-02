@@ -10,4 +10,6 @@ public interface ScheduleDetailPresenter extends Presenter {
 
     void initialize();
 
+    void onDeleteSchedule(boolean isConfirmed);
+
 }

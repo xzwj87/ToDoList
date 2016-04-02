@@ -12,6 +12,10 @@ import rx.Observable;
 public class DeleteSchedule extends UseCase<DeleteScheduleArg> {
     private static final String LOG_TAG = DeleteSchedule.class.getSimpleName();
 
+    public DeleteSchedule(DeleteScheduleArg arg) {
+        mArg = arg;
+    }
+
     @Override
     protected Observable buildUseCaseObservable() {
         if (mArg == null) {

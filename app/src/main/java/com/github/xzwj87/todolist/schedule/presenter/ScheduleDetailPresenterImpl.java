@@ -21,11 +21,13 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
     private ScheduleDetailView mScheduleDetailView;
-    private UseCase mUseCase;
+    private UseCase mGetDetailUseCase;
+    private UseCase mDeleteUseCase;
     private ScheduleModelDataMapper mMapper;
 
-    public ScheduleDetailPresenterImpl(UseCase useCase, ScheduleModelDataMapper mapper) {
-        mUseCase = useCase;
+    public ScheduleDetailPresenterImpl(UseCase getDetailUseCase, UseCase deleteUseCase ,ScheduleModelDataMapper mapper) {
+        mGetDetailUseCase = getDetailUseCase;
+        mDeleteUseCase = deleteUseCase;
         mMapper = mapper;
     }
 
@@ -48,8 +50,18 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     @Override
     public void destroy() {
         Log.v(LOG_TAG, "destroy()");
-        mUseCase.unsubscribe();
+        mGetDetailUseCase.unsubscribe();
         mScheduleDetailView = null;
+    }
+
+    @Override
+    public void onDeleteSchedule(boolean isConfirmed) {
+        Log.v(LOG_TAG, "onDeleteSchedule(): isConfirmed = " + isConfirmed);
+        if (!isConfirmed) {
+            mScheduleDetailView.requestConfirmDelete();
+        } else {
+            mDeleteUseCase.execute(new DeleteScheduleSubscriber());
+        }
     }
 
     private void updateScheduleToView(ScheduleModel schedule) {
@@ -73,7 +85,7 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     }
 
     private void loadScheduleDetails() {
-        mUseCase.execute(new ScheduleDetailsSubscriber());
+        mGetDetailUseCase.execute(new ScheduleDetailsSubscriber());
     }
 
     private final class ScheduleDetailsSubscriber extends DefaultSubscriber<Cursor> {
@@ -88,6 +100,20 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
             Log.v(LOG_TAG, "onNext(): scheduleModel = " + scheduleModel);
             cursor.close();
             updateScheduleToView(scheduleModel);
+        }
+    }
+
+    private final class DeleteScheduleSubscriber extends DefaultSubscriber<Integer> {
+
+        @Override public void onCompleted() {}
+
+        @Override public void onError(Throwable e) {}
+
+        @Override public void onNext(Integer deleted) {
+            Log.v(LOG_TAG, "DeleteScheduleSubscriber onNext(): deleted = " + deleted);
+            if (mScheduleDetailView != null) {
+                mScheduleDetailView.finishView();
+            }
         }
     }
 }
