@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:layout_margin="@dimen/alarm_item_margin_size"
+    android:layout_margin="@dimen/activity_vertical_margin"
     android:keepScreenOn="true"
     android:id="@+id/alarm_alert">
 
@@ -11,17 +11,48 @@
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="@dimen/alarm_item_margin_size"
         android:textSize="@dimen/alarm_alert_title_size"
-        android:textColor="@color/colorBlack"
-        android:textStyle="bold"/>
+        android:textColor="@color/colorGray"
+        android:textStyle="bold"
+        android:text="@string/alarm_alert_title"/>
 
-    <TextView android:id="@+id/event"
+    <ImageView android:id="@+id/alarm_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/alert"
         android:layout_alignLeft="@id/alert"
+        android:layout_marginTop="@dimen/alarm_item_margin_size"
+        android:layout_marginBottom="@dimen/alarm_item_margin_size"
+        android:src="@drawable/ic_alarm_orange_200_36dp"
+        />
+
+    <TextView android:id="@+id/alarm_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/alarm_icon"
+        android:layout_alignTop="@id/alarm_icon"
+        android:layout_marginLeft="@dimen/alarm_item_margin_size"
+        android:textSize="@dimen/alarm_alert_title_size"
+        android:textColor="@color/colorGray" />
+
+    <ImageView android:id="@+id/event_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alarm_time"
+        android:layout_alignLeft="@id/alarm_icon"
+        android:layout_marginTop="@dimen/alarm_item_margin_size"
+        android:layout_marginBottom="@dimen/alarm_item_margin_size"
+        android:src="@drawable/ic_info_outline_orange_200_36dp"
+        />
+
+    <TextView android:id="@+id/event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/event_icon"
+        android:layout_marginLeft="@dimen/alarm_item_margin_size"
+        android:layout_alignTop="@id/event_icon"
         android:layout_marginBottom="@dimen/alarm_item_margin_size"
         android:textSize="@dimen/alarm_event_title_size"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/colorGray"
         android:maxLines="3"/>
 
     <Button android:id="@+id/ok"
@@ -30,8 +61,9 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_alignParentRight="true"
         android:layout_below="@id/event"
+        android:layout_marginTop="@dimen/alarm_item_margin_size"
         android:text="@string/button_ok"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorOrange"
         android:textSize="@dimen/button_text_size"/>
 
     <Button android:id="@+id/cancel"
@@ -42,7 +74,7 @@
         android:layout_marginRight="@dimen/alarm_item_margin_size"
         android:layout_alignBottom="@id/ok"
         android:text="@string/button_cancel"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorOrange"
         android:textSize="@dimen/button_text_size"/>
 
 </RelativeLayout>

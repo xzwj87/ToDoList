@@ -18,6 +18,7 @@ import com.github.xzwj87.todolist.schedule.media.AudioPlayerService;
 import com.github.xzwj87.todolist.schedule.shake.IShakeListener;
 import com.github.xzwj87.todolist.schedule.shake.ShakeDetectService;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import android.os.Handler;
@@ -36,6 +37,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
     private TextView mAlertTitle;
     private TextView mEventTitle;
+    private TextView mEventTime;
     private Button mOk;
     private Button mCancel;
 
@@ -44,7 +46,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     private ShakeDetectService mShakeDetector;
 
     //private long now;
-    private long mAlarmDuration = 1000*60;
+    private long mAlarmDuration = 1000*90;
 
     @Override
     public void onCreate(Bundle savedSate){
@@ -62,11 +64,18 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
         setContentView(R.layout.activity_alarm_alert);
 
         mAlertTitle = (TextView)findViewById(R.id.alert);
+        mEventTime = (TextView)findViewById(R.id.alarm_time);
         mEventTitle = (TextView)findViewById(R.id.event);
 
         mAlertTitle.setText(R.string.alarm_alert_title);
+
+        String formats = "HH:mm EEEE";
         Date date = new Date(intent.getLongExtra(AlarmCommandsInterface.ALARM_START_TIME,0));
-        String event =  date.toString() + intent.getStringExtra(AlarmCommandsInterface.ALARM_TITLE);
+        SimpleDateFormat sdf = new SimpleDateFormat(formats);
+        mEventTime.setText(sdf.format(date));
+
+        /* if there are notes, need to display also */
+        String event = intent.getStringExtra(AlarmCommandsInterface.ALARM_TITLE);
         mEventTitle.setText(event);
 
         mOk = (Button)findViewById(R.id.ok);
