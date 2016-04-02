@@ -40,4 +40,6 @@
     <string name="schedule_type_date">Date</string>
     <string name="title_activity_search_schedule">SearchScheduleActivity</string>
 
+    <string name="action_delete">Delete</string>
+
 </resources>
