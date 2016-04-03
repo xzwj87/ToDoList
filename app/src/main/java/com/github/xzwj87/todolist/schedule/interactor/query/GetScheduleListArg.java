@@ -18,17 +18,26 @@ public abstract class GetScheduleListArg {
     public @interface SortOrder {}
 
     @SortOrder protected String mSortOrder;
-    protected boolean mIsDoneFilter;
+    protected String mDoneFilter;
 
     public GetScheduleListArg() {
-        this(SORT_BY_START_DATE_ASC);
+        this(SORT_BY_START_DATE_ASC, null);
     }
 
     public GetScheduleListArg(@SortOrder String sortOrder) {
         mSortOrder = sortOrder;
     }
 
+    public GetScheduleListArg(@SortOrder String sortOrder, String doneFilter) {
+        mSortOrder = sortOrder;
+        mDoneFilter = doneFilter;
+    }
+
     public @SortOrder String getSortOrder() {
         return mSortOrder;
+    }
+
+    public String getDoneFilter() {
+        return mDoneFilter;
     }
 }
