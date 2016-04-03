@@ -15,4 +15,8 @@
     <color name="colorText">#000000</color>
 
     <color name="colorScheduleItemHeaderDivider">#E0E0E0</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorGray">#a0a0a0</color>
+    <color name="colorOrange">#FF9800</color>
 </resources>
