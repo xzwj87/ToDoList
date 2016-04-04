@@ -8,6 +8,8 @@ import android.util.Log;
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
+import com.github.xzwj87.todolist.schedule.interactor.update.MarkScheduleAsDone;
+import com.github.xzwj87.todolist.schedule.interactor.update.MarkScheduleAsDoneArg;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
@@ -15,12 +17,17 @@ public class ScheduleListPresenterImpl implements ScheduleListPresenter {
     private static final String LOG_TAG = ScheduleListPresenterImpl.class.getSimpleName();
 
     private ScheduleListView mScheduleListView;
-    private UseCase mUseCase;
+    private UseCase mGetList;
+    private UseCase mMarkAsDone;
     private ScheduleModelDataMapper mMapper;
     private Cursor mCursor;
+    private long[] mLastMarkedIds;
+    private boolean mLastMarkAsDone;
 
-    public ScheduleListPresenterImpl(UseCase useCase, ScheduleModelDataMapper mapper) {
-        mUseCase = useCase;
+    public ScheduleListPresenterImpl(UseCase getList, UseCase markAsDone,
+                                     ScheduleModelDataMapper mapper) {
+        mGetList = getList;
+        mMarkAsDone = markAsDone;
         mMapper = mapper;
     }
 
@@ -47,7 +54,7 @@ public class ScheduleListPresenterImpl implements ScheduleListPresenter {
     @Override
     public void destroy() {
         mScheduleListView = null;
-        mUseCase.unsubscribe();
+        mGetList.unsubscribe();
     }
 
     @Override
@@ -70,8 +77,21 @@ public class ScheduleListPresenterImpl implements ScheduleListPresenter {
         return count;
     }
 
+    @Override @SuppressWarnings("unchecked")
+    public void markAsDone(long[] ids, boolean markAsDone) {
+        mLastMarkedIds = ids;
+        mLastMarkAsDone = markAsDone;
+        mMarkAsDone.init(new MarkScheduleAsDoneArg(ids, markAsDone))
+                .execute(new MarkAsDoneScheduleSubscriber());
+    }
+
+    @Override
+    public void undoLastMarkAsDone() {
+
+    }
+
     private void loadScheduleList() {
-        mUseCase.execute(new ScheduleListSubscriber());
+        mGetList.execute(new ScheduleListSubscriber());
     }
 
     private final class ScheduleListSubscriber extends DefaultSubscriber<Cursor> {
@@ -84,6 +104,18 @@ public class ScheduleListPresenterImpl implements ScheduleListPresenter {
             mCursor = cursor;
             Log.v(LOG_TAG, "onNext(): cursor size = " + cursor.getCount());
             mScheduleListView.renderScheduleList();
+        }
+    }
+
+    private final class MarkAsDoneScheduleSubscriber extends DefaultSubscriber<Integer> {
+
+        @Override public void onCompleted() {}
+
+        @Override public void onError(Throwable e) {}
+
+        @Override public void onNext(Integer updated) {
+            Log.v(LOG_TAG, "onNext(): updated = " + updated);
+            // mScheduleListView.renderScheduleList();
         }
     }
 }

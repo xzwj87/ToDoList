@@ -9,14 +9,14 @@ public class GetScheduleListByTypeArg extends GetScheduleListArg {
         mTypeFilter = typeFilter;
     }
 
-    public GetScheduleListByTypeArg(String typeFilter, @SortOrder String sortOrder) {
-        super(sortOrder);
+    public GetScheduleListByTypeArg(String typeFilter, String doneFilter) {
+        super(doneFilter);
         mTypeFilter = typeFilter;
     }
 
     public GetScheduleListByTypeArg(String typeFilter, @SortOrder String sortOrder,
                                     String doneFilter) {
-        super(sortOrder, doneFilter);
+        super(doneFilter, sortOrder);
         mTypeFilter = typeFilter;
     }
 

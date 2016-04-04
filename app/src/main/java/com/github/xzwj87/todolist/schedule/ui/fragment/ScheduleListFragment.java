@@ -14,10 +14,12 @@ import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetAllSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByType;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByTypeArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.SearchSchedule;
 import com.github.xzwj87.todolist.schedule.interactor.query.SearchScheduleArg;
+import com.github.xzwj87.todolist.schedule.interactor.update.MarkScheduleAsDone;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
@@ -153,19 +155,22 @@ public class ScheduleListFragment extends Fragment implements
     }
 
     private void initialize() {
-        UseCase useCase;
+        UseCase markDoneUseCase = new MarkScheduleAsDone();
+        UseCase getListUseCase;
         if (mIsSearchMode) {
-            useCase = new SearchSchedule(new SearchScheduleArg(mQuery));
+            getListUseCase = new SearchSchedule(new SearchScheduleArg(mQuery));
         } else {
             if (mScheduleType != null) {
-                useCase = new GetScheduleListByType(new GetScheduleListByTypeArg(mScheduleType));
+                getListUseCase = new GetScheduleListByType(
+                        new GetScheduleListByTypeArg(mScheduleType, ScheduleModel.UNDONE));
             } else {
-                useCase = new GetAllSchedule();
+                getListUseCase = new GetAllSchedule(new GetAllScheduleArg(ScheduleModel.UNDONE));
             }
         }
 
         ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
-        mScheduleListPresenter = new ScheduleListPresenterImpl(useCase, mapper);
+        mScheduleListPresenter = new ScheduleListPresenterImpl(
+                getListUseCase, markDoneUseCase, mapper);
         mScheduleListPresenter.setView(this);
 
         setupRecyclerView();
@@ -206,7 +211,13 @@ public class ScheduleListFragment extends Fragment implements
                                                    int[] reverseSortedPositions) {
                         Log.v(LOG_TAG, "onDismissedBySwipe(): reverseSortedPositions = " +
                                 Arrays.toString(reverseSortedPositions));
-                        mScheduleAdapter.notifyDataSetChanged();
+
+                        long[] ids = new long[reverseSortedPositions.length];
+                        for (int i = 0; i < reverseSortedPositions.length; ++i) {
+                            ids[i] = mScheduleAdapter.getItemId(reverseSortedPositions[i]);
+                        }
+                        mScheduleListPresenter.markAsDone(ids, true);
+//                        mScheduleAdapter.notifyDataSetChanged();
                     }
                 });
 
