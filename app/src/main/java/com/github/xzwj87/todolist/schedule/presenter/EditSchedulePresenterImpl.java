@@ -170,6 +170,7 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
 
     @Override
     public void destroy() {
+        Log.v(LOG_TAG, "destroy()");
         mView = null;
         mUpdateUseCase.unsubscribe();
     }
@@ -226,6 +227,7 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
 
         @Override public void onNext(Integer updated) {
             Log.v(LOG_TAG, "onNext(): updated = " + updated);
+            mView.finishView();
         }
     }
 

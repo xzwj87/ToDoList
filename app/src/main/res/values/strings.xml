@@ -43,4 +43,6 @@
     <string name="action_share">Share</string>
     <string name="send_to">share your ToDoList using</string>
 
+    <string name="action_delete">Delete</string>
+
 </resources>

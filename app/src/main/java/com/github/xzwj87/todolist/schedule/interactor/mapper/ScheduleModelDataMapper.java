@@ -71,7 +71,7 @@ public class ScheduleModelDataMapper {
         scheduleModel.setRepeatAlarmTimes(cursor.getInt(COL_SCHEDULE_REPEAT_ALARM_TIMES));
         scheduleModel.setRepeatAlarmInterval(cursor.getInt(COL_SCHEDULE_REPEAT_ALARM_INTERVAL));
 
-        scheduleModel.setDone(cursor.getInt(COL_SCHEDULE_IS_DONE) == 1);
+        scheduleModel.setDoneStatus(cursor.getString(COL_SCHEDULE_IS_DONE));
 
         Log.v(LOG_TAG, "transform(): scheduleModel = " + scheduleModel);
 

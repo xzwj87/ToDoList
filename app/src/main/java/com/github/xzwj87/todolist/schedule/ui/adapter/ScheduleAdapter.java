@@ -53,9 +53,9 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ScheduleModel schedule = mDataSource.getItemAtPosition(position);
-        Log.v(LOG_TAG, "onBindViewHolder(): position = " + position + ", schedule = " + schedule);
+        Log.v(LOG_TAG, "onBindViewHolder(): position = " + position +
+                ", schedule id = " + schedule.getId() + ", title = " + schedule.getTitle());
 
-        Log.v(LOG_TAG, "onBindViewHolder(): color = " + ScheduleUtility.getScheduleColor(schedule.getType()));
         holder.mIvColorStrip.setBackgroundColor(
                 ScheduleUtility.getScheduleColor(schedule.getType()));
 
@@ -73,6 +73,10 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
         return mDataSource.getItemCount();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return mDataSource.getItemAtPosition(position).getId();
+    }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.mListener = listener;

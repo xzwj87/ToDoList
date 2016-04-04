@@ -1,6 +1,8 @@
 package com.github.xzwj87.todolist.schedule.interactor.query;
 
 
+import android.util.Log;
+
 import com.github.xzwj87.todolist.app.App;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
@@ -30,12 +32,20 @@ public class GetAllSchedule extends UseCase<GetAllScheduleArg> {
 
     @Override
     protected Observable buildUseCaseObservable() {
+        String selection = null;
+        String[] selectionArgs = null;
+        Log.v(LOG_TAG, "buildUseCaseObservable(): DoneFilter = " + mArg.getDoneFilter());
+        if (mArg.getDoneFilter()!= null) {
+            selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+            selectionArgs = new String[]{mArg.getDoneFilter()};
+        }
+
         return mBriteContentResolver
                 .createQuery(
                         ScheduleContract.ScheduleEntry.CONTENT_URI,
                         ScheduleModelDataMapper.SCHEDULE_COLUMNS,
-                        null,
-                        null,
+                        selection,
+                        selectionArgs,
                         mArg.getSortOrder(),
                         true)
                 .map(SqlBrite.Query::run);

@@ -11,4 +11,6 @@ public interface ScheduleDetailView {
     void updateScheduleType(String type);
     void updateScheduleNote(String note);
 
+    void requestConfirmDelete();
+    void finishView();
 }
