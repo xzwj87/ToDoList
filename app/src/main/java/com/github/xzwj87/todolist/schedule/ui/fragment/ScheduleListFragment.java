@@ -22,7 +22,10 @@ import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
+import com.github.xzwj87.todolist.schedule.ui.misc.SwipeableRecyclerViewTouchListener;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,10 +50,7 @@ public class ScheduleListFragment extends Fragment implements
         void onItemSelected(long id, ScheduleAdapter.ViewHolder vh);
     }
 
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected(long id, ScheduleAdapter.ViewHolder vh) { }
-    };
+    private static Callbacks sDummyCallbacks = (id, vh) -> { };
 
     public ScheduleListFragment() {}
 
@@ -179,14 +179,10 @@ public class ScheduleListFragment extends Fragment implements
 
     private void setupRecyclerView() {
         mScheduleAdapter = new ScheduleAdapter(this);
-        mScheduleAdapter.setOnItemClickListener(new ScheduleAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, ScheduleAdapter.ViewHolder vh) {
-                long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
-                Log.v(LOG_TAG, "onItemClick(): position = " + position + ", id = " + id);
-
-                mCallbacks.onItemSelected(id, vh);
-            }
+        mScheduleAdapter.setOnItemClickListener((position, vh) -> {
+            long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
+            Log.v(LOG_TAG, "onItemClick(): position = " + position + ", id = " + id);
+            mCallbacks.onItemSelected(id, vh);
         });
         mRvScheduleList.setAdapter(mScheduleAdapter);
 
@@ -194,6 +190,27 @@ public class ScheduleListFragment extends Fragment implements
         mRvScheduleList.setLayoutManager(layoutManager);
 
         mRvScheduleList.setHasFixedSize(true);
+
+        SwipeableRecyclerViewTouchListener listener = new SwipeableRecyclerViewTouchListener(
+                getContext(),
+                mRvScheduleList,
+                R.id.schedule_item_foreground,
+                R.id.schedule_item_background,
+                new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                    @Override
+                    public boolean canSwipe(int position) {
+                        return true;
+                    }
+                    @Override
+                    public void onDismissedBySwipe(RecyclerView recyclerView,
+                                                   int[] reverseSortedPositions) {
+                        Log.v(LOG_TAG, "onDismissedBySwipe(): reverseSortedPositions = " +
+                                Arrays.toString(reverseSortedPositions));
+                        mScheduleAdapter.notifyDataSetChanged();
+                    }
+                });
+
+        mRvScheduleList.addOnItemTouchListener(listener);
     }
 
 
