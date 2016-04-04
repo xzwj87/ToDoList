@@ -11,4 +11,8 @@ public class GetAllScheduleArg extends GetScheduleListArg {
         super(sortOrder);
     }
 
+    public GetAllScheduleArg(@SortOrder String sortOrder, String doneFilter) {
+        super(sortOrder, doneFilter);
+    }
+
 }
