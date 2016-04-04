@@ -217,6 +217,7 @@ public class ScheduleListFragment extends Fragment implements
                             ids[i] = mScheduleAdapter.getItemId(reverseSortedPositions[i]);
                         }
                         mScheduleListPresenter.markAsDone(ids, true);
+                        mScheduleAdapter.notifyItemRemoved(reverseSortedPositions[0]);
 //                        mScheduleAdapter.notifyDataSetChanged();
                     }
                 });
