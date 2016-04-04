@@ -21,14 +21,14 @@ public abstract class GetScheduleListArg {
     protected String mDoneFilter;
 
     public GetScheduleListArg() {
-        this(SORT_BY_START_DATE_ASC, null);
+        this(null, SORT_BY_START_DATE_ASC);
     }
 
-    public GetScheduleListArg(@SortOrder String sortOrder) {
-        mSortOrder = sortOrder;
+    public GetScheduleListArg(String doneFilter) {
+        mDoneFilter = doneFilter;
     }
 
-    public GetScheduleListArg(@SortOrder String sortOrder, String doneFilter) {
+    public GetScheduleListArg(String doneFilter, @SortOrder String sortOrder) {
         mSortOrder = sortOrder;
         mDoneFilter = doneFilter;
     }

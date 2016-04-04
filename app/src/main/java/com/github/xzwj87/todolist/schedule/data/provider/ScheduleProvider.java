@@ -169,7 +169,6 @@ public class ScheduleProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsUpdated != 0) {
-            returnUri = ScheduleContract.ScheduleEntry.buildScheduleUri(rowsUpdated);
             getContext().getContentResolver().notifyChange(returnUri, null);
         }
         return rowsUpdated;
@@ -179,7 +178,6 @@ public class ScheduleProvider extends ContentProvider {
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        Uri returnUri = uri;
         switch (match) {
             case SCHEDULE:
                 db.beginTransaction();
@@ -189,14 +187,13 @@ public class ScheduleProvider extends ContentProvider {
                         long id = db.insert(ScheduleContract.ScheduleEntry.TABLE_NAME, null, value);
                         if (id != -1) {
                             returnCount++;
-                            returnUri = ScheduleContract.ScheduleEntry.buildScheduleUri(id);
                         }
                     }
                     db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
                 }
-                getContext().getContentResolver().notifyChange(returnUri, null);
+                getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
             default:
                 return super.bulkInsert(uri, values);

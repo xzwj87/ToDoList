@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract.ScheduleEntry;
 
 public class ScheduleDbHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     static final String DATABASE_NAME = "schedule.db";
 
