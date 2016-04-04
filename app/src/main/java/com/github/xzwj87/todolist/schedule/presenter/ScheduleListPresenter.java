@@ -15,4 +15,8 @@ public interface ScheduleListPresenter extends Presenter {
 
     int getScheduleItemCount();
 
+    void markAsDone(long[] ids, boolean markAsDone);
+
+    void undoLastMarkAsDone();
+
 }

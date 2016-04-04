@@ -7,8 +7,12 @@ public class GetAllScheduleArg extends GetScheduleListArg {
         super();
     }
 
-    public GetAllScheduleArg(@SortOrder String sortOrder) {
-        super(sortOrder);
+    public GetAllScheduleArg(String doneFilter) {
+        super(doneFilter);
+    }
+
+    public GetAllScheduleArg(@SortOrder String sortOrder, String doneFilter) {
+        super(sortOrder, doneFilter);
     }
 
 }

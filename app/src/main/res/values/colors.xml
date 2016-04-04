@@ -15,6 +15,7 @@
     <color name="colorText">#000000</color>
 
     <color name="colorScheduleItemHeaderDivider">#E0E0E0</color>
+    <color name="colorScheduleItemDoneBackground">#4CAF50</color>
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGray">#a0a0a0</color>

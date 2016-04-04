@@ -13,7 +13,6 @@ public class ScheduleModel {
     public static final String SCHEDULE_TYPE_MEETING = "meeting";
     public static final String SCHEDULE_TYPE_ENTERTAINMENT = "entertainment";
     public static final String SCHEDULE_TYPE_DATE = "date";
-
     @StringDef({SCHEDULE_TYPE_DEFAULT, SCHEDULE_TYPE_MEETING, SCHEDULE_TYPE_DATE,
             SCHEDULE_TYPE_ENTERTAINMENT})
     @Retention(RetentionPolicy.SOURCE)
@@ -24,7 +23,6 @@ public class ScheduleModel {
     public static final String SCHEDULE_REPEAT_EVERY_WEEK = "every_week";
     public static final String SCHEDULE_REPEAT_EVERY_MONTH = "every_month";
     public static final String SCHEDULE_REPEAT_EVERY_YEAR = "every_year";
-
     @StringDef({SCHEDULE_REPEAT_NONE, SCHEDULE_REPEAT_EVERY_DAY, SCHEDULE_REPEAT_EVERY_WEEK,
             SCHEDULE_REPEAT_EVERY_MONTH, SCHEDULE_REPEAT_EVERY_YEAR})
     @Retention(RetentionPolicy.SOURCE)
@@ -35,11 +33,16 @@ public class ScheduleModel {
     public static final String ALARM_30_MINUTES_BEFORE = "30_minutes_before";
     public static final String ALARM_1_HOUR_BEFORE = "1_hour_before";
     public static final String ALARM_CUSTOM = "custom";
-
     @StringDef({ALARM_NONE, ALARM_10_MINUTES_BEFORE, ALARM_30_MINUTES_BEFORE, ALARM_1_HOUR_BEFORE,
             ALARM_CUSTOM})
     @Retention(RetentionPolicy.SOURCE)
     public @interface AlarmType {}
+
+    public static final String DONE = "done";
+    public static final String UNDONE = "undone";
+    @StringDef({DONE, UNDONE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DoneStatus {}
 
     private static final long MILLISECONDS_IN_10_MINUTES = 10 * 60 * 1000;
 
@@ -53,13 +56,12 @@ public class ScheduleModel {
     private Date mScheduleEnd;
     @ScheduleRepeatType private String mScheduleRepeatType;
 
-    @AlarmType
-    private String mAlarmType;
+    @AlarmType private String mAlarmType;
     private Date mAlarmTime;
     private int mRepeatAlarmTimes;
     private int mRepeatAlarmInterval;
 
-    private boolean mIsDone;
+    @DoneStatus private String mDoneStatus;
 
     public static ScheduleModel createDefaultSchedule() {
         ScheduleModel schedule = new ScheduleModel();
@@ -85,6 +87,8 @@ public class ScheduleModel {
 
         schedule.setRepeatAlarmTimes(0);
         schedule.setRepeatAlarmInterval(0);
+
+        schedule.setDoneStatus(UNDONE);
 
         return schedule;
     }
@@ -180,12 +184,12 @@ public class ScheduleModel {
         this.mRepeatAlarmInterval = repeatAlarmInterval;
     }
 
-    public boolean isDone() {
-        return mIsDone;
+    public String getDoneStatus() {
+        return mDoneStatus;
     }
 
-    public void setDone(boolean isDone) {
-        mIsDone = isDone;
+    public void setDoneStatus(@DoneStatus  String doneStatus) {
+        mDoneStatus = doneStatus;
     }
 
     @Override
@@ -200,6 +204,7 @@ public class ScheduleModel {
         stringBuilder.append("end = " + mScheduleEnd + "\n");
         stringBuilder.append("alarm type = " + mAlarmType + "\n");
         stringBuilder.append("alarm = " + mAlarmTime + "\n");
+        stringBuilder.append("mDoneStatus = " + mDoneStatus + "\n");
 
         return stringBuilder.toString();
     }

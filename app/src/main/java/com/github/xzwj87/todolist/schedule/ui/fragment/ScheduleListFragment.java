@@ -14,15 +14,20 @@ import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetAllSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByType;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByTypeArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.SearchSchedule;
 import com.github.xzwj87.todolist.schedule.interactor.query.SearchScheduleArg;
+import com.github.xzwj87.todolist.schedule.interactor.update.MarkScheduleAsDone;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
+import com.github.xzwj87.todolist.schedule.ui.misc.SwipeableRecyclerViewTouchListener;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,10 +52,7 @@ public class ScheduleListFragment extends Fragment implements
         void onItemSelected(long id, ScheduleAdapter.ViewHolder vh);
     }
 
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected(long id, ScheduleAdapter.ViewHolder vh) { }
-    };
+    private static Callbacks sDummyCallbacks = (id, vh) -> { };
 
     public ScheduleListFragment() {}
 
@@ -153,19 +155,22 @@ public class ScheduleListFragment extends Fragment implements
     }
 
     private void initialize() {
-        UseCase useCase;
+        UseCase markDoneUseCase = new MarkScheduleAsDone();
+        UseCase getListUseCase;
         if (mIsSearchMode) {
-            useCase = new SearchSchedule(new SearchScheduleArg(mQuery));
+            getListUseCase = new SearchSchedule(new SearchScheduleArg(mQuery));
         } else {
             if (mScheduleType != null) {
-                useCase = new GetScheduleListByType(new GetScheduleListByTypeArg(mScheduleType));
+                getListUseCase = new GetScheduleListByType(
+                        new GetScheduleListByTypeArg(mScheduleType, ScheduleModel.UNDONE));
             } else {
-                useCase = new GetAllSchedule();
+                getListUseCase = new GetAllSchedule(new GetAllScheduleArg(ScheduleModel.UNDONE));
             }
         }
 
         ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
-        mScheduleListPresenter = new ScheduleListPresenterImpl(useCase, mapper);
+        mScheduleListPresenter = new ScheduleListPresenterImpl(
+                getListUseCase, markDoneUseCase, mapper);
         mScheduleListPresenter.setView(this);
 
         setupRecyclerView();
@@ -179,14 +184,10 @@ public class ScheduleListFragment extends Fragment implements
 
     private void setupRecyclerView() {
         mScheduleAdapter = new ScheduleAdapter(this);
-        mScheduleAdapter.setOnItemClickListener(new ScheduleAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, ScheduleAdapter.ViewHolder vh) {
-                long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
-                Log.v(LOG_TAG, "onItemClick(): position = " + position + ", id = " + id);
-
-                mCallbacks.onItemSelected(id, vh);
-            }
+        mScheduleAdapter.setOnItemClickListener((position, vh) -> {
+            long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
+            Log.v(LOG_TAG, "onItemClick(): position = " + position + ", id = " + id);
+            mCallbacks.onItemSelected(id, vh);
         });
         mRvScheduleList.setAdapter(mScheduleAdapter);
 
@@ -194,6 +195,34 @@ public class ScheduleListFragment extends Fragment implements
         mRvScheduleList.setLayoutManager(layoutManager);
 
         mRvScheduleList.setHasFixedSize(true);
+
+        SwipeableRecyclerViewTouchListener listener = new SwipeableRecyclerViewTouchListener(
+                getContext(),
+                mRvScheduleList,
+                R.id.schedule_item_foreground,
+                R.id.schedule_item_background,
+                new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                    @Override
+                    public boolean canSwipe(int position) {
+                        return true;
+                    }
+                    @Override
+                    public void onDismissedBySwipe(RecyclerView recyclerView,
+                                                   int[] reverseSortedPositions) {
+                        Log.v(LOG_TAG, "onDismissedBySwipe(): reverseSortedPositions = " +
+                                Arrays.toString(reverseSortedPositions));
+
+                        long[] ids = new long[reverseSortedPositions.length];
+                        for (int i = 0; i < reverseSortedPositions.length; ++i) {
+                            ids[i] = mScheduleAdapter.getItemId(reverseSortedPositions[i]);
+                        }
+                        mScheduleListPresenter.markAsDone(ids, true);
+                        mScheduleAdapter.notifyItemRemoved(reverseSortedPositions[0]);
+//                        mScheduleAdapter.notifyDataSetChanged();
+                    }
+                });
+
+        mRvScheduleList.addOnItemTouchListener(listener);
     }
 
 
