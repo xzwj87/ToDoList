@@ -20,6 +20,10 @@
             android:id="@+id/nav_date"
             android:icon="@drawable/ic_drawer_type_date_24dp"
             android:title="@string/schedule_type_date" />
+        <item
+            android:id="@+id/nav_done"
+            android:icon="@drawable/ic_drawer_done_24dp"
+            android:title="@string/schedule_done" />
     </group>
 
     <group
