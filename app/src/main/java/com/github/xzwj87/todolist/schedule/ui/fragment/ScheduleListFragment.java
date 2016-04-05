@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +25,7 @@ import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
-import com.github.xzwj87.todolist.schedule.ui.misc.SwipeableRecyclerViewTouchListener;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
-
-import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,6 +33,8 @@ import butterknife.ButterKnife;
 public class ScheduleListFragment extends Fragment implements
         ScheduleAdapter.DataSource, ScheduleListView {
     private static final String LOG_TAG = ScheduleListFragment.class.getSimpleName();
+
+    public static final String SCHEDULE_TYPE_DONE = "done";
 
     private static final String SCHEDULE_TYPE = "schedule_type";
     private static final String QUERY = "query";
@@ -45,6 +45,7 @@ public class ScheduleListFragment extends Fragment implements
     private ScheduleListPresenter mScheduleListPresenter;
     private boolean mIsSearchMode = false;
     private String mQuery;
+    private boolean mSwipeMarkAsDone = true;
 
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
 
@@ -82,11 +83,17 @@ public class ScheduleListFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_schedule_list, container, false);
         ButterKnife.bind(this, rootView);
 
+        mSwipeMarkAsDone = true;
         Bundle arguments = getArguments();
         if (arguments != null) {
             if (arguments.containsKey(SCHEDULE_TYPE)) {
                 mScheduleType = arguments.getString(SCHEDULE_TYPE);
                 Log.v(LOG_TAG, "onCreateView(): mScheduleType = " + mScheduleType);
+                if (mScheduleType != null && mScheduleType.equals(SCHEDULE_TYPE_DONE)) {
+                    mSwipeMarkAsDone = false;
+                }
+                Log.v(LOG_TAG, "onCreateView(): mScheduleType = " + mScheduleType +
+                        ", mSwipeMarkAsDone = " + mSwipeMarkAsDone);
             } else  if (arguments.containsKey(QUERY)) {
                 mIsSearchMode = true;
                 mQuery = arguments.getString(QUERY);
@@ -161,8 +168,12 @@ public class ScheduleListFragment extends Fragment implements
             getListUseCase = new SearchSchedule(new SearchScheduleArg(mQuery));
         } else {
             if (mScheduleType != null) {
-                getListUseCase = new GetScheduleListByType(
-                        new GetScheduleListByTypeArg(mScheduleType, ScheduleModel.UNDONE));
+                if (mScheduleType.equals(SCHEDULE_TYPE_DONE)) {
+                    getListUseCase = new GetAllSchedule(new GetAllScheduleArg(ScheduleModel.DONE));
+                } else {
+                    getListUseCase = new GetScheduleListByType(
+                            new GetScheduleListByTypeArg(mScheduleType, ScheduleModel.UNDONE));
+                }
             } else {
                 getListUseCase = new GetAllSchedule(new GetAllScheduleArg(ScheduleModel.UNDONE));
             }
@@ -196,34 +207,27 @@ public class ScheduleListFragment extends Fragment implements
 
         mRvScheduleList.setHasFixedSize(true);
 
-        SwipeableRecyclerViewTouchListener listener = new SwipeableRecyclerViewTouchListener(
-                getContext(),
-                mRvScheduleList,
-                R.id.schedule_item_foreground,
-                R.id.schedule_item_background,
-                new SwipeableRecyclerViewTouchListener.SwipeListener() {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
                     @Override
-                    public boolean canSwipe(int position) {
-                        return true;
+                    public boolean onMove(RecyclerView recyclerView,
+                                          RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        return false;
                     }
                     @Override
-                    public void onDismissedBySwipe(RecyclerView recyclerView,
-                                                   int[] reverseSortedPositions) {
-                        Log.v(LOG_TAG, "onDismissedBySwipe(): reverseSortedPositions = " +
-                                Arrays.toString(reverseSortedPositions));
-
-                        long[] ids = new long[reverseSortedPositions.length];
-                        for (int i = 0; i < reverseSortedPositions.length; ++i) {
-                            ids[i] = mScheduleAdapter.getItemId(reverseSortedPositions[i]);
-                        }
-                        mScheduleListPresenter.markAsDone(ids, true);
-                        mScheduleAdapter.notifyItemRemoved(reverseSortedPositions[0]);
-//                        mScheduleAdapter.notifyDataSetChanged();
+                    public boolean isItemViewSwipeEnabled() {
+                        return !mIsSearchMode;
                     }
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        int position = viewHolder.getAdapterPosition();
+                         Log.v(LOG_TAG, "onSwiped(): position = " + position +
+                                 ", direction = " + direction);
+                         long id = mScheduleAdapter.getItemId(position);
+                         mScheduleListPresenter.markAsDone(new long[] {id}, mSwipeMarkAsDone);
+                      }
                 });
-
-        mRvScheduleList.addOnItemTouchListener(listener);
+        itemTouchHelper.attachToRecyclerView(mRvScheduleList);
     }
-
-
 }

@@ -110,6 +110,10 @@ public class ScheduleListActivity extends AppCompatActivity
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_all");
             mTypeFilter = null;
             replaceScheduleListWithType(null);
+        } else if (id == R.id.nav_done) {
+            Log.v(LOG_TAG, "onNavigationItemSelected(): nav_done");
+            mTypeFilter = ScheduleListFragment.SCHEDULE_TYPE_DONE;
+            replaceScheduleListWithType(mTypeFilter);
         } else if (id == R.id.nav_schedule_type_meeting) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_schedule_type_meeting");
             mTypeFilter = ScheduleModel.SCHEDULE_TYPE_MEETING;

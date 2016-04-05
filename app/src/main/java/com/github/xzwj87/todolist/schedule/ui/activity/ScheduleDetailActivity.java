@@ -7,8 +7,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ShareActionProvider;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
@@ -57,6 +59,7 @@ public class ScheduleDetailActivity extends AppCompatActivity {
             NavUtils.navigateUpTo(this, new Intent(this, ScheduleListActivity.class));
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
