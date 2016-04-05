@@ -36,6 +36,8 @@ public class ScheduleListFragment extends Fragment implements
         ScheduleAdapter.DataSource, ScheduleListView {
     private static final String LOG_TAG = ScheduleListFragment.class.getSimpleName();
 
+    public static final String SCHEDULE_TYPE_DONE = "done";
+
     private static final String SCHEDULE_TYPE = "schedule_type";
     private static final String QUERY = "query";
 
@@ -161,8 +163,12 @@ public class ScheduleListFragment extends Fragment implements
             getListUseCase = new SearchSchedule(new SearchScheduleArg(mQuery));
         } else {
             if (mScheduleType != null) {
-                getListUseCase = new GetScheduleListByType(
-                        new GetScheduleListByTypeArg(mScheduleType, ScheduleModel.UNDONE));
+                if (mScheduleType.equals(SCHEDULE_TYPE_DONE)) {
+                    getListUseCase = new GetAllSchedule(new GetAllScheduleArg(ScheduleModel.DONE));
+                } else {
+                    getListUseCase = new GetScheduleListByType(
+                            new GetScheduleListByTypeArg(mScheduleType, ScheduleModel.UNDONE));
+                }
             } else {
                 getListUseCase = new GetAllSchedule(new GetAllScheduleArg(ScheduleModel.UNDONE));
             }
