@@ -38,6 +38,7 @@
     <string name="schedule_type_meeting">Meeting</string>
     <string name="schedule_type_entertainment">Entertainment</string>
     <string name="schedule_type_date">Date</string>
+    <string name="schedule_done">Done</string>
     <string name="title_activity_search_schedule">SearchScheduleActivity</string>
 
     <string name="action_share">Share</string>
