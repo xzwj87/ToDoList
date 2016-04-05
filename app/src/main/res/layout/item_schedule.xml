@@ -2,45 +2,94 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight" >
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:background="?attr/selectableItemBackground">
 
     <LinearLayout
+        android:id="@+id/schedule_item_background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/colorScheduleItemDoneBackground"
+        >
 
-        <TextView
-            android:id="@+id/tv_schedule_title"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Watch Movie" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_done_24dp"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/schedule_item_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@android:color/white"
+        android:elevation="4dp">
+
+        <ImageView
+            android:id="@+id/iv_schedule_item_color_strip"
+            android:layout_width="@dimen/schedule_item_color_strip_width"
+            android:layout_height="match_parent"
+            tools:background="@color/colorDefault" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/schedule_item_header_container_margin_left"
+            android:layout_marginRight="@dimen/schedule_item_header_container_margin_right"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_schedule_item_start_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:textSize="12sp"
+                tools:text="Mar 3"/>
 
             <TextView
                 android:id="@+id/tv_schedule_start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="14:00" />
+                android:layout_gravity="right"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                tools:text="10:00"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="@dimen/schedule_item_divider_height"
+            android:layout_gravity="center_vertical"
+            android:background="@color/colorScheduleItemHeaderDivider"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:orientation="vertical" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_schedule_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/time_period_separator"
-                tools:text="-"/>
-
-            <TextView
-                android:id="@+id/tv_schedule_end_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="16:00"/>
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:lines="1"
+                tools:text="Watch Movie" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+
 
 </FrameLayout>

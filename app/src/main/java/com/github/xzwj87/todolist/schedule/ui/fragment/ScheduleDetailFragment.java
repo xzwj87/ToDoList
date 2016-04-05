@@ -1,21 +1,28 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.interactor.GetScheduleDetail;
-import com.github.xzwj87.todolist.schedule.interactor.QueryUseCase;
+import com.github.xzwj87.todolist.schedule.interactor.UseCase;
+import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
+import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleById;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
-import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,7 +35,12 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     private long mScheduleId = 0;
     private ScheduleDetailPresenter mScheduleDetailPresenter;
 
-    @Bind(R.id.tv_schedule_detail) TextView mTvScheduleDetail;
+    private CollapsingToolbarLayout mAppBarLayout;
+    @Bind(R.id.tv_schedule_date) TextView mTvScheduleDate;
+    @Bind(R.id.tv_schedule_time) TextView mTvScheduleTime;
+    @Bind(R.id.tv_schedule_alarm_time) TextView mTvAlarmTime;
+    @Bind(R.id.tv_schedule_type) TextView mTvScheduleType;
+    @Bind(R.id.tv_schedule_note) TextView mTvScheduleNote;
 
     public ScheduleDetailFragment() { }
 
@@ -46,11 +58,9 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (getArguments().containsKey(ARG_ITEM_ID)) {
-//            Activity activity = this.getActivity();
-//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-//        }
+        setHasOptionsMenu(true);
 
+        mAppBarLayout = (CollapsingToolbarLayout) getActivity().findViewById(R.id.toolbar_layout);
     }
 
     @Override
@@ -75,6 +85,23 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_fragment_detail, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                mScheduleDetailPresenter.onDeleteSchedule(false);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         mScheduleDetailPresenter.resume();
@@ -93,15 +120,64 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     }
 
     @Override
-    public void renderSchedule(ScheduleModel schedule) {
-        String text = "Schedule id: " + schedule.getId() + ", title = " + schedule.getTitle();
-        mTvScheduleDetail.setText(text);
+    public void requestConfirmDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Delete this event?");
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                mScheduleDetailPresenter.onDeleteSchedule(true);
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void finishView() {
+        getActivity().finish();
+    }
+
+    @Override
+    public void updateScheduleTitle(String title) {
+        mAppBarLayout.setTitle(title);
+    }
+
+    @Override
+    public void updateScheduleDate(String datePeriod) {
+        mTvScheduleDate.setText(datePeriod);
+    }
+
+    @Override
+    public void updateScheduleTime(String timePeriod) {
+        mTvScheduleTime.setText(timePeriod);
+    }
+
+    @Override
+    public void updateAlarmTime(String time) {
+        mTvAlarmTime.setText(time);
+    }
+
+    @Override
+    public void updateScheduleType(String type) {
+        mTvScheduleType.setText(type);
+    }
+
+    @Override
+    public void updateScheduleNote(String note) {
+        mTvScheduleNote.setText(note);
     }
 
     private void initialize() {
-        QueryUseCase useCase = new GetScheduleDetail(mScheduleId);
+        UseCase getScheduleById = new GetScheduleById(mScheduleId);
+        UseCase deleteSchedule = new DeleteSchedule(new DeleteScheduleArg(mScheduleId));
         ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
-        mScheduleDetailPresenter = new ScheduleDetailPresenterImpl(useCase, mapper);
+        mScheduleDetailPresenter = new ScheduleDetailPresenterImpl(
+                getScheduleById, deleteSchedule, mapper);
         mScheduleDetailPresenter.setView(this);
 
         loadScheduleData();

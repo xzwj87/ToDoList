@@ -24,16 +24,19 @@ public class ScheduleContract {
         public static final String TABLE_NAME = "schedule";
 
         public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_DETAIL = "detail";
+        public static final String COLUMN_NOTE = "note";
         public static final String COLUMN_TYPE = "type";
 
         public static final String COLUMN_DATE_START = "date_start";
         public static final String COLUMN_DATE_END = "date_end";
         public static final String COLUMN_REPEAT_SCHEDULE = "repeat_schedule";
 
+        public static final String COLUMN_ALARM_TYPE = "alarm_type";
         public static final String COLUMN_ALARM_TIME = "alarm_time";
         public static final String COLUMN_REPEAT_ALARM_TIMES = "repeat_alarm_times";
         public static final String COLUMN_REPEAT_ALARM_INTERVAL = "repeat_alarm_interval";
+
+        public static final String COLUMN_IS_DONE = "is_done";
 
         public static Uri buildScheduleUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

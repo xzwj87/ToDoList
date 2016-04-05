@@ -3,4 +3,21 @@
     <color name="colorPrimary">#0288D1</color>
     <color name="colorPrimaryDark">#01579B</color>
     <color name="colorAccent">#DD2C00</color>
+
+    <color name="colorIcon">#8A000000</color>
+
+    <color name="colorDefault">#0288D1</color>
+    <color name="colorMeeting">#4CAF50</color>
+    <color name="colorEntertainment">#FFA726</color>
+    <color name="colorDate">#EC407A</color>
+
+    <color name="colorTextErrorIndication">#EF5350</color>
+    <color name="colorText">#000000</color>
+
+    <color name="colorScheduleItemHeaderDivider">#E0E0E0</color>
+    <color name="colorScheduleItemDoneBackground">#4CAF50</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorGray">#a0a0a0</color>
+    <color name="colorOrange">#FF9800</color>
 </resources>

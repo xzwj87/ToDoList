@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".schedule.ui.activity.AddScheduleActivity"
@@ -17,22 +15,32 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <Switch
-            android:id="@+id/switch_schedule_all_day"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/schedule_all_day" />
-
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/ScheduleDetailItemContainer"
+            android:orientation="horizontal" >
+
+            <ImageView
+                style="@style/ScheduleDetailIcon"
+                android:src="@drawable/ic_schedule_24dp" />
+
+            <Switch
+                android:id="@+id/switch_schedule_all_day"
+                style="@style/ScheduleDetailSwitch"
+                android:text="@string/schedule_all_day" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
             android:orientation="horizontal">
+
+            <ImageView
+                style="@style/ScheduleDetailIcon" />
 
             <Button
                 android:id="@+id/btn_schedule_date_start"
+                style="@style/ScheduleDetailButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
                 tools:text = "Sun, Feb 28, 2016"/>
 
             <View
@@ -43,22 +51,25 @@
 
             <Button
                 android:id="@+id/btn_schedule_time_start"
+                style="@style/ScheduleDetailButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
+                android:gravity="right|center_vertical"
                 tools:text = "11:00 AM"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/ScheduleDetailItemContainer"
             android:orientation="horizontal">
+
+            <ImageView
+                style="@style/ScheduleDetailIcon" />
+
             <Button
                 android:id="@+id/btn_schedule_date_end"
+                style="@style/ScheduleDetailButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
                 tools:text = "Sun, Feb 28, 2016"/>
 
             <View
@@ -69,9 +80,9 @@
 
             <Button
                 android:id="@+id/btn_schedule_time_end"
+                style="@style/ScheduleDetailButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
+                android:gravity="right|center_vertical"
                 tools:text = "12:00 AM"/>
 
         </LinearLayout>
@@ -80,6 +91,65 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/ScheduleDetailIcon"
+                android:src="@drawable/ic_notifications_24dp"/>
+
+            <Button
+                android:id="@+id/btn_alarm_time"
+                style="@style/ScheduleDetailButton"
+                tools:text = "10 minutes before"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/ScheduleDetailIcon"
+                android:src="@drawable/ic_label_24dp"/>
+
+            <Button
+                android:id="@+id/btn_schedule_type"
+                style="@style/ScheduleDetailButton"
+                tools:text = "Meeting"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/ScheduleDetailIcon"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/schedule_detail_item_note_margin_top"
+                android:src="@drawable/ic_subject_24dp"/>
+
+            <EditText
+                android:id="@+id/edit_schedule_note"
+                style="@style/ScheduleDetailEdit"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/schedule_detail_item_note_margin_top"
+                android:hint="@string/schedule_note_hint"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

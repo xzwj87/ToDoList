@@ -1,9 +1,108 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tv_schedule_detail"
-    style="?android:attr/textAppearanceLarge"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    android:textIsSelectable="true"
-    tools:context=".schedule.ui.fragment.ScheduleDetailFragment" />
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_schedule_time_icon"
+                style="@style/ScheduleDetailIcon"
+                android:src="@drawable/ic_schedule_24dp" />
+
+            <TextView
+                android:id="@+id/tv_schedule_date"
+                style="@style/ScheduleDetailText"
+                tools:text="Today"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/ScheduleDetailIcon"/>
+
+            <TextView
+                android:id="@+id/tv_schedule_time"
+                style="@style/ScheduleDetailText"
+                android:layout_weight="5"
+                tools:text="14:00 - 15:00"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_schedule_alarm"
+                style="@style/ScheduleDetailIcon"
+                android:src="@drawable/ic_notifications_24dp" />
+
+            <TextView
+                android:id="@+id/tv_schedule_alarm_time"
+                style="@style/ScheduleDetailText"
+                tools:text="13:50"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_schedule_type"
+                style="@style/ScheduleDetailIcon"
+                android:src="@drawable/ic_label_24dp" />
+
+            <TextView
+                android:id="@+id/tv_schedule_type"
+                style="@style/ScheduleDetailText"
+                tools:text="Default"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_schedule_note"
+                style="@style/ScheduleDetailIcon"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/schedule_detail_item_note_margin_top"
+                android:src="@drawable/ic_subject_24dp" />
+
+            <TextView
+                android:id="@+id/tv_schedule_note"
+                style="@style/ScheduleDetailText"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/schedule_detail_item_note_margin_top"
+                tools:text="Default"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -15,14 +15,16 @@ public class ScheduleContentValuesDataMapper {
     public ContentValues transform(ScheduleModel scheduleModel) {
         ContentValues scheduleValues = new ContentValues();
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TITLE, scheduleModel.getTitle());
-        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DETAIL, scheduleModel.getDetail());
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_NOTE, scheduleModel.getNote());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_TYPE, scheduleModel.getType());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_START, scheduleModel.getScheduleStart().getTime());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_DATE_END,  scheduleModel.getScheduleEnd().getTime());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_SCHEDULE, scheduleModel.getScheduleRepeatType());
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TYPE, scheduleModel.getAlarmType());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME, scheduleModel.getAlarmTime().getTime());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES, scheduleModel.getRepeatAlarmTimes());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL, scheduleModel.getRepeatAlarmInterval());
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_IS_DONE, scheduleModel.getDoneStatus());
 
         Log.v(LOG_TAG, "getSchedule(): scheduleValues = " + scheduleValues);
         return scheduleValues;

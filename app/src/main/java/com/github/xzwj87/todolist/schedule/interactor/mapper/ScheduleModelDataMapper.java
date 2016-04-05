@@ -15,26 +15,30 @@ public class ScheduleModelDataMapper {
     public static final String[] SCHEDULE_COLUMNS = {
             ScheduleContract.ScheduleEntry._ID,
             ScheduleContract.ScheduleEntry.COLUMN_TITLE,
-            ScheduleContract.ScheduleEntry.COLUMN_DETAIL,
+            ScheduleContract.ScheduleEntry.COLUMN_NOTE,
             ScheduleContract.ScheduleEntry.COLUMN_TYPE,
             ScheduleContract.ScheduleEntry.COLUMN_DATE_START,
             ScheduleContract.ScheduleEntry.COLUMN_DATE_END,
             ScheduleContract.ScheduleEntry.COLUMN_REPEAT_SCHEDULE,
+            ScheduleContract.ScheduleEntry.COLUMN_ALARM_TYPE,
             ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME,
             ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES,
-            ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL
+            ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL,
+            ScheduleContract.ScheduleEntry.COLUMN_IS_DONE
     };
 
     public static final int COL_SCHEDULE_ID = 0;
     public static final int COL_SCHEDULE_TITLE = 1;
-    public static final int COL_SCHEDULE_DETAIL = 2;
+    public static final int COL_SCHEDULE_NOTE = 2;
     public static final int COL_SCHEDULE_TYPE = 3;
     public static final int COL_SCHEDULE_DATE_START = 4;
     public static final int COL_SCHEDULE_DATE_END = 5;
     public static final int COL_SCHEDULE_REPEAT_SCHEDULE = 6;
-    public static final int COL_SCHEDULE_ALARM_TIME = 7;
-    public static final int COL_SCHEDULE_REPEAT_ALARM_TIMES = 8;
-    public static final int COL_SCHEDULE_REPEAT_ALARM_INTERVAL = 9;
+    public static final int COL_SCHEDULE_ALARM_TYPE = 7;
+    public static final int COL_SCHEDULE_ALARM_TIME = 8;
+    public static final int COL_SCHEDULE_REPEAT_ALARM_TIMES = 9;
+    public static final int COL_SCHEDULE_REPEAT_ALARM_INTERVAL = 10;
+    public static final int COL_SCHEDULE_IS_DONE = 11;
 
 
     public ScheduleModelDataMapper() {}
@@ -48,7 +52,7 @@ public class ScheduleModelDataMapper {
         ScheduleModel scheduleModel = new ScheduleModel();
         scheduleModel.setId(cursor.getLong(COL_SCHEDULE_ID));
         scheduleModel.setTitle(cursor.getString(COL_SCHEDULE_TITLE));
-        scheduleModel.setDetail(cursor.getString(COL_SCHEDULE_DETAIL));
+        scheduleModel.setNote(cursor.getString(COL_SCHEDULE_NOTE));
         scheduleModel.setType(cursor.getString(COL_SCHEDULE_TYPE));
 
         Date start = new Date(cursor.getLong(COL_SCHEDULE_DATE_START));
@@ -59,11 +63,15 @@ public class ScheduleModelDataMapper {
 
         scheduleModel.setScheduleRepeatType(cursor.getString(COL_SCHEDULE_REPEAT_SCHEDULE));
 
+        scheduleModel.setAlarmType(cursor.getString(COL_SCHEDULE_ALARM_TYPE));
+
         Date alarm = new Date(cursor.getLong(COL_SCHEDULE_ALARM_TIME));
         scheduleModel.setAlarmTime(alarm);
 
         scheduleModel.setRepeatAlarmTimes(cursor.getInt(COL_SCHEDULE_REPEAT_ALARM_TIMES));
         scheduleModel.setRepeatAlarmInterval(cursor.getInt(COL_SCHEDULE_REPEAT_ALARM_INTERVAL));
+
+        scheduleModel.setDoneStatus(cursor.getString(COL_SCHEDULE_IS_DONE));
 
         Log.v(LOG_TAG, "transform(): scheduleModel = " + scheduleModel);
 

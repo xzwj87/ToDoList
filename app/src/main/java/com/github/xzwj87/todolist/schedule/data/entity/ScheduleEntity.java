@@ -42,6 +42,8 @@ public class ScheduleEntity {
     private int mRepeatAlarmTimes;
     private int mRepeatAlarmInterval;
 
+    private boolean mIsDone;
+
     public String getTitle() {
         return mTitle;
     }
@@ -116,4 +118,12 @@ public class ScheduleEntity {
         this.mRepeatAlarmInterval = repeatAlarmInterval;
     }
 
+    /* whether an alarm is completed */
+    public void setAlarmState(boolean state){
+        this.mIsDone = state;
+    }
+
+    public boolean getAlarmState(){
+        return mIsDone;
+    }
 }

@@ -1,19 +1,45 @@
 <resources>
     <string name="app_name">Todo List</string>
     <string name="title_schedule_detail">Schedule Detail</string>
-    <string name="content_authority">com.github.xzwj87.todolist</string>
+    <string name="content_authority" translatable="false">com.github.xzwj87.todolist</string>
     <string name="title_activity_add_fragment">AddFragmentActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="search_hint">Search title and detail</string>
 
-    <string name="schedule_title_hint">Enter titles, people and places...</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="schedule_title_hint">Enter titles, people and places&#8230;</string>
+    <string name="schedule_note_hint">Add note</string>
     <string name="schedule_save">Save</string>
     <string name="schedule_all_day">All day</string>
     <string name="schedule_start">Start</string>
     <string name="schedule_end">End</string>
     <string name="title_activity_add"> </string>
+    <string name="schedule_no_title">(No title)</string>
+    <string name="schedule_date_invalid_message">Change the start time to be before the end of the event.</string>
 
     <string name="time_period_separator">-</string>
     <string name="action_search">search</string>
     <string name="title_activity_edit_schedule">EditScheduleActivity</string>
+
+    <string name="alarm_type_no_alarm">No alert</string>
+    <string name="alarm_type_10_minutes_before">10 minutes before</string>
+    <string name="alarm_type_30_minutes_before">30 minutes before</string>
+    <string name="alarm_type_1_hour_before">1 hour before</string>
+    <string name="alarm_type_custom">Custom&#8230;</string>
+
+    <string name="button_ok">OK</string>
+    <string name="button_cancel">CANCEL</string>
+    <string name="alarm_alert_title">aha,something you need to do</string>
+
+    <string name="schedule_type_all">All</string>
+    <string name="schedule_type_default">Default</string>
+    <string name="schedule_type_meeting">Meeting</string>
+    <string name="schedule_type_entertainment">Entertainment</string>
+    <string name="schedule_type_date">Date</string>
+    <string name="title_activity_search_schedule">SearchScheduleActivity</string>
+
+    <string name="action_delete">Delete</string>
 
 </resources>
