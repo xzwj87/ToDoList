@@ -1,6 +1,7 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -96,6 +97,8 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
             case R.id.action_delete:
                 mScheduleDetailPresenter.onDeleteSchedule(false);
                 return true;
+            case R.id.action_share:
+                doShare();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -185,4 +188,19 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     private void loadScheduleData() {
         mScheduleDetailPresenter.initialize();
     }
+
+    /* share something with other social Apps */
+    public void doShare(){
+        Log.v(LOG_TAG,"doShare()");
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        /* put data to it */
+        Bundle bundle = new Bundle();
+        bundle.putString("Title","I am doing something funny " +
+                "in ToDoList; come with me");
+        intent.putExtras(bundle);
+        startActivity(Intent.createChooser(intent, getResources().getText(R.string.send_to)));
+    }
+
 }
