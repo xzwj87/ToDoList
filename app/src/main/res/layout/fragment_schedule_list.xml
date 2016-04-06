@@ -8,6 +8,7 @@
         android:id="@+id/rv_schedule_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
         tools:listitem="@layout/item_schedule" />
 
 </FrameLayout>
