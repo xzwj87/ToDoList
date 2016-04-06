@@ -1,4 +1,4 @@
-package com.github.xzwj87.todolist.schedule.shake;
+package com.github.xzwj87.todolist.alarm.shake;
 
 import android.content.Context;
 import android.hardware.Sensor;

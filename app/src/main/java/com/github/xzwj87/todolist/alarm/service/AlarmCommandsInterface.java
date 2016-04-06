@@ -1,6 +1,4 @@
-package com.github.xzwj87.todolist.schedule.alarm.service;
-
-import android.content.Context;
+package com.github.xzwj87.todolist.alarm.service;
 
 import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
 

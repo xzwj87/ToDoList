@@ -1,4 +1,4 @@
-package com.github.xzwj87.todolist.schedule.alarm.service;
+package com.github.xzwj87.todolist.alarm.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,10 +9,8 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.Display;
-import android.widget.Toast;
 
-import com.github.xzwj87.todolist.app.App;
-import com.github.xzwj87.todolist.schedule.ui.activity.AlarmAlertActivity;
+import com.github.xzwj87.todolist.alarm.ui.activity.AlarmAlertActivity;
 
 /**
  * Created by JasonWang on 2016/3/2.
