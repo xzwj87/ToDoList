@@ -1,10 +1,10 @@
-package com.github.xzwj87.todolist.schedule.data.provider;
+package com.github.xzwj87.todolist.alarm;
 
 import android.os.SystemClock;
 import android.test.AndroidTestCase;
 
-import com.github.xzwj87.todolist.schedule.alarm.service.AlarmCommandsInterface;
-import com.github.xzwj87.todolist.schedule.alarm.service.AlarmService;
+import com.github.xzwj87.todolist.alarm.service.AlarmCommandsInterface;
+import com.github.xzwj87.todolist.alarm.service.AlarmService;
 import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
 
 import java.util.Date;
