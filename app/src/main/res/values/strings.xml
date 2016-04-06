@@ -5,6 +5,9 @@
     <string name="title_activity_add_fragment">AddFragmentActivity</string>
     <string name="action_settings">Settings</string>
     <string name="search_hint">Search title and detail</string>
+    <string name="undo">Undo</string>
+    <string name="marked_done">Marked done</string>
+    <string name="marked_undone">Marked undone</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

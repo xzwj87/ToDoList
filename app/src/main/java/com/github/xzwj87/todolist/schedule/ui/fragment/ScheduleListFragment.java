@@ -2,6 +2,7 @@ package com.github.xzwj87.todolist.schedule.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -222,12 +223,26 @@ public class ScheduleListFragment extends Fragment implements
                     @Override
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                         int position = viewHolder.getAdapterPosition();
-                         Log.v(LOG_TAG, "onSwiped(): position = " + position +
+                        Log.v(LOG_TAG, "onSwiped(): position = " + position +
                                  ", direction = " + direction);
-                         long id = mScheduleAdapter.getItemId(position);
-                         mScheduleListPresenter.markAsDone(new long[] {id}, mSwipeMarkAsDone);
-                      }
+                        long id = mScheduleAdapter.getItemId(position);
+                        mScheduleListPresenter.markAsDone(new long[] {id}, mSwipeMarkAsDone);
+                        showSnackBarNotification(id, mSwipeMarkAsDone);
+                    }
                 });
         itemTouchHelper.attachToRecyclerView(mRvScheduleList);
+    }
+
+    private void showSnackBarNotification(long id, boolean undoMarkAsDone) {
+        String message = undoMarkAsDone ?
+                getString(R.string.marked_done) : getString(R.string.marked_undone);
+        Snackbar snackbar = Snackbar.make(mRvScheduleList, message, Snackbar.LENGTH_LONG);
+        snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mScheduleListPresenter.markAsDone(new long[] {id}, !undoMarkAsDone);
+            }
+        });
+        snackbar.show();
     }
 }
