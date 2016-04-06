@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -47,6 +48,7 @@ public class ScheduleListFragment extends Fragment implements
     private boolean mIsSearchMode = false;
     private String mQuery;
     private boolean mSwipeMarkAsDone = true;
+    private int mLastRemovedPosition = -1;
 
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
 
@@ -158,8 +160,14 @@ public class ScheduleListFragment extends Fragment implements
 
     @Override
     public void renderScheduleList() {
-        Log.v(LOG_TAG, "renderScheduleList()");
-        mScheduleAdapter.notifyDataSetChanged();
+        Log.v(LOG_TAG, "renderScheduleList(): mLastRemovedPosition = " + mLastRemovedPosition);
+        if (mLastRemovedPosition != -1) {
+            mScheduleAdapter.notifyItemRemoved(mLastRemovedPosition);
+            mLastRemovedPosition = -1;
+        } else {
+            mScheduleAdapter.notifyDataSetChanged();
+        }
+
     }
 
     private void initialize() {
@@ -206,6 +214,7 @@ public class ScheduleListFragment extends Fragment implements
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRvScheduleList.setLayoutManager(layoutManager);
 
+        mRvScheduleList.setItemAnimator(new DefaultItemAnimator());
         mRvScheduleList.setHasFixedSize(true);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
@@ -227,6 +236,7 @@ public class ScheduleListFragment extends Fragment implements
                                  ", direction = " + direction);
                         long id = mScheduleAdapter.getItemId(position);
                         mScheduleListPresenter.markAsDone(new long[] {id}, mSwipeMarkAsDone);
+                        mLastRemovedPosition = position;
                         showSnackBarNotification(id, mSwipeMarkAsDone);
                     }
                 });
@@ -237,11 +247,8 @@ public class ScheduleListFragment extends Fragment implements
         String message = undoMarkAsDone ?
                 getString(R.string.marked_done) : getString(R.string.marked_undone);
         Snackbar snackbar = Snackbar.make(mRvScheduleList, message, Snackbar.LENGTH_LONG);
-        snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mScheduleListPresenter.markAsDone(new long[] {id}, !undoMarkAsDone);
-            }
+        snackbar.setAction(getString(R.string.undo), v -> {
+            mScheduleListPresenter.markAsDone(new long[] {id}, !undoMarkAsDone);
         });
         snackbar.show();
     }
