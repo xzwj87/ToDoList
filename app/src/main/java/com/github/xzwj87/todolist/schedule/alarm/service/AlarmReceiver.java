@@ -17,6 +17,11 @@ import com.github.xzwj87.todolist.schedule.ui.activity.AlarmAlertActivity;
 /**
  * Created by JasonWang on 2016/3/2.
  */
+
+/* here, remember that if the device turn off and rebooted, registered alarm
+   will be cleared; so, we need to listen to boot-up event
+ */
+
 public class AlarmReceiver extends BroadcastReceiver{
     protected static final String LOG_TAG = "AlarmReceiver";
 
