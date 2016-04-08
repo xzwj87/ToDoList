@@ -3,9 +3,8 @@ package com.github.xzwj87.todolist.schedule.data.provider;
 import android.os.SystemClock;
 import android.test.AndroidTestCase;
 
-import com.github.xzwj87.todolist.schedule.alarm.service.AlarmCommandsInterface;
-import com.github.xzwj87.todolist.schedule.alarm.service.AlarmService;
-import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
+import com.github.xzwj87.todolist.alarm.service.AlarmCommandsInterface;
+import com.github.xzwj87.todolist.alarm.service.AlarmService;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.util.Date;

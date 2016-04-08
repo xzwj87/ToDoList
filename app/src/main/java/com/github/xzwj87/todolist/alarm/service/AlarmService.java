@@ -1,4 +1,4 @@
-package com.github.xzwj87.todolist.schedule.alarm.service;
+package com.github.xzwj87.todolist.alarm.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -108,7 +108,7 @@ public class AlarmService implements AlarmCommandsInterface{
     @Override
     public void setOneTimeAlarm(ScheduleModel item) {
         Log.d(LOG_TAG, "setOneTimeAlarm(): title = " + item.getTitle()
-        + "date = " + item.getScheduleStart());
+        + " date = " + item.getScheduleStart());
 
         Intent alarmIntent = new Intent(mContext,AlarmReceiver.class);
         alarmIntent.setAction(ACTION_ONE_TIME_ALARM);

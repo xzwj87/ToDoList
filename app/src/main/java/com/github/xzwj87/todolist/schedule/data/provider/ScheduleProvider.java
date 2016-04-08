@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 
-import com.github.xzwj87.todolist.schedule.alarm.service.AlarmObserver;
+import com.github.xzwj87.todolist.alarm.service.AlarmObserver;
 
 public class ScheduleProvider extends ContentProvider {
     public static final String LOG_TAG = ScheduleProvider.class.getSimpleName();

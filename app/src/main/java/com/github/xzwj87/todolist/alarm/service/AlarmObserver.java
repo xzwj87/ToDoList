@@ -1,4 +1,4 @@
-package com.github.xzwj87.todolist.schedule.alarm.service;
+package com.github.xzwj87.todolist.alarm.service;
 
 import android.content.Context;
 import android.database.ContentObserver;
