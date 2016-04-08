@@ -1,4 +1,4 @@
-package com.github.xzwj87.todolist.schedule.data.provider;
+package com.github.xzwj87.todolist.alarm;
 
 import android.os.SystemClock;
 import android.test.AndroidTestCase;
