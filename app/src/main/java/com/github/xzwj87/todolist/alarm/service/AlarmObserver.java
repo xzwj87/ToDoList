@@ -27,7 +27,6 @@ public class AlarmObserver extends ContentObserver {
     private ScheduleModelDataMapper mDataMapper;
     private AlarmService mAlarmService;
     private HashMap<Long,ScheduleModel> mCurrentAlarm = new HashMap<>();
-    //private UriMatcher mUriMatcher = ScheduleProvider.buildUriMatcher();
 
     /**
      * Creates a content observer to observe the state of alarm(add/delete/cancel)
@@ -89,10 +88,8 @@ public class AlarmObserver extends ContentObserver {
             long id = schedule.getId();
             if(!mCurrentAlarm.containsKey(id)){
                 deleteAlarm(schedule);
-                isAdd = false;
             }else if(!schedule.equals(mCurrentAlarm.get(id))){
                 updateAlarm(schedule);
-                isAdd = false;
             }
         }
     }

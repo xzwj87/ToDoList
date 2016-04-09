@@ -163,7 +163,7 @@ public class AlarmService implements AlarmCommandsInterface{
         cancelIntent.putExtra(ALARM_START_TIME,item.getScheduleStart().getTime());
         cancelIntent.putExtra(ALARM_REPEAT_INTERVAL,item.getRepeatAlarmInterval());
 
-        PendingIntent sender = PendingIntent.getBroadcast(mContext,0,cancelIntent,0);
+        PendingIntent sender = PendingIntent.getBroadcast(mContext,(int)item.getId(),cancelIntent,0);
         try {
             mAlarmMgr.cancel(sender);
         }catch (Exception e){
