@@ -1,4 +1,4 @@
-package com.github.xzwj87.todolist.schedule.ui.activity;
+package com.github.xzwj87.todolist.alarm.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,10 +13,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.alarm.service.AlarmCommandsInterface;
-import com.github.xzwj87.todolist.schedule.media.AudioPlayerService;
-import com.github.xzwj87.todolist.schedule.shake.IShakeListener;
-import com.github.xzwj87.todolist.schedule.shake.ShakeDetectService;
+import com.github.xzwj87.todolist.alarm.service.AlarmCommandsInterface;
+import com.github.xzwj87.todolist.alarm.media.AudioPlayerService;
+import com.github.xzwj87.todolist.alarm.shake.IShakeListener;
+import com.github.xzwj87.todolist.alarm.shake.ShakeDetectService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -1,11 +1,11 @@
-package com.github.xzwj87.todolist.schedule.data.provider;
+package com.github.xzwj87.todolist.alarm;
 
 import android.os.SystemClock;
 import android.test.AndroidTestCase;
 
-import com.github.xzwj87.todolist.schedule.alarm.service.AlarmCommandsInterface;
-import com.github.xzwj87.todolist.schedule.alarm.service.AlarmService;
-import com.github.xzwj87.todolist.schedule.data.entity.ScheduleEntity;
+import com.github.xzwj87.todolist.alarm.service.AlarmCommandsInterface;
+import com.github.xzwj87.todolist.alarm.service.AlarmService;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ import java.util.Date;
 public class TestAlarmService extends AndroidTestCase {
     static final String TAG = "TestAlarmService";
     AlarmCommandsInterface mAlarmCommandsInterface;
-    ScheduleEntity mSchedule = new ScheduleEntity();
+    ScheduleModel mSchedule = new ScheduleModel();
 
     String title = "you got to do this!";
     long timeInterval = 5*1000;
@@ -29,12 +29,12 @@ public class TestAlarmService extends AndroidTestCase {
         mSchedule.setTitle(title);
         mSchedule.setAlarmTime(new Date(startTime));
         mSchedule.setRepeatAlarmInterval(repeatInterval);
-        mSchedule.setScheduleRepeatType(ScheduleEntity.SCHEDULE_REPEAT_NONE);
+        mSchedule.setScheduleRepeatType(ScheduleModel.SCHEDULE_REPEAT_NONE);
 
-       // mAlarmCommandsInterface.addScheduleEntity(mSchedule);
+       // mAlarmCommandsInterface.addScheduleItem(mSchedule);
         mAlarmCommandsInterface.setAlarm(mSchedule);
 
-        mSchedule.setScheduleRepeatType(ScheduleEntity.SCHEDULE_REPEAT_EVERY_DAY);
+        mSchedule.setScheduleRepeatType(ScheduleModel.SCHEDULE_REPEAT_EVERY_DAY);
         mAlarmCommandsInterface.setAlarm(mSchedule);
 
         SystemClock.sleep(timeInterval * 50);

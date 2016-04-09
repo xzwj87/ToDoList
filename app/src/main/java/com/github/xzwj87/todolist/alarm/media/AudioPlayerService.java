@@ -1,8 +1,7 @@
-package com.github.xzwj87.todolist.schedule.media;
+package com.github.xzwj87.todolist.alarm.media;
 
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.ui.activity.AlarmAlertActivity;
 
 import android.app.Service;
 import android.content.Context;
