@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <uses-feature android:name="android.hardware.sensor.accelerometer"></uses-feature>
 
@@ -17,7 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <receiver android:name=".alarm.service.AlarmReceiver" />
+        <receiver android:name=".alarm.service.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.github.xzwj87.action.one_time_alarm"></action>
+                <action android:name="com.github.xzwj87.action.repeat_alarm"></action>
+
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
         <service android:name=".alarm.media.AudioPlayerService" />
 
         <activity

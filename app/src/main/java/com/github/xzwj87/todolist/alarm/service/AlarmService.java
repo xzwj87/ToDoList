@@ -4,8 +4,12 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 
+import com.github.xzwj87.todolist.app.App;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.util.HashMap;
@@ -23,6 +27,7 @@ public class AlarmService implements AlarmCommandsInterface{
     private volatile static AlarmService mInstance;
     // an observer to observe the state of alarm(add/delete/cancel)
     private HashMap<Long,ScheduleModel> mAlarmSchedule = new HashMap<>();
+    private ScheduleModelDataMapper mDataMapper;
 
     public AlarmService(){
         // empty constructor
@@ -43,6 +48,26 @@ public class AlarmService implements AlarmCommandsInterface{
     public AlarmService(Context context){
         this.mContext = context;
         mAlarmMgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        mDataMapper = new ScheduleModelDataMapper();
+    }
+
+    /* device boot or reboot complete, init all alarms */
+    public void initAlarms(){
+        Log.d(LOG_TAG, "initAlarms()");
+
+        String selection = ScheduleContract.ScheduleEntry.COLUMN_DATE_START +" > ?" +
+                " AND " + ScheduleContract.ScheduleEntry.COLUMN_TYPE + " != ?" +
+                " AND " + ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+        String args[] = {String.valueOf(System.currentTimeMillis()),ScheduleModel.ALARM_NONE,
+                ScheduleModel.UNDONE};
+        Cursor cursor = mContext.getContentResolver().query(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                null,selection,args,null);
+
+        while(cursor.moveToNext()){
+            ScheduleModel item = mDataMapper.transform(cursor);
+            mAlarmSchedule.put(item.getId(),item);
+            setAlarm(item);
+        }
     }
 
     @Override

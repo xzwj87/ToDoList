@@ -53,6 +53,7 @@ public class AlarmObserver extends ContentObserver {
         Log.d(LOG_TAG, "onChange(): schedule uri = " + uri);
 
         mUri = uri;
+
         HashMap<Long,ScheduleModel> preAlarmSchedule = mAlarmService.getAllAlarmSchedule();
 
         boolean isAdd = false;
@@ -62,7 +63,6 @@ public class AlarmObserver extends ContentObserver {
         while(mCursor.moveToNext()){
             long id = mCursor.getLong(ScheduleModelDataMapper.COL_SCHEDULE_ID);
             ScheduleModel item = mDataMapper.transform(mCursor);
-
 
             @ScheduleModel.AlarmType String alarmType = item.getAlarmType();
             /* no alarm for this schedule */
@@ -84,7 +84,8 @@ public class AlarmObserver extends ContentObserver {
         /* now compare two alarm list to delete/update */
         Iterator iterator = preAlarmSchedule.entrySet().iterator();
         while(iterator.hasNext()){
-            ScheduleModel schedule = (ScheduleModel)iterator.next();
+            HashMap.Entry pair = (HashMap.Entry)iterator.next();
+            ScheduleModel schedule = (ScheduleModel)pair.getValue();
             long id = schedule.getId();
             if(!mCurrentAlarm.containsKey(id)){
                 deleteAlarm(schedule);
@@ -133,8 +134,11 @@ public class AlarmObserver extends ContentObserver {
     }
 
     protected void getAllAlarmSchedule(){
+        String selection = ScheduleContract.ScheduleEntry.COLUMN_ALARM_TYPE + " != ?"
+                + " AND " + ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+        String args[] = {ScheduleModel.ALARM_NONE,ScheduleModel.UNDONE};
         Cursor cursor = mContext.getContentResolver().query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-        null,null,null,null);
+        null,selection,args,null);
 
         while (!cursor.moveToFirst()){
             if(!cursor.getString(ScheduleModelDataMapper.COL_SCHEDULE_ALARM_TYPE)

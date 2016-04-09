@@ -21,22 +21,28 @@ import com.github.xzwj87.todolist.alarm.ui.activity.AlarmAlertActivity;
 public class AlarmReceiver extends BroadcastReceiver{
     protected static final String LOG_TAG = "AlarmReceiver";
 
-    private DisplayManager mDisplayMgr;
     private PowerManager pm;
     private Context mContext = null;
+    private AlarmService mAlarmService;
 
     public AlarmReceiver() {
     }
 
     public AlarmReceiver(Context context) {
-        Log.d(LOG_TAG,"creating AlarmReceiver");
+        Log.d(LOG_TAG, "creating AlarmReceiver");
         this.mContext = context;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(LOG_TAG, "onReceive(): action = " + intent.getAction().toString()
-        + " title = " + intent.getStringExtra(AlarmCommandsInterface.ALARM_TITLE));
+        Log.d(LOG_TAG, "onReceive(): action = " + intent.getAction().toString());
+
+        if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)){
+            mAlarmService = AlarmService.getInstance(context);
+            mAlarmService.initAlarms();
+
+            return;
+        }
 
         mContext = context;
         pm = (PowerManager)mContext.getSystemService(Context.POWER_SERVICE);
