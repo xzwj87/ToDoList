@@ -79,9 +79,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
         mEventTitle.setText(event);
 
         mOk = (Button)findViewById(R.id.ok);
-        mCancel = (Button)findViewById(R.id.cancel);
         mOk.setOnClickListener(this);
-        mCancel.setOnClickListener(this);
     }
 
     @Override
@@ -107,11 +105,6 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
             updateAlarmState(EVENT_USER_CLICK_OK);
             /* send message */
             Message msg = mHandler.obtainMessage(EVENT_USER_CLICK_OK, getEventName(EVENT_USER_CLICK_OK));
-            mHandler.sendMessage(msg);
-        }else{
-            updateAlarmState(EVENT_USER_CLICK_CANCEL);
-            /* send message */
-            Message msg = mHandler.obtainMessage(EVENT_USER_CLICK_CANCEL,getEventName(EVENT_USER_CLICK_CANCEL));
             mHandler.sendMessage(msg);
         }
     }
