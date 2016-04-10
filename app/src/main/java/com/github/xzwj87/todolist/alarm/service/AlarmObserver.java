@@ -101,7 +101,8 @@ public class AlarmObserver extends ContentObserver {
 
         mAlarmService.updateAlarmSchedule(cur);
         /* alarm time is changed */
-        if(!pre.getAlarmTime().equals(cur.getAlarmTime())) {
+        if(!pre.getAlarmTime().equals(cur.getAlarmTime())
+                || !pre.getScheduleStart().equals(cur.getScheduleStart())) {
             mAlarmService.cancelAlarm(pre);
             mAlarmService.setAlarm(cur);
         }

@@ -79,7 +79,7 @@ public class AlarmService implements AlarmCommandsInterface{
 
     @Override
     public void updateAlarmSchedule(ScheduleModel item){
-        Log.d(LOG_TAG, "updateScheduleItem()");
+        Log.d(LOG_TAG, "updateAlarmSchedule()");
         mAlarmSchedule.remove(item.getId());
         mAlarmSchedule.put(item.getId(),item);
     }
@@ -163,7 +163,7 @@ public class AlarmService implements AlarmCommandsInterface{
 
     @Override
     public void cancelAlarm(ScheduleModel item) {
-        Log.v(LOG_TAG, "cancelAlarm(): title = " + item.getTitle());
+        Log.d(LOG_TAG, "cancelAlarm(): title = " + item.getTitle());
 
         @ScheduleModel.ScheduleRepeatType String type = item.getScheduleRepeatType();
         String alarmType;

@@ -74,13 +74,12 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
         mScheduleId = intent.getLongExtra(ScheduleContract.ScheduleEntry._ID,-1);
         String formats = "HH:mm EEEE";
-        Date date = new Date(intent.getLongExtra(ScheduleContract.ScheduleEntry.COLUMN_DATE_START,0));
         SimpleDateFormat sdf = new SimpleDateFormat(formats);
-        mEventTime.setText(sdf.format(date));
+        mEventTime.setText(sdf.format(new Date()));
 
         /* if there are notes, need to display also */
-        String event = intent.getStringExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE);
-        mEventTitle.setText(event);
+        String mScheduleTitle = intent.getStringExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE);
+        mEventTitle.setText(mScheduleTitle);
 
         mOk = (Button)findViewById(R.id.ok);
         mOk.setOnClickListener(this);
@@ -91,16 +90,15 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
         /* start a new thread */
         mThread = new ServiceThread("ServicesThread");
         mThread.start();
+        /* send a delayed message to do timer alarm */
+        Message msg = mHandler.obtainMessage(EVENT_USER_ALARM_TIME_UP, getEventName(EVENT_USER_ALARM_TIME_UP));
+        mHandler.sendMessageDelayed(msg, mAlarmDuration);
     }
 
     @Override
     public void onResume(){
         super.onResume();
         Log.d(LOG_TAG, "onResume()");
-
-        /* send a delayed message to do timer alarm */
-        Message msg = mHandler.obtainMessage(EVENT_USER_ALARM_TIME_UP, getEventName(EVENT_USER_ALARM_TIME_UP));
-        mHandler.sendMessageDelayed(msg, mAlarmDuration);
     }
 
     @Override
@@ -229,9 +227,10 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
         }
 
         protected void sendNotification(){
-            Log.d(LOG_TAG,"sendNotification()");
+            Log.d(LOG_TAG, "sendNotification()");
 
         }
+
     }
 
 }
