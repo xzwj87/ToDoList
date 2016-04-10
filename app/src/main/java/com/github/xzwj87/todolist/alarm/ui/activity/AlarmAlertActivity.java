@@ -50,6 +50,8 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     private long mScheduleId;
     //private long now;
     private long mAlarmDuration = 1000*90;
+    private boolean mUserShake = false;
+    private boolean mAlarmDone = false;
 
     @Override
     public void onCreate(Bundle savedSate){
@@ -154,8 +156,11 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
             Log.d(ShakeListener.class.getSimpleName(),"onShake()");
 
             /* send message */
-            Message msg = mHandler.obtainMessage(EVENT_USER_SHAKE, getEventName(EVENT_USER_SHAKE));
-            mHandler.sendMessage(msg);
+            if(!mUserShake) {
+                Message msg = mHandler.obtainMessage(EVENT_USER_SHAKE, getEventName(EVENT_USER_SHAKE));
+                mHandler.sendMessage(msg);
+                mUserShake = true;
+            }
         }
     }
 
@@ -205,14 +210,17 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
                 stopServices();
                 switch (message.what){
                     case EVENT_USER_CLICK_OK:
-                    case EVENT_USER_CLICK_CANCEL:
                     case EVENT_USER_SHAKE:
+                        mAlarmDone = true;
+                        updateAlarmState();
                         break;
                     case EVENT_USER_ALARM_TIME_UP:
-                        sendNotification();
+                        if(!mAlarmDone) {
+                            sendNotification();
+                            updateAlarmState();
+                        }
                         break;
                 }
-                updateAlarmState();
                 finish();
             }
         }
@@ -226,7 +234,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
             getContentResolver().update(uri, updated, null, null);
         }
 
-        protected void sendNotification(){
+        protected void sendNotification() {
             Log.d(LOG_TAG, "sendNotification()");
 
         }
