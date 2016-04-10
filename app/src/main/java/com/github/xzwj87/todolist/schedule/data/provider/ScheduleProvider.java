@@ -8,15 +8,17 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 
+import com.github.xzwj87.todolist.alarm.service.AlarmObserver;
 
 public class ScheduleProvider extends ContentProvider {
     public static final String LOG_TAG = ScheduleProvider.class.getSimpleName();
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private ScheduleDbHelper mOpenHelper;
-//    private AlarmObserver mAlarmObserver;
+    private AlarmObserver mAlarmObserver;
 
     public static final int SCHEDULE = 100;
     public static final int SCHEDULE_WITH_ID = 101;
@@ -198,7 +200,7 @@ public class ScheduleProvider extends ContentProvider {
         }
     }
 
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = ScheduleContract.CONTENT_AUTHORITY;
 
@@ -218,12 +220,12 @@ public class ScheduleProvider extends ContentProvider {
 
     public void registerContentObserver(){
         Uri uri = ScheduleContract.ScheduleEntry.CONTENT_URI;
-//        mAlarmObserver = new AlarmObserver(getContext(), new Handler());
-//        getContext().getContentResolver().registerContentObserver(uri, true, mAlarmObserver);
+        mAlarmObserver = new AlarmObserver(getContext(), new Handler());
+        getContext().getContentResolver().registerContentObserver(uri, true, mAlarmObserver);
     }
 
     public void unregisterContentObserver(){
-//        getContext().getContentResolver().unregisterContentObserver(mAlarmObserver);
+        getContext().getContentResolver().unregisterContentObserver(mAlarmObserver);
     }
 }
 
