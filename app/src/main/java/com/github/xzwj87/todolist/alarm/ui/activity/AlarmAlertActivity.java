@@ -84,12 +84,6 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
         mOk = (Button)findViewById(R.id.ok);
         mOk.setOnClickListener(this);
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        Log.d(LOG_TAG,"onResume()");
 
         mShakeDetector = new ShakeDetectService(this);
         mShakeDetector.setShakeListener(new ShakeListener());
@@ -97,16 +91,22 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
         /* start a new thread */
         mThread = new ServiceThread("ServicesThread");
         mThread.start();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(LOG_TAG, "onResume()");
+
         /* send a delayed message to do timer alarm */
         Message msg = mHandler.obtainMessage(EVENT_USER_ALARM_TIME_UP, getEventName(EVENT_USER_ALARM_TIME_UP));
         mHandler.sendMessageDelayed(msg, mAlarmDuration);
     }
+
     @Override
     public void onClick(View v) {
         Log.d(LOG_TAG, "onClick(); button = " + getClass().getName() + "is clicked");
         if (v.equals(mOk)) {
-            /* update the alarm state to database */
-            //updateAlarmState(EVENT_USER_CLICK_OK);
             /* send message */
             Message msg = mHandler.obtainMessage(EVENT_USER_CLICK_OK, getEventName(EVENT_USER_CLICK_OK));
             mHandler.sendMessage(msg);
@@ -202,19 +202,19 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
             @Override
             public void handleMessage(Message message){
-                Log.d(LOG_TAG,"message: " + message.obj + " is handled");
+                Log.d(LOG_TAG, "message: " + message.obj + " is handled");
 
+                stopServices();
                 switch (message.what){
                     case EVENT_USER_CLICK_OK:
                     case EVENT_USER_CLICK_CANCEL:
                     case EVENT_USER_SHAKE:
-                        updateAlarmState();
                         break;
                     case EVENT_USER_ALARM_TIME_UP:
                         sendNotification();
                         break;
                 }
-                stopServices();
+                updateAlarmState();
                 finish();
             }
         }

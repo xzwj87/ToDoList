@@ -72,29 +72,21 @@ public class AlarmService implements AlarmCommandsInterface{
 
     @Override
     public void addAlarmSchedule(ScheduleModel item){
-        Log.v(LOG_TAG,"addAlarmSchedule()");
+        Log.d(LOG_TAG,"addAlarmSchedule()");
 
         mAlarmSchedule.put(item.getId(), item);
     }
 
     @Override
     public void updateAlarmSchedule(ScheduleModel item){
-        Log.v(LOG_TAG, "updateScheduleItem()");
-
-        Iterator iterator = mAlarmSchedule.entrySet().iterator();
-        HashMap.Entry entry;
-        while(iterator.hasNext()) {
-            entry = (HashMap.Entry)iterator.next();
-            if(Long.getLong(entry.getKey().toString()) == item.getId()){
-                entry.setValue(item);
-                break;
-            }
-        }
+        Log.d(LOG_TAG, "updateScheduleItem()");
+        mAlarmSchedule.remove(item.getId());
+        mAlarmSchedule.put(item.getId(),item);
     }
 
     @Override
     public void deleteAlarmSchedule(ScheduleModel item){
-        Log.v(LOG_TAG,"deleteAlarmSchedule()");
+        Log.d(LOG_TAG,"deleteAlarmSchedule()");
 
         mAlarmSchedule.remove(item.getId());
     }
