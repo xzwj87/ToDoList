@@ -1,7 +1,10 @@
 package com.github.xzwj87.todolist.alarm.ui.activity;
 
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
@@ -13,13 +16,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.alarm.service.AlarmCommandsInterface;
 import com.github.xzwj87.todolist.alarm.media.AudioPlayerService;
 import com.github.xzwj87.todolist.alarm.shake.IShakeListener;
 import com.github.xzwj87.todolist.alarm.shake.ShakeDetectService;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import android.os.Handler;
 
@@ -39,12 +42,12 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     private TextView mEventTitle;
     private TextView mEventTime;
     private Button mOk;
-    private Button mCancel;
 
     private ServiceThread mThread;
     private ServiceThread.EventHandler mHandler;
     private ShakeDetectService mShakeDetector;
 
+    private long mScheduleId;
     //private long now;
     private long mAlarmDuration = 1000*90;
 
@@ -69,13 +72,14 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
         mAlertTitle.setText(R.string.alarm_alert_title);
 
+        mScheduleId = intent.getLongExtra(ScheduleContract.ScheduleEntry._ID,-1);
         String formats = "HH:mm EEEE";
-        Date date = new Date(intent.getLongExtra(AlarmCommandsInterface.ALARM_START_TIME,0));
+        Date date = new Date(intent.getLongExtra(ScheduleContract.ScheduleEntry.COLUMN_DATE_START,0));
         SimpleDateFormat sdf = new SimpleDateFormat(formats);
         mEventTime.setText(sdf.format(date));
 
         /* if there are notes, need to display also */
-        String event = intent.getStringExtra(AlarmCommandsInterface.ALARM_TITLE);
+        String event = intent.getStringExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE);
         mEventTitle.setText(event);
 
         mOk = (Button)findViewById(R.id.ok);
@@ -99,19 +103,14 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     }
     @Override
     public void onClick(View v) {
-        Log.d(LOG_TAG,"onClick(); button = " + getClass().getName() + "is clicked");
+        Log.d(LOG_TAG, "onClick(); button = " + getClass().getName() + "is clicked");
         if (v.equals(mOk)) {
             /* update the alarm state to database */
-            updateAlarmState(EVENT_USER_CLICK_OK);
+            //updateAlarmState(EVENT_USER_CLICK_OK);
             /* send message */
             Message msg = mHandler.obtainMessage(EVENT_USER_CLICK_OK, getEventName(EVENT_USER_CLICK_OK));
             mHandler.sendMessage(msg);
         }
-    }
-
-    protected void updateAlarmState(int event){
-        Log.d(LOG_TAG, "updateAlarmState()");
-
     }
 
     // should run in a different thread
@@ -209,12 +208,29 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
                     case EVENT_USER_CLICK_OK:
                     case EVENT_USER_CLICK_CANCEL:
                     case EVENT_USER_SHAKE:
+                        updateAlarmState();
+                        break;
                     case EVENT_USER_ALARM_TIME_UP:
-                        stopServices();
-                        finish();
+                        sendNotification();
                         break;
                 }
+                stopServices();
+                finish();
             }
+        }
+
+        protected void updateAlarmState(){
+            Log.d(LOG_TAG, "updateAlarmState()");
+
+            Uri uri = ContentUris.withAppendedId(ScheduleContract.ScheduleEntry.CONTENT_URI,mScheduleId);
+            ContentValues updated = new ContentValues();
+            updated.put(ScheduleContract.ScheduleEntry.COLUMN_IS_DONE,ScheduleModel.DONE);
+            getContentResolver().update(uri, updated, null, null);
+        }
+
+        protected void sendNotification(){
+            Log.d(LOG_TAG,"sendNotification()");
+
         }
     }
 
