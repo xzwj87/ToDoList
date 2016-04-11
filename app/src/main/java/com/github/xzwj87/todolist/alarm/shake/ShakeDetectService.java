@@ -8,12 +8,12 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 /**
- * Created by JasonWang on 2016/3/28.
+ * Created by NingXu/JasonWang on 2016/3/28.
  */
 public class ShakeDetectService  implements SensorEventListener{
     public static final String TAG = "ShakeDetectService";
 
-    private static final float SHAKE_THRESHOLD_SPEED = 4000;
+    private static final float SHAKE_THRESHOLD_SPEED = 3800;
     private static final int SHAKE_SLOP_TIME = 50; // 50ms interval to detect
 
     private float lastX,lastY,lastZ;
@@ -79,8 +79,7 @@ public class ShakeDetectService  implements SensorEventListener{
         float deltaY = y - lastY;
         float deltaZ = z - lastZ;
 
-        float speed = (float)Math.sqrt(deltaX*deltaX + deltaY*deltaY +
-                deltaZ*deltaZ)/diff * 10000;
+        float speed = Math.abs(deltaX + deltaY + deltaZ)/diff * 10000;
 
         if(speed > SHAKE_THRESHOLD_SPEED){
             Log.d(TAG, "onSensorChanged(): speed =  " + speed);

@@ -72,29 +72,21 @@ public class AlarmService implements AlarmCommandsInterface{
 
     @Override
     public void addAlarmSchedule(ScheduleModel item){
-        Log.v(LOG_TAG,"addAlarmSchedule()");
+        Log.d(LOG_TAG,"addAlarmSchedule()");
 
         mAlarmSchedule.put(item.getId(), item);
     }
 
     @Override
     public void updateAlarmSchedule(ScheduleModel item){
-        Log.v(LOG_TAG, "updateScheduleItem()");
-
-        Iterator iterator = mAlarmSchedule.entrySet().iterator();
-        HashMap.Entry entry;
-        while(iterator.hasNext()) {
-            entry = (HashMap.Entry)iterator.next();
-            if(Long.getLong(entry.getKey().toString()) == item.getId()){
-                entry.setValue(item);
-                break;
-            }
-        }
+        Log.d(LOG_TAG, "updateAlarmSchedule()");
+        mAlarmSchedule.remove(item.getId());
+        mAlarmSchedule.put(item.getId(),item);
     }
 
     @Override
     public void deleteAlarmSchedule(ScheduleModel item){
-        Log.v(LOG_TAG,"deleteAlarmSchedule()");
+        Log.d(LOG_TAG,"deleteAlarmSchedule()");
 
         mAlarmSchedule.remove(item.getId());
     }
@@ -138,11 +130,9 @@ public class AlarmService implements AlarmCommandsInterface{
         Intent alarmIntent = new Intent(mContext,AlarmReceiver.class);
         alarmIntent.setAction(ACTION_ONE_TIME_ALARM);
         // put extra information to the intent
-        alarmIntent.putExtra(ALARM_TITLE, item.getTitle());
-        alarmIntent.putExtra(ALARM_START_TIME,item.getScheduleStart().getTime());
-        // a dummy data to keep consistent extra
-        int repeatAlarmInterval = item.getRepeatAlarmInterval();
-        alarmIntent.putExtra(ALARM_REPEAT_INTERVAL,repeatAlarmInterval);
+        alarmIntent.putExtra(ScheduleContract.ScheduleEntry._ID,item.getId());
+        alarmIntent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE, item.getTitle());
+        alarmIntent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_DATE_START,item.getScheduleStart().getTime());
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,(int)item.getId(),alarmIntent,0);
         try {
@@ -159,9 +149,9 @@ public class AlarmService implements AlarmCommandsInterface{
         Intent alarmIntent = new Intent(mContext,AlarmReceiver.class);
         alarmIntent.setAction(ACTION_REPEAT_ALARM);
         // put extra information to intent
-        alarmIntent.putExtra(ALARM_TITLE, item.getTitle());
-        alarmIntent.putExtra(ALARM_START_TIME,item.getScheduleStart());
-        alarmIntent.putExtra(ALARM_REPEAT_INTERVAL, item.getRepeatAlarmInterval());
+        alarmIntent.putExtra(ScheduleContract.ScheduleEntry._ID,item.getId());
+        alarmIntent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE, item.getTitle());
+        alarmIntent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_DATE_START,item.getScheduleStart());
 
         PendingIntent pi = PendingIntent.getBroadcast(mContext,(int)item.getId(),alarmIntent,0);
         try{
@@ -173,7 +163,7 @@ public class AlarmService implements AlarmCommandsInterface{
 
     @Override
     public void cancelAlarm(ScheduleModel item) {
-        Log.v(LOG_TAG, "cancelAlarm(): title = " + item.getTitle());
+        Log.d(LOG_TAG, "cancelAlarm(): title = " + item.getTitle());
 
         @ScheduleModel.ScheduleRepeatType String type = item.getScheduleRepeatType();
         String alarmType;
@@ -184,9 +174,9 @@ public class AlarmService implements AlarmCommandsInterface{
         Intent cancelIntent = new Intent(mContext,AlarmReceiver.class);
         cancelIntent.setAction(alarmType);
         // put extra data to intent
-        cancelIntent.putExtra(ALARM_TITLE, item.getTitle());
-        cancelIntent.putExtra(ALARM_START_TIME,item.getScheduleStart().getTime());
-        cancelIntent.putExtra(ALARM_REPEAT_INTERVAL,item.getRepeatAlarmInterval());
+        cancelIntent.putExtra(ScheduleContract.ScheduleEntry._ID,item.getId());
+        cancelIntent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE, item.getTitle());
+        cancelIntent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_DATE_START,item.getScheduleStart().getTime());
 
         PendingIntent sender = PendingIntent.getBroadcast(mContext,(int)item.getId(),cancelIntent,0);
         try {
