@@ -49,4 +49,6 @@
 
     <string name="action_delete">Delete</string>
 
+    <string name="alarm_notification">you have something to do in ToDoList</string>
+
 </resources>

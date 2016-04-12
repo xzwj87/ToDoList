@@ -1,13 +1,18 @@
 package com.github.xzwj87.todolist.alarm.ui.activity;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -52,6 +57,8 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     private long mAlarmDuration = 1000*90;
     private boolean mUserShake = false;
     private boolean mAlarmDone = false;
+    private String mScheduleTitle;
+    private NotificationManager mNotificationMgr;
 
     @Override
     public void onCreate(Bundle savedSate){
@@ -80,7 +87,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
         mEventTime.setText(sdf.format(new Date()));
 
         /* if there are notes, need to display also */
-        String mScheduleTitle = intent.getStringExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE);
+        mScheduleTitle = intent.getStringExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE);
         mEventTitle.setText(mScheduleTitle);
 
         mOk = (Button)findViewById(R.id.ok);
@@ -234,9 +241,28 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
             getContentResolver().update(uri, updated, null, null);
         }
 
-        protected void sendNotification() {
+        protected void sendNotification(){
             Log.d(LOG_TAG, "sendNotification()");
 
+            NotificationCompat.Builder builder = new
+                    NotificationCompat.Builder(getBaseContext());
+            builder.setSmallIcon(R.drawable.ic_access_alarms_24dp)
+                   .setContentTitle("you have something to do in TodoList")
+                   .setContentText(mScheduleTitle);
+
+            Intent resultIntent = new Intent(getBaseContext(),
+                    NotifierDetailActivity.class);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+            stackBuilder.addNextIntent(resultIntent);
+
+            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                    0,PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(resultPendingIntent);
+
+            int notifyId = 1;
+            mNotificationMgr = (NotificationManager)getApplicationContext()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationMgr.notify(notifyId,builder.build());
         }
 
     }

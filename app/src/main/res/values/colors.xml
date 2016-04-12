@@ -6,7 +6,7 @@
 
     <color name="colorIcon">#8A000000</color>
 
-    <color name="colorDefault">#FF00FF</color>
+    <color name="colorDefault">#00FFFF</color>
     <color name="colorMeeting">#4CAF50</color>
     <color name="colorEntertainment">#FFFF00</color>
     <color name="colorDate">#FF69B4</color>
