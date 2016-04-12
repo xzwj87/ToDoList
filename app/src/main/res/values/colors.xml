@@ -6,10 +6,10 @@
 
     <color name="colorIcon">#8A000000</color>
 
-    <color name="colorDefault">#0288D1</color>
+    <color name="colorDefault">#FF00FF</color>
     <color name="colorMeeting">#4CAF50</color>
-    <color name="colorEntertainment">#FFA726</color>
-    <color name="colorDate">#EC407A</color>
+    <color name="colorEntertainment">#FFFF00</color>
+    <color name="colorDate">#FF69B4</color>
 
     <color name="colorTextErrorIndication">#EF5350</color>
     <color name="colorText">#000000</color>
