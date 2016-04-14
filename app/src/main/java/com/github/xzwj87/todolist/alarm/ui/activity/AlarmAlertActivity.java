@@ -41,7 +41,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     public static final int EVENT_USER_CLICK_OK = 0x01;
     public static final int EVENT_USER_CLICK_CANCEL = 0x02;
     public static final int EVENT_USER_SHAKE = 0x03;
-    public static final int EVENT_USER_ALARM_TIME_UP = 0x04;
+    public static final int EVENT_ALARM_TIME_UP = 0x04;
 
     private TextView mAlertTitle;
     private TextView mEventTitle;
@@ -100,7 +100,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
         mThread = new ServiceThread("ServicesThread");
         mThread.start();
         /* send a delayed message to do timer alarm */
-        Message msg = mHandler.obtainMessage(EVENT_USER_ALARM_TIME_UP, getEventName(EVENT_USER_ALARM_TIME_UP));
+        Message msg = mHandler.obtainMessage(EVENT_ALARM_TIME_UP, getEventName(EVENT_ALARM_TIME_UP));
         mHandler.sendMessageDelayed(msg, mAlarmDuration);
     }
 
@@ -149,8 +149,8 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
                 return "USER_CLICK_CANCEL";
             case EVENT_USER_SHAKE:
                 return "USER_SHAKE";
-            case EVENT_USER_ALARM_TIME_UP:
-                return "USER_ALARM_TIME_UP";
+            case EVENT_ALARM_TIME_UP:
+                return "ALARM_TIME_UP";
             default:
                 return null;
         }
@@ -221,12 +221,16 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
                         mAlarmDone = true;
                         updateAlarmState();
                         break;
-                    case EVENT_USER_ALARM_TIME_UP:
+                    case EVENT_ALARM_TIME_UP:
                         if(!mAlarmDone) {
                             sendNotification();
                             updateAlarmState();
                         }
                         break;
+                }
+                /* before done, need to remove all the pending messages */
+                if(mHandler.hasMessages(EVENT_ALARM_TIME_UP)){
+                    mHandler.removeMessages(EVENT_ALARM_TIME_UP);
                 }
                 finish();
             }
