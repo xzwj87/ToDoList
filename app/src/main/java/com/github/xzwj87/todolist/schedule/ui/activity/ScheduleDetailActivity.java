@@ -39,6 +39,7 @@ public class ScheduleDetailActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
         }
 
         if (savedInstanceState == null) {
