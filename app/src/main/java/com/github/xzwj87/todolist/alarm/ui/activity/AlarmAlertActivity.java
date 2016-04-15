@@ -218,8 +218,10 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
                 switch (message.what){
                     case EVENT_USER_CLICK_OK:
                     case EVENT_USER_SHAKE:
-                        mAlarmDone = true;
-                        updateAlarmState();
+                        if(!mAlarmDone){
+                            mAlarmDone = true;
+                            updateAlarmState();
+                        }
                         break;
                     case EVENT_ALARM_TIME_UP:
                         if(!mAlarmDone) {
