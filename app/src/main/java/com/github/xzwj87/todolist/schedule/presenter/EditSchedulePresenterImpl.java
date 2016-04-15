@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
@@ -36,8 +37,6 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
     private AddScheduleView mView;
 
     private ScheduleModel mSchedule;
-
-    public EditSchedulePresenterImpl() {}
 
     public EditSchedulePresenterImpl(UseCase updateUseCase, UseCase queryUseCase,
                                      ScheduleContentValuesDataMapper contentValueMapper,
@@ -111,6 +110,12 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
                 year, monthOfYear, dayOfMonth);
         mSchedule.setScheduleStart(startDate);
         mView.updateStartDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleStart()));
+
+        Date alarmTime = getAlarmTimeByType(
+                mSchedule.getScheduleStart(), mSchedule.getAlarmType());
+        mSchedule.setAlarmTime(alarmTime);
+
+        checkScheduleDateValidity(mSchedule);
     }
 
     @Override
@@ -119,6 +124,12 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
                 hourOfDay, minute, second);
         mSchedule.setScheduleStart(startTime);
         mView.updateStartTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleStart()));
+
+        Date alarmTime = getAlarmTimeByType(
+                mSchedule.getScheduleStart(), mSchedule.getAlarmType());
+        mSchedule.setAlarmTime(alarmTime);
+
+        checkScheduleDateValidity(mSchedule);
     }
 
     @Override
@@ -127,6 +138,7 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
                 year, monthOfYear, dayOfMonth);
         mSchedule.setScheduleEnd(endDate);
         mView.updateEndDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleEnd()));
+        checkScheduleDateValidity(mSchedule);
     }
 
     @Override
@@ -135,6 +147,7 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
                 hourOfDay, minute, second);
         mSchedule.setScheduleEnd(endTime);
         mView.updateEndTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleEnd()));
+        checkScheduleDateValidity(mSchedule);
     }
 
     @Override
@@ -177,9 +190,11 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
 
     @Override
     public void onSave() {
-        mUpdateUseCase.init(
-                new UpdateScheduleArg(mSchedule.getId(), mContentValueMapper.transform(mSchedule)))
-                .execute(new UpdateScheduleSubscriber());
+        if (checkScheduleIntegrity(mSchedule)) {
+            mUpdateUseCase.init(
+                    new UpdateScheduleArg(mSchedule.getId(), mContentValueMapper.transform(mSchedule)))
+                    .execute(new UpdateScheduleSubscriber());
+        }
     }
 
     private void updateScheduleToView(ScheduleModel schedule) {
@@ -266,5 +281,25 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
         return calendar.getTime();
     }
 
+
+    private boolean checkScheduleIntegrity(ScheduleModel schedule) {
+        if (!checkScheduleDateValidity(schedule)) {
+            mView.showMessageDialog(null,
+                    mView.getViewContext().getString(
+                            R.string.schedule_date_invalid_message));
+            return false;
+        }
+        if (schedule.getTitle() == null || schedule.getTitle().equals("")) {
+            schedule.setTitle(mView.getViewContext().getString(
+                    R.string.schedule_no_title));
+        }
+        return true;
+    }
+
+    private boolean checkScheduleDateValidity(ScheduleModel schedule) {
+        boolean isValid = schedule.getScheduleStart().compareTo(schedule.getScheduleEnd()) <= 0;
+        mView.showErrorIndicationOnStartTime(!isValid);
+        return isValid;
+    }
 
 }

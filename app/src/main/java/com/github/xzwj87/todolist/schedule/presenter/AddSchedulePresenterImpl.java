@@ -124,6 +124,11 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
             mSchedule.setScheduleEnd(calculateEndDateByDefault(startDate));
             mAddScheduleView.updateEndDateDisplay(DATE_FORMAT.format(mSchedule.getScheduleEnd()));
         }
+
+        Date alarmTime = getAlarmTimeByType(
+                mSchedule.getScheduleStart(), mSchedule.getAlarmType());
+        mSchedule.setAlarmTime(alarmTime);
+
         checkScheduleDateValidity(mSchedule);
     }
 
@@ -139,6 +144,11 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
             mSchedule.setScheduleEnd(calculateEndDateByDefault(startTime));
             mAddScheduleView.updateEndTimeDisplay(TIME_FORMAT.format(mSchedule.getScheduleEnd()));
         }
+
+        Date alarmTime = getAlarmTimeByType(
+                mSchedule.getScheduleStart(), mSchedule.getAlarmType());
+        mSchedule.setAlarmTime(alarmTime);
+
         checkScheduleDateValidity(mSchedule);
     }
 
@@ -283,7 +293,7 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
                             R.string.schedule_date_invalid_message));
             return false;
         }
-       if (schedule.getTitle() == null || schedule.getTitle().equals("")) {
+        if (schedule.getTitle() == null || schedule.getTitle().equals("")) {
             schedule.setTitle(mAddScheduleView.getViewContext().getString(
                     R.string.schedule_no_title));
         }
