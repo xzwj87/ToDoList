@@ -9,6 +9,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
@@ -39,15 +42,15 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     public static final String LOG_TAG = "AlarmAlertActivity";
 
     /* User Event Definition */
-    public static final int EVENT_USER_CLICK_OK = 0x01;
+    public static final int EVENT_USER_CLICK_CLOSE = 0x01;
     public static final int EVENT_USER_CLICK_CANCEL = 0x02;
     public static final int EVENT_USER_SHAKE = 0x03;
     public static final int EVENT_ALARM_TIME_UP = 0x04;
 
     private TextView mAlertTitle;
-    private TextView mEventTitle;
-    private TextView mEventTime;
-    private Button mOk;
+    private TextView mAlarmTime;
+    private TextView mAlarmTimeWeek;
+    private ImageView mClose;
 
     private ServiceThread mThread;
     private ServiceThread.EventHandler mHandler;
@@ -76,23 +79,26 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
         setContentView(R.layout.activity_alarm_alert);
 
-        mAlertTitle = (TextView)findViewById(R.id.alert);
-        mEventTime = (TextView)findViewById(R.id.alarm_time);
-        mEventTitle = (TextView)findViewById(R.id.event);
-
-        mAlertTitle.setText(R.string.alarm_alert_title);
+        mAlertTitle = (TextView)findViewById(R.id.alarm_title);
+        mAlarmTime = (TextView)findViewById(R.id.alarm_time);
+        mAlarmTimeWeek = (TextView)findViewById(R.id.alarm_time_week);
+        mClose = (ImageView)findViewById(R.id.alert_close);
 
         mScheduleId = intent.getLongExtra(ScheduleContract.ScheduleEntry._ID,-1);
-        String formats = "HH:mm EEEE";
+
+        String formats = "HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(formats);
-        mEventTime.setText(sdf.format(new Date()));
+        mAlarmTime.setText(sdf.format(new Date()));
+
+        formats = "EEEE";
+        sdf = new SimpleDateFormat(formats);
+        mAlarmTimeWeek.setText(sdf.format(new Date()));
 
         /* if there are notes, need to display also */
         mScheduleTitle = intent.getStringExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE);
-        mEventTitle.setText(mScheduleTitle);
+        mAlertTitle.setText(mScheduleTitle);
 
-        mOk = (Button)findViewById(R.id.ok);
-        mOk.setOnClickListener(this);
+        mClose.setOnClickListener(this);
 
         mShakeDetector = new ShakeDetectService(this);
         mShakeDetector.setShakeListener(new ShakeListener());
@@ -114,9 +120,9 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         Log.d(LOG_TAG, "onClick(); button = " + getClass().getName() + "is clicked");
-        if (v.equals(mOk)) {
+        if (v.equals(mClose)) {
             /* send message */
-            Message msg = mHandler.obtainMessage(EVENT_USER_CLICK_OK, getEventName(EVENT_USER_CLICK_OK));
+            Message msg = mHandler.obtainMessage(EVENT_USER_CLICK_CLOSE, getEventName(EVENT_USER_CLICK_CLOSE));
             mHandler.sendMessage(msg);
         }
     }
@@ -144,7 +150,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
     public String getEventName(int event){
         switch (event){
-            case EVENT_USER_CLICK_OK:
+            case EVENT_USER_CLICK_CLOSE:
                 return "USER_CLICK_OK";
             case EVENT_USER_CLICK_CANCEL:
                 return "USER_CLICK_CANCEL";
@@ -217,7 +223,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
                 stopServices();
                 switch (message.what){
-                    case EVENT_USER_CLICK_OK:
+                    case EVENT_USER_CLICK_CLOSE:
                     case EVENT_USER_SHAKE:
                         if(!mAlarmDone){
                             mAlarmDone = true;

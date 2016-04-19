@@ -1,69 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:layout_margin="@dimen/activity_vertical_margin"
     android:keepScreenOn="true"
     android:id="@+id/alarm_alert">
 
-    <TextView android:id="@+id/alert"
+    <ImageView android:id="@+id/alert_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="@dimen/alarm_item_margin_size"
-        android:textSize="@dimen/alarm_alert_title_size"
-        android:textColor="@color/colorGray"
-        android:textStyle="bold"
-        android:text="@string/alarm_alert_title"/>
-
-    <ImageView android:id="@+id/alarm_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/alert"
-        android:layout_alignLeft="@id/alert"
-        android:layout_marginTop="@dimen/alarm_item_margin_size"
-        android:layout_marginBottom="@dimen/alarm_item_margin_size"
-        android:src="@drawable/ic_alarm_orange_200_36dp"
-        />
+        android:src="@drawable/ic_close_24dp_grey"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginLeft="@dimen/fab_margin"/>
 
     <TextView android:id="@+id/alarm_time"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/alarm_icon"
-        android:layout_alignTop="@id/alarm_icon"
-        android:layout_marginLeft="@dimen/alarm_item_margin_size"
         android:textSize="@dimen/alarm_alert_title_size"
-        android:textColor="@color/colorGray" />
+        android:textColor="@color/colorGray"
+        android:layout_below="@id/alert_close"
+        android:gravity="center"
+        android:typeface="serif"/>
 
-    <ImageView android:id="@+id/event_icon"
-        android:layout_width="wrap_content"
+    <TextView android:id="@+id/alarm_time_week"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/alarm_time"
-        android:layout_alignLeft="@id/alarm_icon"
-        android:layout_marginTop="@dimen/alarm_item_margin_size"
+        android:textColor="@color/colorGray"
+        android:gravity="center"
+        android:textSize="@dimen/alarm_event_title_size"
         android:layout_marginBottom="@dimen/alarm_item_margin_size"
-        android:src="@drawable/ic_info_outline_orange_200_36dp"
-        />
+        android:typeface="serif"/>
 
-    <TextView android:id="@+id/event"
-        android:layout_width="wrap_content"
+    <TextView android:id="@+id/alarm_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/event_icon"
-        android:layout_marginLeft="@dimen/alarm_item_margin_size"
-        android:layout_alignTop="@id/event_icon"
-        android:layout_marginBottom="@dimen/alarm_item_margin_size"
+        android:layout_below="@id/alarm_time_week"
         android:textSize="@dimen/alarm_event_title_size"
         android:textColor="@color/colorGray"
-        android:maxLines="3"/>
-
-    <Button android:id="@+id/ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/event"
-        android:layout_marginTop="@dimen/alarm_item_margin_size"
-        android:text="@string/button_ok"
-        android:textColor="@color/colorOrange"
-        android:textSize="@dimen/button_text_size"/>
+        android:layout_marginBottom="@dimen/alarm_item_margin_size"
+        android:maxLines="2"
+        android:gravity="center"
+        android:typeface="sans"/>
 
 </RelativeLayout>
