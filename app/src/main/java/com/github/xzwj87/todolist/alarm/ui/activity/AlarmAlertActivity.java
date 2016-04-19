@@ -1,6 +1,7 @@
 package com.github.xzwj87.todolist.alarm.ui.activity;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -253,8 +254,10 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
             NotificationCompat.Builder builder = new
                     NotificationCompat.Builder(getBaseContext());
             builder.setSmallIcon(R.drawable.ic_access_alarms_24dp)
-                   .setContentTitle("you have something to do in TodoList")
-                   .setContentText(mScheduleTitle);
+                   .setContentTitle(getResources().getString(R.string.app_name))
+                   .setContentText(mScheduleTitle)
+                   .setCategory(Notification.CATEGORY_ALARM)
+                   .setAutoCancel(true);
 
             Intent resultIntent = new Intent(getBaseContext(),
                     NotifierDetailActivity.class);
