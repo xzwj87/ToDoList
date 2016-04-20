@@ -1,9 +1,14 @@
 package com.github.xzwj87.todolist.schedule.ui.activity;
 
 import android.app.SearchManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleSuggestionModelDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleSuggestion;
@@ -54,6 +60,8 @@ public class ScheduleListActivity extends AppCompatActivity
 
     private SearchSuggestionPresenter mPresenter;
 
+    private ScheduleObserver mScheduleObserver;
+
     @Bind(R.id.fab) FloatingActionButton mFab;
 
     @Override
@@ -69,7 +77,23 @@ public class ScheduleListActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+
+            @Override
+            public void onDrawerOpened (View drawerView){
+                super.onDrawerOpened(drawerView);
+                Log.v(LOG_TAG,"onDrawerOpened()");
+                NavigationView view = (NavigationView)drawerView.findViewById(R.id.nav_view);
+                Menu menu = view.getMenu();
+
+                menu.findItem(R.id.nav_schedule_type_all).setTitle(
+                        getResources().getString(R.string.schedule_type_all)
+                        + " (" + mScheduleObserver.getTotalSchedule() + ")");
+                menu.findItem(R.id.nav_done).setTitle(
+                        getResources().getString(R.string.schedule_done)
+                        + " (" + mScheduleObserver.getDoneSchedule() + ")");
+            }
+        };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -90,6 +114,15 @@ public class ScheduleListActivity extends AppCompatActivity
         handleIntent(getIntent());
 
         initialize();
+
+        registerObserver();
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+        unregisterObserver();
     }
 
     @Override
@@ -279,5 +312,80 @@ public class ScheduleListActivity extends AppCompatActivity
                 return true;
             }
         });
+    }
+
+    public class ScheduleObserver extends ContentObserver{
+        public static final String TAG = "ScheduleObserver";
+
+        private int mTotalSchedule;
+        private int mDoneSchedule;
+        private ContentResolver mContentResolver;
+
+        public ScheduleObserver(Context context,Handler handler){
+            super(handler);
+
+            mContentResolver = getContentResolver();
+
+            Cursor cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                    null,null,null,null);
+            //cursor.moveToFirst();
+            mTotalSchedule = cursor.getCount();
+
+            if(mTotalSchedule == 0){
+                mDoneSchedule = 0;
+                return;
+            }
+
+            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+            String args[] = {ScheduleModel.DONE};
+            cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                    null,selection,args,null);
+
+            mDoneSchedule = cursor.getCount();
+        }
+
+        @Override
+        public void onChange(boolean selfChange){
+            onChange(selfChange, null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange,Uri uri){
+            Log.v(TAG, "onChange: uri = " + uri);
+
+            Cursor cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                    null,null,null,null);
+            //cursor.moveToFirst();
+            mTotalSchedule = cursor.getCount();
+
+            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+            String args[] = {ScheduleModel.DONE};
+            cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                    null,selection,null,null);
+
+            mDoneSchedule = cursor.getCount();
+        }
+
+        public int getTotalSchedule(){
+            return mTotalSchedule;
+        }
+
+        public int getDoneSchedule(){
+            return mDoneSchedule;
+        }
+    }
+
+    public void registerObserver(){
+        Log.v(LOG_TAG,"registerObserver");
+
+        mScheduleObserver = new ScheduleObserver(this,new Handler());
+        getContentResolver().registerContentObserver(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                true,mScheduleObserver);
+    }
+
+    public void unregisterObserver(){
+        Log.v(LOG_TAG, "unregisterObserver");
+
+        getContentResolver().unregisterContentObserver(mScheduleObserver);
     }
 }
