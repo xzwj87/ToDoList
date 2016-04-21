@@ -10,6 +10,8 @@ import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMa
 import com.squareup.sqlbrite.BriteContentResolver;
 import com.squareup.sqlbrite.SqlBrite;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -18,6 +20,7 @@ public class GetScheduleById extends UseCase<Long> {
 
     private final BriteContentResolver mBriteContentResolver;
 
+    @Inject
     public GetScheduleById(long scheduleId) {
         SqlBrite sqlBrite = SqlBrite.create();
         mBriteContentResolver = sqlBrite.wrapContentProvider(

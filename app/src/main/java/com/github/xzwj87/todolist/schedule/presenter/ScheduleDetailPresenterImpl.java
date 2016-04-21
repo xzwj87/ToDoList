@@ -8,12 +8,17 @@ import android.util.Log;
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
+import com.github.xzwj87.todolist.schedule.internal.di.PerActivity;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.github.xzwj87.todolist.schedule.utility.ScheduleUtility;
 
 import java.text.SimpleDateFormat;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+@PerActivity
 public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     private static final String LOG_TAG = ScheduleDetailPresenterImpl.class.getSimpleName();
 
@@ -25,7 +30,10 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     private UseCase mDeleteUseCase;
     private ScheduleModelDataMapper mMapper;
 
-    public ScheduleDetailPresenterImpl(UseCase getDetailUseCase, UseCase deleteUseCase ,ScheduleModelDataMapper mapper) {
+    @Inject
+    public ScheduleDetailPresenterImpl(@Named("getScheduleById")UseCase getDetailUseCase,
+                                       @Named("deleteSchedule")UseCase deleteUseCase,
+                                       ScheduleModelDataMapper mapper) {
         mGetDetailUseCase = getDetailUseCase;
         mDeleteUseCase = deleteUseCase;
         mMapper = mapper;

@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,25 +15,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.interactor.UseCase;
-import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteSchedule;
-import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteScheduleArg;
-import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
-import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleById;
-import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenter;
+import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ScheduleDetailFragment extends Fragment implements ScheduleDetailView {
+public class ScheduleDetailFragment extends BaseFragment implements ScheduleDetailView {
     private static final String LOG_TAG = ScheduleDetailFragment.class.getSimpleName();
 
     public static final String SCHEDULE_ID = "id";
 
     private long mScheduleId = 0;
-    private ScheduleDetailPresenter mScheduleDetailPresenter;
+
+    @Inject
+    ScheduleDetailPresenterImpl mScheduleDetailPresenter;
 
     private CollapsingToolbarLayout mAppBarLayout;
     @Bind(R.id.tv_schedule_date) TextView mTvScheduleDate;
@@ -176,17 +174,16 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
     }
 
     private void initialize() {
-        UseCase getScheduleById = new GetScheduleById(mScheduleId);
-        UseCase deleteSchedule = new DeleteSchedule(new DeleteScheduleArg(mScheduleId));
-        ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
-        mScheduleDetailPresenter = new ScheduleDetailPresenterImpl(
-                getScheduleById, deleteSchedule, mapper);
+        getComponent(ScheduleComponent.class).inject(this);
+
         mScheduleDetailPresenter.setView(this);
 
         loadScheduleData();
     }
+
     private void loadScheduleData() {
-        mScheduleDetailPresenter.initialize();
+        if (mScheduleDetailPresenter != null)
+            mScheduleDetailPresenter.initialize();
     }
 
     /* share something with other social Apps */
