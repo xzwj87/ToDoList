@@ -1,14 +1,17 @@
 package com.github.xzwj87.todolist.schedule.interactor.mapper;
 
-
 import android.database.Cursor;
 import android.util.Log;
 
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.internal.di.PerActivity;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.util.Date;
 
+import javax.inject.Inject;
+
+@PerActivity
 public class ScheduleModelDataMapper {
     private static final String LOG_TAG = ScheduleModelDataMapper.class.getSimpleName();
 
@@ -40,7 +43,7 @@ public class ScheduleModelDataMapper {
     public static final int COL_SCHEDULE_REPEAT_ALARM_INTERVAL = 10;
     public static final int COL_SCHEDULE_IS_DONE = 11;
 
-
+    @Inject
     public ScheduleModelDataMapper() {}
 
     @SuppressWarnings("ResourceType")
