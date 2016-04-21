@@ -78,22 +78,13 @@ public class ScheduleListActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close){
-
             @Override
             public void onDrawerOpened (View drawerView){
                 super.onDrawerOpened(drawerView);
-                Log.v(LOG_TAG,"onDrawerOpened()");
-                NavigationView view = (NavigationView)drawerView.findViewById(R.id.nav_view);
-                Menu menu = view.getMenu();
-
-                menu.findItem(R.id.nav_schedule_type_all).setTitle(
-                        getResources().getString(R.string.schedule_type_all)
-                        + " (" + mScheduleObserver.getTotalSchedule() + ")");
-                menu.findItem(R.id.nav_done).setTitle(
-                        getResources().getString(R.string.schedule_done)
-                        + " (" + mScheduleObserver.getDoneSchedule() + ")");
+                Log.v(LOG_TAG, "onDrawerOpened()");
             }
         };
+
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -317,9 +308,12 @@ public class ScheduleListActivity extends AppCompatActivity
     public class ScheduleObserver extends ContentObserver{
         public static final String TAG = "ScheduleObserver";
 
+        private ContentResolver mContentResolver;
         private int mTotalSchedule;
         private int mDoneSchedule;
-        private ContentResolver mContentResolver;
+        private String mTotalScheduleMenuTitle = getResources().getString(R.string.schedule_type_all);
+        private String mDoneScheduleMenuTitle = getResources().getString(R.string.schedule_done);
+
 
         public ScheduleObserver(Context context,Handler handler){
             super(handler);
@@ -331,17 +325,14 @@ public class ScheduleListActivity extends AppCompatActivity
             //cursor.moveToFirst();
             mTotalSchedule = cursor.getCount();
 
-            if(mTotalSchedule == 0){
-                mDoneSchedule = 0;
-                return;
-            }
-
             String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
             String args[] = {ScheduleModel.DONE};
             cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
                     null,selection,args,null);
 
             mDoneSchedule = cursor.getCount();
+
+            updateDrawerView();
         }
 
         @Override
@@ -361,17 +352,21 @@ public class ScheduleListActivity extends AppCompatActivity
             String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
             String args[] = {ScheduleModel.DONE};
             cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    null,selection,null,null);
+                    null,selection,args,null);
 
             mDoneSchedule = cursor.getCount();
+
+            updateDrawerView();
         }
 
-        public int getTotalSchedule(){
-            return mTotalSchedule;
-        }
+        private void updateDrawerView(){
+            NavigationView view = (NavigationView)findViewById(R.id.nav_view);
+            Menu menu = view.getMenu();
 
-        public int getDoneSchedule(){
-            return mDoneSchedule;
+            menu.findItem(R.id.nav_schedule_type_all).setTitle(mTotalScheduleMenuTitle
+                    + " (" + mTotalSchedule + ")");
+            menu.findItem(R.id.nav_done).setTitle(mDoneScheduleMenuTitle
+                    + " (" + mDoneSchedule + ")");
         }
     }
 
