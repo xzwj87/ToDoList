@@ -12,12 +12,14 @@ import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.github.xzwj87.todolist.schedule.utility.ScheduleUtility;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     private static final String LOG_TAG = ScheduleDetailPresenterImpl.class.getSimpleName();
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM d, yyyy");
+    //private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM dd, yyyy");
+    private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance();
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
     private ScheduleDetailView mScheduleDetailView;
@@ -67,8 +69,15 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     private void updateScheduleToView(ScheduleModel schedule) {
         mScheduleDetailView.updateScheduleTitle(schedule.getTitle());
 
-        String scheduleDate = DATE_FORMAT.format(schedule.getScheduleStart()) + "-" +
-                DATE_FORMAT.format(schedule.getScheduleEnd());
+        // if start date is equal to end date, just display one
+        String scheduleStartDate = DATE_FORMAT.format(schedule.getScheduleStart());
+        String scheduleEndDate = DATE_FORMAT.format(schedule.getScheduleEnd());
+        String scheduleDate;
+        if(scheduleStartDate.equals(scheduleEndDate)){
+            scheduleDate = scheduleStartDate;
+        }else{
+            scheduleDate = scheduleStartDate + "-" + scheduleEndDate;
+        }
         mScheduleDetailView.updateScheduleDate(scheduleDate);
 
         String scheduleTime = TIME_FORMAT.format(schedule.getScheduleStart()) + "-" +
