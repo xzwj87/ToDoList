@@ -1,18 +1,27 @@
 package com.github.xzwj87.todolist.alarm.ui.activity;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
@@ -33,15 +42,15 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     public static final String LOG_TAG = "AlarmAlertActivity";
 
     /* User Event Definition */
-    public static final int EVENT_USER_CLICK_OK = 0x01;
+    public static final int EVENT_USER_CLICK_CLOSE = 0x01;
     public static final int EVENT_USER_CLICK_CANCEL = 0x02;
     public static final int EVENT_USER_SHAKE = 0x03;
-    public static final int EVENT_USER_ALARM_TIME_UP = 0x04;
+    public static final int EVENT_ALARM_TIME_UP = 0x04;
 
     private TextView mAlertTitle;
-    private TextView mEventTitle;
-    private TextView mEventTime;
-    private Button mOk;
+    private TextView mAlarmTime;
+    private TextView mAlarmTimeWeek;
+    private ImageView mClose;
 
     private ServiceThread mThread;
     private ServiceThread.EventHandler mHandler;
@@ -52,6 +61,8 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     private long mAlarmDuration = 1000*90;
     private boolean mUserShake = false;
     private boolean mAlarmDone = false;
+    private String mScheduleTitle;
+    private NotificationManager mNotificationMgr;
 
     @Override
     public void onCreate(Bundle savedSate){
@@ -68,23 +79,26 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
         setContentView(R.layout.activity_alarm_alert);
 
-        mAlertTitle = (TextView)findViewById(R.id.alert);
-        mEventTime = (TextView)findViewById(R.id.alarm_time);
-        mEventTitle = (TextView)findViewById(R.id.event);
-
-        mAlertTitle.setText(R.string.alarm_alert_title);
+        mAlertTitle = (TextView)findViewById(R.id.alarm_title);
+        mAlarmTime = (TextView)findViewById(R.id.alarm_time);
+        mAlarmTimeWeek = (TextView)findViewById(R.id.alarm_time_week);
+        mClose = (ImageView)findViewById(R.id.alert_close);
 
         mScheduleId = intent.getLongExtra(ScheduleContract.ScheduleEntry._ID,-1);
-        String formats = "HH:mm EEEE";
+
+        String formats = "HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(formats);
-        mEventTime.setText(sdf.format(new Date()));
+        mAlarmTime.setText(sdf.format(new Date()));
+
+        formats = "EEEE";
+        sdf = new SimpleDateFormat(formats);
+        mAlarmTimeWeek.setText(sdf.format(new Date()));
 
         /* if there are notes, need to display also */
-        String mScheduleTitle = intent.getStringExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE);
-        mEventTitle.setText(mScheduleTitle);
+        mScheduleTitle = intent.getStringExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE);
+        mAlertTitle.setText(mScheduleTitle);
 
-        mOk = (Button)findViewById(R.id.ok);
-        mOk.setOnClickListener(this);
+        mClose.setOnClickListener(this);
 
         mShakeDetector = new ShakeDetectService(this);
         mShakeDetector.setShakeListener(new ShakeListener());
@@ -93,7 +107,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
         mThread = new ServiceThread("ServicesThread");
         mThread.start();
         /* send a delayed message to do timer alarm */
-        Message msg = mHandler.obtainMessage(EVENT_USER_ALARM_TIME_UP, getEventName(EVENT_USER_ALARM_TIME_UP));
+        Message msg = mHandler.obtainMessage(EVENT_ALARM_TIME_UP, getEventName(EVENT_ALARM_TIME_UP));
         mHandler.sendMessageDelayed(msg, mAlarmDuration);
     }
 
@@ -106,9 +120,9 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         Log.d(LOG_TAG, "onClick(); button = " + getClass().getName() + "is clicked");
-        if (v.equals(mOk)) {
+        if (v.equals(mClose)) {
             /* send message */
-            Message msg = mHandler.obtainMessage(EVENT_USER_CLICK_OK, getEventName(EVENT_USER_CLICK_OK));
+            Message msg = mHandler.obtainMessage(EVENT_USER_CLICK_CLOSE, getEventName(EVENT_USER_CLICK_CLOSE));
             mHandler.sendMessage(msg);
         }
     }
@@ -136,14 +150,14 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
     public String getEventName(int event){
         switch (event){
-            case EVENT_USER_CLICK_OK:
+            case EVENT_USER_CLICK_CLOSE:
                 return "USER_CLICK_OK";
             case EVENT_USER_CLICK_CANCEL:
                 return "USER_CLICK_CANCEL";
             case EVENT_USER_SHAKE:
                 return "USER_SHAKE";
-            case EVENT_USER_ALARM_TIME_UP:
-                return "USER_ALARM_TIME_UP";
+            case EVENT_ALARM_TIME_UP:
+                return "ALARM_TIME_UP";
             default:
                 return null;
         }
@@ -209,17 +223,23 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
 
                 stopServices();
                 switch (message.what){
-                    case EVENT_USER_CLICK_OK:
+                    case EVENT_USER_CLICK_CLOSE:
                     case EVENT_USER_SHAKE:
-                        mAlarmDone = true;
-                        updateAlarmState();
+                        if(!mAlarmDone){
+                            mAlarmDone = true;
+                            updateAlarmState();
+                        }
                         break;
-                    case EVENT_USER_ALARM_TIME_UP:
+                    case EVENT_ALARM_TIME_UP:
                         if(!mAlarmDone) {
                             sendNotification();
                             updateAlarmState();
                         }
                         break;
+                }
+                /* before done, need to remove all the pending messages */
+                if(mHandler.hasMessages(EVENT_ALARM_TIME_UP)){
+                    mHandler.removeMessages(EVENT_ALARM_TIME_UP);
                 }
                 finish();
             }
@@ -234,9 +254,30 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
             getContentResolver().update(uri, updated, null, null);
         }
 
-        protected void sendNotification() {
+        protected void sendNotification(){
             Log.d(LOG_TAG, "sendNotification()");
 
+            NotificationCompat.Builder builder = new
+                    NotificationCompat.Builder(getBaseContext());
+            builder.setSmallIcon(R.drawable.ic_access_alarms_24dp)
+                   .setContentTitle(getResources().getString(R.string.app_name))
+                   .setContentText(mScheduleTitle)
+                   .setCategory(Notification.CATEGORY_ALARM)
+                   .setAutoCancel(true);
+
+            Intent resultIntent = new Intent(getBaseContext(),
+                    NotifierDetailActivity.class);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+            stackBuilder.addNextIntent(resultIntent);
+
+            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                    0,PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(resultPendingIntent);
+
+            int notifyId = 1;
+            mNotificationMgr = (NotificationManager)getApplicationContext()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationMgr.notify(notifyId,builder.build());
         }
 
     }

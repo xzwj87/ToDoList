@@ -11,6 +11,11 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="actionOverflowButtonStyle">@style/customMenuStyle</item>
+    </style>
+
+    <style name="customMenuStyle" parent="android:Widget.Holo.Light.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_more_vert_24dp</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -64,9 +69,7 @@
     <style name="AlarmAlertDialog" parent="@style/Theme.AppCompat.Dialog">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:gravity">center</item>
         <item name="android:windowBackground">@color/colorWhite</item>
-        <item name="android:background">@color/colorWhite</item>
     </style>
 
 </resources>

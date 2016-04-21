@@ -2,6 +2,8 @@ package com.github.xzwj87.todolist.schedule.ui.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteSchedule;
 import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteScheduleArg;
@@ -24,6 +27,7 @@ import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleById;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
+import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -195,11 +199,19 @@ public class ScheduleDetailFragment extends Fragment implements ScheduleDetailVi
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        /* put data to it */
+        /* put schedule data to it */
+        Uri uri = ScheduleContract.ScheduleEntry.buildScheduleUri(mScheduleId);
+        Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+
+        ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
+        ScheduleModel schedule = mapper.transform(cursor);
+
         Bundle bundle = new Bundle();
-        bundle.putString("Title","I am doing something funny " +
-                "in ToDoList; come with me");
+        bundle.putString(ScheduleContract.ScheduleEntry.COLUMN_TITLE,
+                schedule.getTitle());
         intent.putExtras(bundle);
+
         startActivity(Intent.createChooser(intent, getResources().getText(R.string.send_to)));
     }
 
