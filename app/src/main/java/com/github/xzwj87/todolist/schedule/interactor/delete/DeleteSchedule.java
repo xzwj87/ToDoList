@@ -7,11 +7,14 @@ import com.github.xzwj87.todolist.app.App;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 public class DeleteSchedule extends UseCase<DeleteScheduleArg> {
     private static final String LOG_TAG = DeleteSchedule.class.getSimpleName();
 
+    @Inject
     public DeleteSchedule(DeleteScheduleArg arg) {
         mArg = arg;
     }

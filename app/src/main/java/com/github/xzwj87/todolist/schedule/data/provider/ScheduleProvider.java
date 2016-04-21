@@ -200,7 +200,7 @@ public class ScheduleProvider extends ContentProvider {
         }
     }
 
-    private static UriMatcher buildUriMatcher() {
+    static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = ScheduleContract.CONTENT_AUTHORITY;
 

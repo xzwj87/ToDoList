@@ -1,15 +1,18 @@
 package com.github.xzwj87.todolist.schedule.interactor.mapper;
 
-
 import android.app.SearchManager;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.github.xzwj87.todolist.schedule.internal.di.PerActivity;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleSuggestionModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+@PerActivity
 public class ScheduleSuggestionModelDataMapper {
     private static final String LOG_TAG = ScheduleSuggestionModelDataMapper.class.getSimpleName();
 
@@ -23,6 +26,7 @@ public class ScheduleSuggestionModelDataMapper {
     public static final int COL_SCHEDULE_TITLE = 1;
     public static final int COL_SCHEDULE_DETAIL = 2;
 
+    @Inject
     public ScheduleSuggestionModelDataMapper() {}
 
     public ScheduleSuggestionModel transform(Cursor cursor) {

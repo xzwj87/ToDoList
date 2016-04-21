@@ -1,15 +1,19 @@
 package com.github.xzwj87.todolist.schedule.interactor.mapper;
 
-
 import android.content.ContentValues;
 import android.util.Log;
 
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
+import com.github.xzwj87.todolist.schedule.internal.di.PerActivity;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
+import javax.inject.Inject;
+
+@PerActivity
 public class ScheduleContentValuesDataMapper {
     private static final String LOG_TAG = ScheduleContentValuesDataMapper.class.getSimpleName();
 
+    @Inject
     public ScheduleContentValuesDataMapper() {}
 
     public ContentValues transform(ScheduleModel scheduleModel) {
