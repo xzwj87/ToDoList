@@ -1,6 +1,7 @@
 package com.github.xzwj87.todolist.schedule.presenter;
 
 
+import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -19,6 +20,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class EditSchedulePresenterImpl implements AddSchedulePresenter {
 
     private static final String LOG_TAG = EditSchedulePresenterImpl.class.getSimpleName();
@@ -35,10 +39,13 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
     private ScheduleContentValuesDataMapper mContentValueMapper;
     private ScheduleModelDataMapper mModelMapper;
     private AddScheduleView mView;
+    @Inject @Named("activityContext") Context mContext;
 
     private ScheduleModel mSchedule;
 
-    public EditSchedulePresenterImpl(UseCase updateUseCase, UseCase queryUseCase,
+    @Inject
+    public EditSchedulePresenterImpl(@Named("updateSchedule")UseCase updateUseCase,
+                                     @Named("getScheduleById")UseCase queryUseCase,
                                      ScheduleContentValuesDataMapper contentValueMapper,
                                      ScheduleModelDataMapper modelDataMapper) {
         mUpdateUseCase = updateUseCase;
@@ -288,13 +295,11 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
     private boolean checkScheduleIntegrity(ScheduleModel schedule) {
         if (!checkScheduleDateValidity(schedule)) {
             mView.showMessageDialog(null,
-                    mView.getViewContext().getString(
-                            R.string.schedule_date_invalid_message));
+                    mContext.getString(R.string.schedule_date_invalid_message));
             return false;
         }
         if (schedule.getTitle() == null || schedule.getTitle().equals("")) {
-            schedule.setTitle(mView.getViewContext().getString(
-                    R.string.schedule_no_title));
+            schedule.setTitle(mContext.getString(R.string.schedule_no_title));
         }
         return true;
     }

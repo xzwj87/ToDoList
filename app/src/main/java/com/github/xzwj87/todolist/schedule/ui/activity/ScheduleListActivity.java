@@ -16,7 +16,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,10 +25,10 @@ import android.view.View;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
-import com.github.xzwj87.todolist.schedule.interactor.UseCase;
-import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleSuggestionModelDataMapper;
-import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleSuggestion;
-import com.github.xzwj87.todolist.schedule.presenter.SearchSuggestionPresenter;
+import com.github.xzwj87.todolist.schedule.internal.di.HasComponent;
+import com.github.xzwj87.todolist.schedule.internal.di.component.DaggerScheduleComponent;
+import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
+import com.github.xzwj87.todolist.schedule.internal.di.module.ScheduleModule;
 import com.github.xzwj87.todolist.schedule.presenter.SearchSuggestionPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.SearchSuggestionView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
@@ -41,14 +40,15 @@ import com.github.xzwj87.todolist.schedule.ui.model.ScheduleSuggestionModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ScheduleListActivity extends AppCompatActivity
-        implements ScheduleListFragment.
-        Callbacks, NavigationView.OnNavigationItemSelectedListener,
-        SearchSuggestionView {
+public class ScheduleListActivity extends BaseActivity
+        implements ScheduleListFragment.Callbacks, NavigationView.OnNavigationItemSelectedListener,
+        SearchSuggestionView, HasComponent<ScheduleComponent> {
     private static final String LOG_TAG = ScheduleListActivity.class.getSimpleName();
 
     private static final String DETAIL_FRAGMENT_TAG = "detail_fragment";
@@ -58,7 +58,8 @@ public class ScheduleListActivity extends AppCompatActivity
     private SearchView mSearchView;
     private SearchSuggestionAdapter mSuggestionAdapter;
 
-    private SearchSuggestionPresenter mPresenter;
+    @Inject SearchSuggestionPresenterImpl mPresenter;
+    private ScheduleComponent mScheduleComponent;
 
     private ScheduleObserver mScheduleObserver;
 
@@ -102,9 +103,10 @@ public class ScheduleListActivity extends AppCompatActivity
                     .commit();
         }
 
-        handleIntent(getIntent());
+        initializeInjector();
+        initializeView();
 
-        initialize();
+        handleIntent(getIntent());
 
         registerObserver();
     }
@@ -209,15 +211,20 @@ public class ScheduleListActivity extends AppCompatActivity
     }
 
     @Override
-    public Context getViewContext() {
-        return this;
+    public ScheduleComponent getComponent() {
+        return mScheduleComponent;
     }
 
-    private void initialize() {
-        UseCase useCase = new GetAllScheduleSuggestion();
-        ScheduleSuggestionModelDataMapper mapper = new ScheduleSuggestionModelDataMapper();
-        mPresenter = new SearchSuggestionPresenterImpl(useCase, mapper);
+    private void initializeInjector() {
+        mScheduleComponent = DaggerScheduleComponent.builder()
+                .appComponent(getApplicationComponent())
+                .activityModule(getActivityModule())
+                .scheduleModule(new ScheduleModule())
+                .build();
+        mScheduleComponent.inject(this);
+    }
 
+    private void initializeView() {
         mPresenter.setView(this);
         mPresenter.initialize();
     }

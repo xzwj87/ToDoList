@@ -1,5 +1,6 @@
 package com.github.xzwj87.todolist.schedule.presenter;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.provider.SearchRecentSuggestions;
 import android.support.annotation.NonNull;
@@ -15,6 +16,9 @@ import com.github.xzwj87.todolist.schedule.ui.model.ScheduleSuggestionModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class SearchSuggestionPresenterImpl implements SearchSuggestionPresenter {
     private static final String LOG_TAG = SearchSuggestionPresenterImpl.class.getSimpleName();
 
@@ -22,8 +26,10 @@ public class SearchSuggestionPresenterImpl implements SearchSuggestionPresenter 
     private UseCase mUseCase;
     private ScheduleSuggestionModelDataMapper mMapper;
     private List<ScheduleSuggestionModel> mSuggestions;
+    @Inject @Named("activityContext") Context mContext;
 
-    public SearchSuggestionPresenterImpl(UseCase useCase,
+    @Inject
+    public SearchSuggestionPresenterImpl(@Named("getAllScheduleSuggestion")UseCase useCase,
                                          ScheduleSuggestionModelDataMapper mapper) {
         mUseCase = useCase;
         mMapper = mapper;
@@ -48,8 +54,9 @@ public class SearchSuggestionPresenterImpl implements SearchSuggestionPresenter 
 
     @Override
     public void saveRecent(String query) {
+        Log.v(LOG_TAG, "saveRecent(): mContext = " + mContext);
         SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-                mSearchSuggestionView.getViewContext(),
+                mContext,
                 ScheduleSuggestionProvider.AUTHORITY, ScheduleSuggestionProvider.MODE);
 
         suggestions.saveRecentQuery(query, null);
