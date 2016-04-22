@@ -327,8 +327,8 @@ public class ScheduleListActivity extends AppCompatActivity
             //cursor.moveToFirst();
             mTotalSchedule = cursor.getCount();
 
-            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-            String args[] = {ScheduleModel.DONE};
+            selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+            args = new String[]{ScheduleModel.DONE};
             cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
                     null,selection,args,null);
 
@@ -354,7 +354,7 @@ public class ScheduleListActivity extends AppCompatActivity
             mTotalSchedule = cursor.getCount();
 
             selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-            args[] = {ScheduleModel.DONE};
+            args = new String[]{ScheduleModel.DONE};
             cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
                     null,selection,args,null);
 
