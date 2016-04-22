@@ -1,6 +1,5 @@
 package com.github.xzwj87.todolist.schedule.ui.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -313,11 +312,6 @@ public class AddScheduleActivity extends BaseActivity
     @Override
     public String getScheduleTitle() {
         return mEditScheduleTitle.getText().toString();
-    }
-
-    @Override
-    public Context getViewContext() {
-        return this;
     }
 
     @OnClick(R.id.btn_schedule_date_start)

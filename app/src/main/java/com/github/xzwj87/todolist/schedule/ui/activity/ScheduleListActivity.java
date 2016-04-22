@@ -211,11 +211,6 @@ public class ScheduleListActivity extends BaseActivity
     }
 
     @Override
-    public Context getViewContext() {
-        return this;
-    }
-
-    @Override
     public ScheduleComponent getComponent() {
         return mScheduleComponent;
     }
