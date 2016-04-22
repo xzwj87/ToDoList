@@ -320,8 +320,10 @@ public class ScheduleListActivity extends AppCompatActivity
 
             mContentResolver = getContentResolver();
 
+            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+            String args[] = {ScheduleModel.UNDONE};
             Cursor cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    null,null,null,null);
+                    null,selection,args,null);
             //cursor.moveToFirst();
             mTotalSchedule = cursor.getCount();
 
@@ -344,13 +346,15 @@ public class ScheduleListActivity extends AppCompatActivity
         public void onChange(boolean selfChange,Uri uri){
             Log.v(TAG, "onChange: uri = " + uri);
 
+            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+            String args[] = {ScheduleModel.UNDONE};
             Cursor cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    null,null,null,null);
+                    null,selection,args,null);
             //cursor.moveToFirst();
             mTotalSchedule = cursor.getCount();
 
-            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-            String args[] = {ScheduleModel.DONE};
+            selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+            args[] = {ScheduleModel.DONE};
             cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
                     null,selection,args,null);
 
