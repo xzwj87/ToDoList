@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
@@ -125,27 +126,6 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
             Message msg = mHandler.obtainMessage(EVENT_USER_CLICK_CLOSE, getEventName(EVENT_USER_CLICK_CLOSE));
             mHandler.sendMessage(msg);
         }
-    }
-
-    // should run in a different thread
-    public void startServices(){
-        Log.d(LOG_TAG, "startServices()");
-
-        /* playing music */
-        Intent intent = new Intent(this, AudioPlayerService.class);
-        startService(intent);
-        /* shake detecting */
-        mShakeDetector.start();
-    }
-
-    public void stopServices(){
-        Log.d(LOG_TAG,"stopServices()");
-
-        /* stop music */
-        Intent intent = new Intent(this,AudioPlayerService.class);
-        stopService(intent);
-        /* stop shake detecting */
-        mShakeDetector.stop();
     }
 
     public String getEventName(int event){
@@ -277,7 +257,29 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
             int notifyId = 1;
             mNotificationMgr = (NotificationManager)getApplicationContext()
                     .getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationMgr.notify(notifyId,builder.build());
+            mNotificationMgr.notify(notifyId, builder.build());
+        }
+
+
+        // should run in a different thread
+        public void startServices(){
+            Log.d(LOG_TAG, "startServices()");
+
+        /* playing music */
+            Intent intent = new Intent(getApplicationContext(), AudioPlayerService.class);
+            startService(intent);
+        /* shake detecting */
+            mShakeDetector.start();
+        }
+
+        public void stopServices(){
+            Log.d(LOG_TAG, "stopServices()");
+
+        /* stop music */
+            Intent intent = new Intent(getApplicationContext(),AudioPlayerService.class);
+            stopService(intent);
+        /* stop shake detecting */
+            mShakeDetector.stop();
         }
 
     }

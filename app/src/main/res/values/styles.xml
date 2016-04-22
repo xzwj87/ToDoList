@@ -66,10 +66,10 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
-    <style name="AlarmAlertDialog" parent="@style/Theme.AppCompat.Dialog">
+    <style name="AlarmAlertDialog" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:windowBackground">@color/colorWhite</item>
+        <item name="android:windowBackground">@color/colorDarkGrey</item>
     </style>
 
 </resources>

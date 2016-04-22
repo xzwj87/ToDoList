@@ -7,18 +7,16 @@
     <ImageView android:id="@+id/alert_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_close_24dp_grey"
+        android:src="@drawable/ic_close_24dp_white"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:layout_marginLeft="@dimen/fab_margin"/>
+        android:layout_margin="@dimen/fab_margin"/>
 
     <TextView android:id="@+id/alarm_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/alarm_alert_title_size"
-        android:textColor="@color/colorGray"
+        android:textColor="@color/colorWhite"
         android:layout_below="@id/alert_close"
         android:gravity="center"
         android:typeface="serif"/>
@@ -27,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/alarm_time"
-        android:textColor="@color/colorGray"
+        android:textColor="@color/colorWhite"
         android:gravity="center"
         android:textSize="@dimen/alarm_event_title_size"
         android:layout_marginBottom="@dimen/alarm_item_margin_size"
@@ -37,11 +35,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/alarm_time_week"
-        android:textSize="@dimen/alarm_event_title_size"
-        android:textColor="@color/colorGray"
         android:layout_marginBottom="@dimen/alarm_item_margin_size"
+        android:textSize="@dimen/alarm_event_title_size"
+        android:textColor="@color/colorWhite"
         android:maxLines="2"
         android:gravity="center"
         android:typeface="sans"/>
+
+    <TextView android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alarm_title"
+        android:layout_alignRight="@id/alert_close"
+        android:paddingBottom="@dimen/fab_margin"
+        android:gravity="center"
+        android:text="@string/at_app_name"
+        android:textSize="@dimen/alarm_app_name_text_size"
+        android:textColor="@color/colorWhite" />
 
 </RelativeLayout>
