@@ -45,8 +45,10 @@
     <string name="title_activity_search_schedule">SearchScheduleActivity</string>
 
     <string name="action_share">Share</string>
-    <string name="send_to">share your ToDoList using</string>
+    <string name="send_to">share ToDoList with</string>
 
     <string name="action_delete">Delete</string>
+
+    <string name="alarm_notification">you have something to do in ToDoList</string>
 
 </resources>

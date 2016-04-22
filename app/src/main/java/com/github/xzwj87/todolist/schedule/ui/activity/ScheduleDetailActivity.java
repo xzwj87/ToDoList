@@ -41,6 +41,7 @@ public class ScheduleDetailActivity extends BaseActivity implements HasComponent
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
         }
 
         if (savedInstanceState == null) {

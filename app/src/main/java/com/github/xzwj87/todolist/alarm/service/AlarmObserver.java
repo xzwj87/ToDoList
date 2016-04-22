@@ -61,8 +61,11 @@ public class AlarmObserver extends ContentObserver {
             ScheduleModel item = mDataMapper.transform(mCursor);
             long id = item.getId();
             @ScheduleModel.AlarmType String alarmType = item.getAlarmType();
-            /* no alarm for this schedule */
-            if (alarmType.equals(ScheduleModel.ALARM_NONE)) {
+
+            long alarmTime = item.getAlarmTime().getTime();
+            /* no alarm or illegal time for this schedule */
+            if (alarmType.equals(ScheduleModel.ALARM_NONE) ||
+                    alarmTime <= System.currentTimeMillis()) {
                 continue;
             }
 

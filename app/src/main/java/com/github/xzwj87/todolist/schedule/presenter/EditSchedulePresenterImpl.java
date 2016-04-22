@@ -227,6 +227,9 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
         @Override public void onNext(Cursor cursor) {
             cursor.moveToFirst();
             ScheduleModel scheduleModel = mModelMapper.transform(cursor);
+            // set alarm start time to current system time
+            scheduleModel.setScheduleStart(new Date());
+            scheduleModel.setScheduleEnd(new Date(System.currentTimeMillis() + MILLISECONDS_IN_1_HOUR));
             Log.v(LOG_TAG, "onNext(): scheduleModel = " + scheduleModel);
             cursor.close();
             mSchedule = scheduleModel;

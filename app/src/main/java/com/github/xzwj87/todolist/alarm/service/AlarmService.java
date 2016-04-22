@@ -125,7 +125,7 @@ public class AlarmService implements AlarmCommandsInterface{
     @Override
     public void setOneTimeAlarm(ScheduleModel item) {
         Log.d(LOG_TAG, "setOneTimeAlarm(): title = " + item.getTitle()
-        + " date = " + item.getScheduleStart());
+        + " date = " + item.getAlarmTime());
 
         Intent alarmIntent = new Intent(mContext,AlarmReceiver.class);
         alarmIntent.setAction(ACTION_ONE_TIME_ALARM);
@@ -136,7 +136,7 @@ public class AlarmService implements AlarmCommandsInterface{
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,(int)item.getId(),alarmIntent,0);
         try {
-            mAlarmMgr.set(AlarmManager.RTC_WAKEUP, item.getScheduleStart().getTime(), pendingIntent);
+            mAlarmMgr.set(AlarmManager.RTC_WAKEUP, item.getAlarmTime().getTime(), pendingIntent);
         }catch (Exception e){
             Log.e(LOG_TAG,"setOneTimeAlarm(): fail to set alarm");
         }
@@ -155,7 +155,7 @@ public class AlarmService implements AlarmCommandsInterface{
 
         PendingIntent pi = PendingIntent.getBroadcast(mContext,(int)item.getId(),alarmIntent,0);
         try{
-            mAlarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, item.getScheduleStart().getTime(), item.getRepeatAlarmInterval(), pi);
+            mAlarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, item.getAlarmTime().getTime(), item.getRepeatAlarmInterval(), pi);
         }catch (Exception e){
             Log.e(LOG_TAG,"setRepeatAlarm(): fail to set repeat alarm");
         }
