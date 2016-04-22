@@ -309,8 +309,8 @@ public class ScheduleListActivity extends AppCompatActivity
         public static final String TAG = "ScheduleObserver";
 
         private ContentResolver mContentResolver;
-        private int mTotalSchedule;
-        private int mDoneSchedule;
+        private long mTotalSchedule;
+        private long mDoneSchedule;
         private String mTotalScheduleMenuTitle = getResources().getString(R.string.schedule_type_all);
         private String mDoneScheduleMenuTitle = getResources().getString(R.string.schedule_done);
 
@@ -364,9 +364,9 @@ public class ScheduleListActivity extends AppCompatActivity
             Menu menu = view.getMenu();
 
             menu.findItem(R.id.nav_schedule_type_all).setTitle(mTotalScheduleMenuTitle
-                    + " (" + mTotalSchedule + ")");
+                    + "(" + mTotalSchedule + ")");
             menu.findItem(R.id.nav_done).setTitle(mDoneScheduleMenuTitle
-                    + " (" + mDoneSchedule + ")");
+                    + "(" + mDoneSchedule + ")");
         }
     }
 
