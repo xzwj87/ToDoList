@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -14,12 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.interactor.UseCase;
-import com.github.xzwj87.todolist.schedule.interactor.insert.AddSchedule;
-import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleContentValuesDataMapper;
-import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
-import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleById;
-import com.github.xzwj87.todolist.schedule.interactor.update.UpdateSchedule;
+import com.github.xzwj87.todolist.schedule.internal.di.HasComponent;
+import com.github.xzwj87.todolist.schedule.internal.di.component.DaggerScheduleComponent;
+import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
+import com.github.xzwj87.todolist.schedule.internal.di.module.ScheduleModule;
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenter;
 import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenterImpl;
 import com.github.xzwj87.todolist.schedule.presenter.EditSchedulePresenterImpl;
@@ -31,12 +28,15 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AddScheduleActivity extends AppCompatActivity
-        implements AddScheduleView, DatePickerDialog.OnDateSetListener {
+public class AddScheduleActivity extends BaseActivity
+        implements AddScheduleView, DatePickerDialog.OnDateSetListener,
+        HasComponent<ScheduleComponent> {
     private static final String LOG_TAG = AddScheduleActivity.class.getSimpleName();
 
     public static final String SCHEDULE_ID = "id";
@@ -49,8 +49,12 @@ public class AddScheduleActivity extends AppCompatActivity
     private static final String SCHEDULE_TYPE_PICK_DLG_TAG = "schedule_type_pick_dlg";
 
     private AddSchedulePresenter mPresenter;
+    @Inject AddSchedulePresenterImpl mAddSchedulePresenterImpl;
+    @Inject EditSchedulePresenterImpl mEditSchedulePresenterImpl;
+
     private boolean mIsEditMode = false;
     private long mScheduleId;
+    private ScheduleComponent mScheduleComponent;
 
     @Bind(R.id.edit_schedule_title) EditText mEditScheduleTitle;
     @Bind(R.id.btn_schedule_date_start) Button mBtnScheduleDateStart;
@@ -84,7 +88,8 @@ public class AddScheduleActivity extends AppCompatActivity
             }
         }
 
-        initialize();
+        initializeInjector();
+        initializeView();
     }
 
     @Override
@@ -105,18 +110,20 @@ public class AddScheduleActivity extends AppCompatActivity
         mPresenter.destroy();
     }
 
-    private void initialize() {
+    private void initializeInjector() {
+        mScheduleComponent = DaggerScheduleComponent.builder()
+                .appComponent(getApplicationComponent())
+                .activityModule(getActivityModule())
+                .scheduleModule(new ScheduleModule(mScheduleId))
+                .build();
+        mScheduleComponent.inject(this);
+    }
+
+    private void initializeView() {
         if (mIsEditMode) {
-            UseCase queryUseCase = new GetScheduleById(mScheduleId);
-            UseCase updateUseCase = new UpdateSchedule();
-            ScheduleContentValuesDataMapper contentValueMapper = new ScheduleContentValuesDataMapper();
-            ScheduleModelDataMapper modelMapper = new ScheduleModelDataMapper();
-            mPresenter = new EditSchedulePresenterImpl(updateUseCase, queryUseCase,
-                    contentValueMapper, modelMapper);
+            mPresenter = mEditSchedulePresenterImpl;
         } else {
-            UseCase addSchedule = new AddSchedule();
-            ScheduleContentValuesDataMapper mapper = new ScheduleContentValuesDataMapper();
-            mPresenter = new AddSchedulePresenterImpl(addSchedule, mapper);
+            mPresenter = mAddSchedulePresenterImpl;
         }
         mPresenter.setView(this);
         mPresenter.initialize();
@@ -142,6 +149,11 @@ public class AddScheduleActivity extends AppCompatActivity
         }
 
         return false;
+    }
+
+    @Override
+    public ScheduleComponent getComponent() {
+        return mScheduleComponent;
     }
 
     @Override

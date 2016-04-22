@@ -3,6 +3,7 @@ package com.github.xzwj87.todolist.schedule.internal.di.component;
 import com.github.xzwj87.todolist.schedule.internal.di.PerActivity;
 import com.github.xzwj87.todolist.schedule.internal.di.module.ActivityModule;
 import com.github.xzwj87.todolist.schedule.internal.di.module.ScheduleModule;
+import com.github.xzwj87.todolist.schedule.ui.activity.AddScheduleActivity;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
 
 import dagger.Component;
@@ -11,5 +12,6 @@ import dagger.Component;
 @Component(dependencies = AppComponent.class,
         modules = {ActivityModule.class, ScheduleModule.class})
 public interface ScheduleComponent extends ActivityComponent {
-    void inject(ScheduleDetailFragment fragment);
+    void inject(ScheduleDetailFragment scheduleDetailFragment);
+    void inject(AddScheduleActivity addScheduleActivity);
 }

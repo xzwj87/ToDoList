@@ -16,6 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private static final String LOG_TAG = AddSchedulePresenterImpl.class.getSimpleName();
 
@@ -34,7 +37,8 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private ScheduleModel mSchedule;
     private boolean mIsEndDateTimeManuallySet = false;
 
-    public AddSchedulePresenterImpl(UseCase useCase,
+    @Inject
+    public AddSchedulePresenterImpl(@Named("addSchedule")UseCase useCase,
                                     ScheduleContentValuesDataMapper mapper) {
         mUseCase = useCase;
         mMapper = mapper;
