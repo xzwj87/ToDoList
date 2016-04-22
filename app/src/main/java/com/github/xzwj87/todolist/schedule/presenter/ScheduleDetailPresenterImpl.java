@@ -23,8 +23,8 @@ import javax.inject.Named;
 public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
     private static final String LOG_TAG = ScheduleDetailPresenterImpl.class.getSimpleName();
 
-    //private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM dd, yyyy");
-    private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance();
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("E MMM dd, yyyy");
+    //private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance();
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("kk:mm");
 
     private ScheduleDetailView mScheduleDetailView;
