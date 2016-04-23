@@ -26,6 +26,7 @@
     <string name="time_period_separator">-</string>
     <string name="action_search">search</string>
     <string name="title_activity_edit_schedule">EditScheduleActivity</string>
+    <string name="delete_schedule_confirm_message">Delete this event?</string>
 
     <string name="alarm_type_no_alarm">No alert</string>
     <string name="alarm_type_10_minutes_before">10 minutes before</string>

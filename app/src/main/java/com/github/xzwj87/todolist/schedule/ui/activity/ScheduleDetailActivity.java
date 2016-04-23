@@ -52,9 +52,11 @@ public class ScheduleDetailActivity extends BaseActivity implements HasComponent
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.schedule_detail_container, fragment)
                     .commit();
+
+            initializeInjector();
         }
 
-        initializeInjector();
+
     }
 
     @Override

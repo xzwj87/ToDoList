@@ -1,5 +1,6 @@
 package com.github.xzwj87.todolist.schedule.presenter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -16,6 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private static final String LOG_TAG = AddSchedulePresenterImpl.class.getSimpleName();
 
@@ -30,11 +34,13 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private UseCase mUseCase;
     private ScheduleContentValuesDataMapper mMapper;
     private AddScheduleView mAddScheduleView;
+    @Inject @Named("activityContext") Context mContext;
 
     private ScheduleModel mSchedule;
     private boolean mIsEndDateTimeManuallySet = false;
 
-    public AddSchedulePresenterImpl(UseCase useCase,
+    @Inject
+    public AddSchedulePresenterImpl(@Named("addSchedule")UseCase useCase,
                                     ScheduleContentValuesDataMapper mapper) {
         mUseCase = useCase;
         mMapper = mapper;
@@ -289,13 +295,11 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     private boolean checkScheduleIntegrity(ScheduleModel schedule) {
         if (!checkScheduleDateValidity(schedule)) {
             mAddScheduleView.showMessageDialog(null,
-                    mAddScheduleView.getViewContext().getString(
-                            R.string.schedule_date_invalid_message));
+                    mContext.getString(R.string.schedule_date_invalid_message));
             return false;
         }
         if (schedule.getTitle() == null || schedule.getTitle().equals("")) {
-            schedule.setTitle(mAddScheduleView.getViewContext().getString(
-                    R.string.schedule_no_title));
+            schedule.setTitle(mContext.getString(R.string.schedule_no_title));
         }
         return true;
     }

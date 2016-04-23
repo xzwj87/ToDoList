@@ -21,11 +21,14 @@ public class GetScheduleListByType extends UseCase<GetScheduleListByTypeArg> {
     private final BriteContentResolver mBriteContentResolver;
 
     public GetScheduleListByType(GetScheduleListByTypeArg arg) {
+        this();
+        mArg = arg;
+    }
+
+    public GetScheduleListByType() {
         SqlBrite sqlBrite = SqlBrite.create();
         mBriteContentResolver = sqlBrite.wrapContentProvider(
                 App.getAppContext().getContentResolver(), Schedulers.io());
-
-        mArg = arg;
     }
 
     @Override

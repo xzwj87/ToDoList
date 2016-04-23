@@ -16,11 +16,14 @@ public class SearchSchedule extends UseCase<SearchScheduleArg> {
     private final BriteContentResolver mBriteContentResolver;
 
     public SearchSchedule(SearchScheduleArg arg) {
+        this();
+        mArg = arg;
+    }
+
+    public SearchSchedule() {
         SqlBrite sqlBrite = SqlBrite.create();
         mBriteContentResolver = sqlBrite.wrapContentProvider(
                 App.getAppContext().getContentResolver(), Schedulers.io());
-
-        mArg = arg;
     }
 
     @Override

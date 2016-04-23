@@ -17,14 +17,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
-import com.github.xzwj87.todolist.schedule.interactor.UseCase;
-import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteSchedule;
-import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
-import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleById;
-import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenter;
+import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
@@ -90,7 +85,11 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initialize();
+        if (savedInstanceState == null) {
+            initialize();
+        } else {
+            loadScheduleData();
+        }
     }
 
     @Override
@@ -133,7 +132,7 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
     @Override
     public void requestConfirmDelete() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("Delete this event?");
+        builder.setMessage(getString(R.string.delete_schedule_confirm_message));
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 mScheduleDetailPresenter.onDeleteSchedule(true);

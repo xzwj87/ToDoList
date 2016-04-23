@@ -1,7 +1,5 @@
 package com.github.xzwj87.todolist.schedule.ui;
 
-import android.content.Context;
-
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 public interface AddScheduleView {
@@ -26,6 +24,4 @@ public interface AddScheduleView {
 
     void finishView();
     String getScheduleTitle();
-    // TODO: Inject context to Presenter
-    Context getViewContext();
 }

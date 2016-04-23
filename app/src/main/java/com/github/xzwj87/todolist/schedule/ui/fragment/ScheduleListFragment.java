@@ -3,7 +3,6 @@ package com.github.xzwj87.todolist.schedule.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,23 +15,23 @@ import android.view.ViewGroup;
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
-import com.github.xzwj87.todolist.schedule.interactor.query.GetAllSchedule;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleArg;
-import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByType;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByTypeArg;
-import com.github.xzwj87.todolist.schedule.interactor.query.SearchSchedule;
 import com.github.xzwj87.todolist.schedule.interactor.query.SearchScheduleArg;
-import com.github.xzwj87.todolist.schedule.interactor.update.MarkScheduleAsDone;
+import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ScheduleListFragment extends Fragment implements
+public class ScheduleListFragment extends BaseFragment implements
         ScheduleAdapter.DataSource, ScheduleListView {
     private static final String LOG_TAG = ScheduleListFragment.class.getSimpleName();
 
@@ -49,6 +48,12 @@ public class ScheduleListFragment extends Fragment implements
     private String mQuery;
     private boolean mSwipeMarkAsDone = true;
     private int mLastRemovedPosition = -1;
+
+    @Inject @Named("markScheduleAsDone") UseCase mMarkScheduleAsDone;
+    @Inject @Named("getAllSchedule") UseCase mGetAllSchedule;
+    @Inject @Named("getScheduleListByType") UseCase mGetScheduleListByType;
+    @Inject @Named("searchSchedule") UseCase mSearchSchedule;
+    @Inject ScheduleModelDataMapper mMapper;
 
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
 
@@ -170,27 +175,29 @@ public class ScheduleListFragment extends Fragment implements
 
     }
 
+    @SuppressWarnings("unchecked")
     private void initialize() {
-        UseCase markDoneUseCase = new MarkScheduleAsDone();
+        getComponent(ScheduleComponent.class).inject(this);
+
         UseCase getListUseCase;
         if (mIsSearchMode) {
-            getListUseCase = new SearchSchedule(new SearchScheduleArg(mQuery));
+            getListUseCase = mSearchSchedule.init(new SearchScheduleArg(mQuery));
         } else {
             if (mScheduleType != null) {
                 if (mScheduleType.equals(SCHEDULE_TYPE_DONE)) {
-                    getListUseCase = new GetAllSchedule(new GetAllScheduleArg(ScheduleModel.DONE));
+                    getListUseCase = mGetAllSchedule.init(
+                            new GetAllScheduleArg(ScheduleModel.DONE));
                 } else {
-                    getListUseCase = new GetScheduleListByType(
+                    getListUseCase = mGetScheduleListByType.init(
                             new GetScheduleListByTypeArg(mScheduleType, ScheduleModel.UNDONE));
                 }
             } else {
-                getListUseCase = new GetAllSchedule(new GetAllScheduleArg(ScheduleModel.UNDONE));
+                getListUseCase = mGetAllSchedule.init(new GetAllScheduleArg(ScheduleModel.UNDONE));
             }
         }
 
-        ScheduleModelDataMapper mapper = new ScheduleModelDataMapper();
         mScheduleListPresenter = new ScheduleListPresenterImpl(
-                getListUseCase, markDoneUseCase, mapper);
+                getListUseCase, mMarkScheduleAsDone, mMapper);
         mScheduleListPresenter.setView(this);
 
         setupRecyclerView();
