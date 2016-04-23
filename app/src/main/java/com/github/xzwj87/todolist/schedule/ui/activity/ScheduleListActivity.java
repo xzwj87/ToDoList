@@ -370,6 +370,8 @@ public class ScheduleListActivity extends BaseActivity
             NavigationView view = (NavigationView)findViewById(R.id.nav_view);
             Menu menu = view.getMenu();
 
+            menu.findItem(R.id.nav_settings).setVisible(false);
+
             menu.findItem(R.id.nav_schedule_type_all).setTitle(mTotalScheduleMenuTitle
                     + " (" + mTotalSchedule + ")");
             menu.findItem(R.id.nav_done).setTitle(mDoneScheduleMenuTitle

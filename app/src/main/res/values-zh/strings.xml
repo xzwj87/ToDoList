@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">Todo List</string>
+    <string name="title_schedule_detail">详细信息</string>
+    <string name="action_settings">设置</string>
+    <string name="search_hint">搜索标题和备注</string>
+    <string name="undo">撤销</string>
+    <string name="marked_done">已完成</string>
+    <string name="marked_undone">未完成</string>
+
+
+    <string name="schedule_title_hint">输入标题、人物和地点&#8230;</string>
+    <string name="schedule_note_hint">添加备注</string>
+    <string name="schedule_save">保存</string>
+    <string name="schedule_all_day">全天</string>
+    <string name="schedule_start">开始</string>
+    <string name="schedule_end">结束</string>
+    <string name="title_activity_add"> </string>
+    <string name="schedule_no_title">(无标题)</string>
+    <string name="schedule_date_invalid_message">更改活动开始时间，使其早于结束时间。</string>
+
+    <string name="time_period_separator">-</string>
+    <string name="delete_schedule_confirm_message">要删除此活动吗?</string>
+
+    <string name="alarm_type_no_alarm">无闹铃</string>
+    <string name="alarm_type_10_minutes_before">提前10分钟</string>
+    <string name="alarm_type_30_minutes_before">提前30分钟</string>
+    <string name="alarm_type_1_hour_before">提前1小时</string>
+    <string name="alarm_type_custom">自定义&#8230;</string>
+
+    <string name="button_ok">确认</string>
+    <string name="button_cancel">取消</string>
+    <string name="alarm_alert_title">事件开始</string>
+
+    <string name="schedule_type_all">全部</string>
+    <string name="schedule_type_default">默认</string>
+    <string name="schedule_type_meeting">会议</string>
+    <string name="schedule_type_entertainment">娱乐</string>
+    <string name="schedule_type_date">约会</string>
+    <string name="schedule_done">完成</string>
+
+    <string name="action_share">分享</string>
+    <string name="send_to">share ToDoList with</string>
+
+    <string name="action_delete">删除</string>
+
+    <string name="alarm_notification">ToDoList中有活动已开始</string>
+
+</resources>
