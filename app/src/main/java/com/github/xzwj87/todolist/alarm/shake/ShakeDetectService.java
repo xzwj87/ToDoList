@@ -16,11 +16,16 @@ public class ShakeDetectService  implements SensorEventListener{
     private static final float SHAKE_THRESHOLD_SPEED = 3800;
     private static final int SHAKE_SLOP_TIME = 50; // 50ms interval to detect
 
+    private static final float SHAKE_THRESHOLD_GRAVITY = 2.5F;
+    private static final int SHAKE_SLOP_TIME_MS = 400;
+    private static final int SHAKE_COUNT_RESET_TIME_MS = 3000;
+
     private float lastX,lastY,lastZ;
 
     private SensorManager mSensorMgr;
     private Sensor mAccelerometer;
     private long mShakeTimestamp;
+    private int mShakeCount;
     /* onShake callback listener */
     private IShakeListener mListener;
 
@@ -63,13 +68,13 @@ public class ShakeDetectService  implements SensorEventListener{
             return;
         }
 
-        final long now = System.currentTimeMillis();
+        /*final long now = System.currentTimeMillis();
         final long interval = now - mShakeTimestamp;
 
         if(interval < SHAKE_SLOP_TIME) return;
 
         long diff = now - mShakeTimestamp;
-        mShakeTimestamp = now;
+        mShakeTimestamp = now;*/
 
         float x = event.values[0];
         float y = event.values[1];
@@ -79,9 +84,30 @@ public class ShakeDetectService  implements SensorEventListener{
         float deltaY = y - lastY;
         float deltaZ = z - lastZ;
 
-        float speed = Math.abs(deltaX + deltaY + deltaZ)/diff * 10000;
+        float gx = x/SensorManager.GRAVITY_EARTH;
+        float gy = y/SensorManager.GRAVITY_EARTH;
+        float gz = z/SensorManager.GRAVITY_EARTH;
 
-        if(speed > SHAKE_THRESHOLD_SPEED){
+        //float speed = Math.abs(deltaX + deltaY + deltaZ)/diff * 10000;
+        double gForce = Math.sqrt(gx*gx + gy*gy + gz*gz);
+
+        if(gForce > SHAKE_THRESHOLD_GRAVITY){
+            final long now = System.currentTimeMillis();
+
+            if(mShakeTimestamp + SHAKE_SLOP_TIME_MS > now){
+                return;
+            }
+
+            if(mShakeTimestamp + SHAKE_COUNT_RESET_TIME_MS < now){
+                mShakeCount = 0;
+            }
+
+            mShakeTimestamp = now;
+            mShakeCount++;
+
+            mListener.onShake();
+        }
+        /*if(speed > SHAKE_THRESHOLD_SPEED){
             Log.d(TAG, "onSensorChanged(): speed =  " + speed);
 
             mListener.onShake();
@@ -89,6 +115,6 @@ public class ShakeDetectService  implements SensorEventListener{
 
         lastX = x;
         lastY = y;
-        lastZ = z;
+        lastZ = z;*/
     }
 }
