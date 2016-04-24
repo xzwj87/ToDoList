@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="alarm_duration">
+    <string-array name="alarm_duration" translatable="false">
         <item>30s</item>
         <item>60s</item>
         <item>90s</item>
@@ -8,7 +8,7 @@
     </string-array>
 
 
-    <string-array name="alarm_duration_values">
+    <string-array name="alarm_duration_values" translatable="false">
         <item>30</item>
         <item>60</item>
         <item>90</item>

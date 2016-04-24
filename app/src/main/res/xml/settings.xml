@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <RingtonePreference
+        android:key="alarm_ringtone"
+        android:title="@string/settings_alarm_ringtones_title"
+        android:summary="@string/settings_alarm_ringtones_sum"
+        android:ringtoneType="alarm|ringtone"
+        android:showSilent="false"
+        android:showDefault="true"
+        android:layout="@layout/custom_preference"/>
+
     <VolumePreference
         android:key="alarm_volume"
         android:title="@string/settings_alarm_volume"

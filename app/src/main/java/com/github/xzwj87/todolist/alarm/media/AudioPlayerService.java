@@ -7,11 +7,14 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -31,6 +34,7 @@ public class AudioPlayerService extends Service
     private float mVolume;
 
     private SharedPreferences mSharePref;
+    private Resources mResource;
 
     @Nullable
     @Override
@@ -41,17 +45,22 @@ public class AudioPlayerService extends Service
     @Override
     public void onCreate(){
         Context context = getApplicationContext();
+        mResource = context.getResources();
         mAudioMgr = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         mVibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
-        mPlayer = MediaPlayer.create(context, R.raw.over_the_horizon);
-
         mSharePref = PreferenceManager.getDefaultSharedPreferences(context);
-        String volume = mSharePref.getString(getResources().getString
+
+        Uri uri = Uri.parse(mSharePref.getString(mResource.getString(R.string.setting_alarm_ringtone_key),
+                Settings.System.DEFAULT_RINGTONE_URI.toString()));
+
+        mPlayer = MediaPlayer.create(context, uri);
+
+        String volume = mSharePref.getString(mResource.getString
                 (R.string.setting_alarm_volume_key), "1");
         mVolume = Integer.valueOf(volume);
 
-        String alarmDuration = mSharePref.getString(getResources().getString
-                (R.string.setting_alarm_duration_key),"90");
+        String alarmDuration = mSharePref.getString(mResource.getString
+                (R.string.setting_alarm_duration_key), "90");
         mAlarmDuration = Integer.valueOf(alarmDuration)*1000;
     }
 

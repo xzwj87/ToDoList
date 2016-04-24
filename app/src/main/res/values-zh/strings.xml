@@ -2,6 +2,7 @@
     <string name="app_name">Todo List</string>
     <string name="title_schedule_detail">详细信息</string>
     <string name="action_settings">设置</string>
+    <string name="action_search">搜索</string>
     <string name="search_hint">搜索标题和备注</string>
     <string name="undo">撤销</string>
     <string name="marked_done">已完成</string>
@@ -47,16 +48,20 @@
 
     <string name="settings_alarm_volume">音量</string>
     <string name="settings_alarm_duration">持续时间</string>
+    <string name="setting_ringtones">铃声</string>
     <string name="settings_about">关于</string>
 
     <string name="settings_alarm_volume_title">闹铃音量</string>
     <string name="settings_alarm_duration_title">闹铃持续时间</string>
+    <string name="settings_alarm_ringtones_title">铃声</string>
     <string name="settings_about_todolist">关于Todo List</string>
 
     <string name="settings_alarm_volume_sum">设置闹铃提醒音量</string>
     <string name="settings_alarm_duration_sum">设置闹铃提醒时长</string>
+    <string name="settings_alarm_ringtones_sum">选择喜欢的铃声</string>
     <string name="settings_about_sum">了解Todo List</string>
 
+    <string name="settings_alarm_volume_default">1</string>
     <string name="settings_alarm_duration_default">90</string>
 
     <string name="about_todolist">
