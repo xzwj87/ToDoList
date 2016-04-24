@@ -39,10 +39,29 @@
     <string name="schedule_done">完成</string>
 
     <string name="action_share">分享</string>
-    <string name="send_to">share ToDoList with</string>
+    <string name="send_to">分享到</string>
 
     <string name="action_delete">删除</string>
 
     <string name="alarm_notification">ToDoList中有活动已开始</string>
+
+    <string name="settings_alarm_volume">音量</string>
+    <string name="settings_alarm_duration">持续时间</string>
+    <string name="settings_about">关于</string>
+
+    <string name="settings_alarm_volume_title">闹铃音量</string>
+    <string name="settings_alarm_duration_title">闹铃持续时间</string>
+    <string name="settings_about_todolist">关于Todo List</string>
+
+    <string name="settings_alarm_volume_sum">设置闹铃提醒音量</string>
+    <string name="settings_alarm_duration_sum">设置闹铃提醒时长</string>
+    <string name="settings_about_sum">了解Todo List</string>
+
+    <string name="settings_alarm_duration_default">90</string>
+
+    <string name="about_todolist">
+        Todo List主要由@TianXing Li,@ZhanNeng wang,@XuNing开发.\n
+        \n
+        如有问题，欢迎随时联系@wlh2119@gmail.com</string>
 
 </resources>

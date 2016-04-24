@@ -72,4 +72,7 @@
         <item name="android:windowBackground">@color/colorDarkGrey</item>
     </style>
 
+    <style name="SettingActivity" parent="@style/AppTheme.NoActionBar">
+    </style>
+
 </resources>

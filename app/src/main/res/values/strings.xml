@@ -53,4 +53,27 @@
 
     <string name="alarm_notification">you have something to do in ToDoList</string>
 
+    <string name="settings_alarm_volume">alarm volume</string>
+    <string name="settings_alarm_duration">alarm duration</string>
+    <string name="settings_about">about</string>
+
+    <string name="settings_alarm_volume_title">set alarm volume</string>
+    <string name="settings_alarm_duration_title">set alarm duration time</string>
+    <string name="settings_about_todolist">about TodoList</string>
+
+    <string name="settings_alarm_volume_sum">set alarm volume</string>
+    <string name="settings_alarm_duration_sum">set alarm duration time</string>
+    <string name="settings_about_sum">know more about TodoList</string>
+
+    <string name="settings_alarm_volume_default">1</string>
+    <string name="settings_alarm_duration_default">90</string>
+
+    <string name="setting_alarm_volume_key">alarm_volume</string>
+    <string name="setting_alarm_duration_key">alarm_duration</string>
+
+    <string name="about_todolist">Todo List is a light APP to record \n
+    what you want to do in your daily life. You can add,edit and delete\n
+    your own to-do-list easily. It is mainly developed by @TianXing Li and\
+    @ZhanNeng wang @XuNing</string>
+
 </resources>

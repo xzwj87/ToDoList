@@ -87,6 +87,10 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <activity android:name=".settings.SettingsActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+
     </application>
 
 </manifest>

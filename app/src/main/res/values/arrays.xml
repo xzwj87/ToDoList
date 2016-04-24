@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="alarm_duration">
+        <item>30s</item>
+        <item>60s</item>
+        <item>90s</item>
+        <item>120s</item>
+    </string-array>
+
+
+    <string-array name="alarm_duration_values">
+        <item>30</item>
+        <item>60</item>
+        <item>90</item>
+        <item>120</item>
+    </string-array>
+
+    <string-array name="dummy">
+    </string-array>
+    
+    <string-array name="dummy_values">
+    </string-array>
 
 </resources>

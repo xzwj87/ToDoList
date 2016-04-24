@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <VolumePreference
+        android:key="alarm_volume"
+        android:title="@string/settings_alarm_volume"
+        android:summary="@string/settings_alarm_volume_sum"
+        android:defaultValue="@string/settings_alarm_volume_default"
+        android:dialogTitle="@string/settings_alarm_volume_title"
+        android:layout="@layout/custom_preference"/>
+
+    <ListPreference
+        android:key="alarm_duration"
+        android:title="@string/settings_alarm_duration"
+        android:summary="@string/settings_alarm_duration_sum"
+        android:dialogTitle="@string/settings_alarm_duration_title"
+        android:entries="@array/alarm_duration"
+        android:entryValues="@array/alarm_duration_values"
+        android:defaultValue="@string/settings_alarm_duration_default"
+        android:layout="@layout/custom_preference"/>
+
+    <ListPreference
+        android:title="@string/settings_about"
+        android:summary="@string/settings_about_sum"
+        android:dialogTitle="@string/settings_about_todolist"
+        android:dialogMessage="@string/about_todolist"
+        android:entries="@array/dummy"
+        android:entryValues="@array/dummy_values"
+        android:layout="@layout/custom_preference"/>
+
+</PreferenceScreen>

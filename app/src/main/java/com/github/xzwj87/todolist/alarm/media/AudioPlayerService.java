@@ -6,10 +6,12 @@ import com.github.xzwj87.todolist.R;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -25,7 +27,10 @@ public class AudioPlayerService extends Service
     private MediaPlayer mPlayer;
     private Vibrator mVibrator;
     private int mRingerMode;
-    private long mAlarmDuration = 90*1000;
+    private int mAlarmDuration;
+    private float mVolume;
+
+    private SharedPreferences mSharePref;
 
     @Nullable
     @Override
@@ -39,6 +44,15 @@ public class AudioPlayerService extends Service
         mAudioMgr = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         mVibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
         mPlayer = MediaPlayer.create(context, R.raw.over_the_horizon);
+
+        mSharePref = PreferenceManager.getDefaultSharedPreferences(context);
+        String volume = mSharePref.getString(getResources().getString
+                (R.string.setting_alarm_volume_key), "1");
+        mVolume = Integer.valueOf(volume);
+
+        String alarmDuration = mSharePref.getString(getResources().getString
+                (R.string.setting_alarm_duration_key),"90");
+        mAlarmDuration = Integer.valueOf(alarmDuration)*1000;
     }
 
     @Override
@@ -72,6 +86,7 @@ public class AudioPlayerService extends Service
         if(audioFocus == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             mPlayer.start();
             mPlayer.setLooping(true);
+            mPlayer.setVolume(mVolume,mVolume);
         }
     }
 
@@ -86,7 +101,7 @@ public class AudioPlayerService extends Service
 
     @Override
     public void onAudioFocusChange(int focusChange) {
-        Log.d(TAG,"onAudioFocusChange(): changedFocus = " + focusChange);
+        Log.d(TAG, "onAudioFocusChange(): changedFocus = " + focusChange);
 
         if(focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT){
             mPlayer.pause();

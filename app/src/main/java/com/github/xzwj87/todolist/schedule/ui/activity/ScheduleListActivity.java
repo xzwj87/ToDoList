@@ -37,6 +37,7 @@ import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleSuggestionModel;
+import com.github.xzwj87.todolist.settings.SettingsActivity;
 
 import java.util.List;
 
@@ -154,6 +155,9 @@ public class ScheduleListActivity extends BaseActivity
             replaceScheduleListWithType(mTypeFilter);
         } else if (id == R.id.nav_settings) {
             Log.v(LOG_TAG, "onNavigationItemSelected(): nav_settings");
+
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -374,7 +378,7 @@ public class ScheduleListActivity extends BaseActivity
             NavigationView view = (NavigationView)findViewById(R.id.nav_view);
             Menu menu = view.getMenu();
 
-            menu.findItem(R.id.nav_settings).setVisible(false);
+            menu.findItem(R.id.nav_settings).setVisible(true);
 
             menu.findItem(R.id.nav_schedule_type_all).setTitle(mTotalScheduleMenuTitle
                     + "(" + mTotalSchedule + ")");
