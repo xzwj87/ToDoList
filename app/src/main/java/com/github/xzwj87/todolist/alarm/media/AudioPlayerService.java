@@ -2,6 +2,7 @@ package com.github.xzwj87.todolist.alarm.media;
 
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.settings.SharePreferenceHelper;
 
 import android.app.Service;
 import android.content.Context;
@@ -33,8 +34,7 @@ public class AudioPlayerService extends Service
     private int mAlarmDuration;
     private float mVolume;
 
-    private SharedPreferences mSharePref;
-    private Resources mResource;
+    private SharePreferenceHelper mSharePrefHelper;
 
     @Nullable
     @Override
@@ -45,23 +45,16 @@ public class AudioPlayerService extends Service
     @Override
     public void onCreate(){
         Context context = getApplicationContext();
-        mResource = context.getResources();
         mAudioMgr = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         mVibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
-        mSharePref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        Uri uri = Uri.parse(mSharePref.getString(mResource.getString(R.string.setting_alarm_ringtone_key),
-                Settings.System.DEFAULT_RINGTONE_URI.toString()));
 
-        mPlayer = MediaPlayer.create(context, uri);
+        mSharePrefHelper = SharePreferenceHelper.getInstance(context);
+        Uri ringtoneUri = mSharePrefHelper.getAlarmRingtone();
+        mPlayer = MediaPlayer.create(context, ringtoneUri);
 
-        String volume = mSharePref.getString(mResource.getString
-                (R.string.setting_alarm_volume_key), "1");
-        mVolume = Integer.valueOf(volume);
-
-        String alarmDuration = mSharePref.getString(mResource.getString
-                (R.string.setting_alarm_duration_key), "90");
-        mAlarmDuration = Integer.valueOf(alarmDuration)*1000;
+        mVolume = mSharePrefHelper.getAlarmVolume();
+        mAlarmDuration = mSharePrefHelper.getAlarmDuration();
     }
 
     @Override

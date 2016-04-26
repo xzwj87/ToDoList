@@ -33,6 +33,7 @@ import com.github.xzwj87.todolist.alarm.shake.IShakeListener;
 import com.github.xzwj87.todolist.alarm.shake.ShakeDetectService;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.settings.SharePreferenceHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -67,7 +68,7 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
     private String mScheduleTitle;
     private NotificationManager mNotificationMgr;
 
-    private SharedPreferences mSharePref;
+    private SharePreferenceHelper mSharePrefHelper;
 
     @Override
     public void onCreate(Bundle savedSate){
@@ -108,10 +109,9 @@ public class AlarmAlertActivity extends Activity implements View.OnClickListener
         mShakeDetector = new ShakeDetectService(this);
         mShakeDetector.setShakeListener(new ShakeListener());
 
-        mSharePref = PreferenceManager.getDefaultSharedPreferences(this);
-        String alarmDuration = mSharePref.getString(getResources().getString(R.string.setting_alarm_duration_key),
-                "90");
-        mAlarmDuration = Integer.valueOf(alarmDuration)*1000;
+        mSharePrefHelper = SharePreferenceHelper.getInstance(this);
+        mAlarmDuration = mSharePrefHelper.getAlarmDuration();
+
         /* start a new thread */
         mThread = new ServiceThread("ServicesThread");
         mThread.start();

@@ -68,6 +68,7 @@ public class AlarmService implements AlarmCommandsInterface{
             mAlarmSchedule.put(item.getId(),item);
             setAlarm(item);
         }
+        cursor.close();
     }
 
     @Override

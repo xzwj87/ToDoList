@@ -52,7 +52,7 @@
 
     <string name="alarm_notification">you have something to do in ToDoList</string>
 
-    <string name="setting_ringtones">ringtone</string>
+    <string name="settings_ringtones">ringtone</string>
     <string name="settings_alarm_volume">alarm volume</string>
     <string name="settings_alarm_duration">alarm duration</string>
     <string name="settings_about">about</string>
@@ -71,9 +71,9 @@
     <string name="settings_alarm_duration_default">90</string>
 
 
-    <string name="setting_alarm_volume_key" translatable="false">alarm_volume</string>
-    <string name="setting_alarm_duration_key" translatable="false">alarm_duration</string>
-    <string name="setting_alarm_ringtone_key" translatable="false">alarm_ringtone</string>
+    <string name="settings_alarm_volume_key" translatable="false">alarm_volume</string>
+    <string name="settings_alarm_duration_key" translatable="false">alarm_duration</string>
+    <string name="settings_alarm_ringtone_key" translatable="false">alarm_ringtone</string>
 
     <string name="about_todolist">Todo List is a light APP to record \n
     what you want to do in your daily life. You can add,edit and delete\n

@@ -129,6 +129,7 @@ public class AlarmObserver extends ContentObserver {
             ScheduleModel schedule = mDataMapper.transform(cursor);
             current.put(schedule.getId(), schedule);
         }
+        cursor.close();
 
         return current;
     }

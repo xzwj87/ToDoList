@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RingtonePreference
-        android:key="alarm_ringtone"
+        android:key="@string/settings_alarm_ringtone_key"
         android:title="@string/settings_alarm_ringtones_title"
         android:summary="@string/settings_alarm_ringtones_sum"
         android:ringtoneType="alarm|ringtone"
@@ -11,7 +11,7 @@
         android:layout="@layout/custom_preference"/>
 
     <VolumePreference
-        android:key="alarm_volume"
+        android:key="@string/settings_alarm_volume_key"
         android:title="@string/settings_alarm_volume"
         android:summary="@string/settings_alarm_volume_sum"
         android:defaultValue="@string/settings_alarm_volume_default"
@@ -19,7 +19,7 @@
         android:layout="@layout/custom_preference"/>
 
     <ListPreference
-        android:key="alarm_duration"
+        android:key="@string/settings_alarm_duration_key"
         android:title="@string/settings_alarm_duration"
         android:summary="@string/settings_alarm_duration_sum"
         android:dialogTitle="@string/settings_alarm_duration_title"
