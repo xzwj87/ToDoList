@@ -31,4 +31,7 @@
     <dimen name="alarm_time_week_size">56sp</dimen>
     <dimen name="alarm_item_margin_size">56dp</dimen>
     <dimen name="alarm_app_name_text_size">16sp</dimen>
+
+    <dimen name="share_title_text_size">20sp</dimen>
+    <dimen name="share_cancel_text_size">18sp</dimen>
 </resources>

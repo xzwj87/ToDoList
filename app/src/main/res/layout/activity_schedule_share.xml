@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_margin="@dimen/fab_margin">
+
+    <TextView android:id="@+id/share_with"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/share_title_text_size"
+        android:text="@string/share_to"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:typeface="normal"/>
+
+    <RelativeLayout android:id="@+id/share_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/share_with">
+
+        <ImageView android:id="@+id/share_with_weibo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_weibo_64"
+            android:paddingRight="@dimen/fab_margin"
+            android:layout_marginRight="5dp"/>
+
+        <ImageView android:id="@+id/share_with_weixin_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_weixin_64"
+            android:layout_toRightOf="@id/share_with_weibo"
+            android:paddingRight="@dimen/fab_margin"/>
+
+        <ImageView android:id="@+id/share_with_weixin_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_wx_circle_64"
+            android:layout_toRightOf="@id/share_with_weixin_friend"
+            android:paddingRight="@dimen/fab_margin"/>
+
+        <ImageView android:id="@+id/share_with_sms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_sms_64"
+            android:layout_toRightOf="@id/share_with_weixin_circle"
+            android:layout_marginBottom="@dimen/fab_margin"/>
+
+
+        <Button android:id ="@+id/share_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/share_with_weibo"
+            android:text="@string/button_cancel"
+            style="?android:borderlessButtonStyle"
+            android:textSize="@dimen/share_cancel_text_size"
+            android:paddingBottom="@dimen/fab_margin"
+            android:paddingTop="@dimen/fab_margin"
+            android:typeface="normal" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

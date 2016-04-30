@@ -23,6 +23,7 @@ import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleCompone
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.share.ScheduleShareActivity;
 
 import javax.inject.Inject;
 
@@ -197,8 +198,8 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
 
     /* share something with other social Apps */
     public void doShare(){
-        Log.v(LOG_TAG,"doShare()");
-        Intent intent = new Intent();
+        Log.v(LOG_TAG, "doShare()");
+        Intent intent = new Intent(getContext(), ScheduleShareActivity.class);
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         /* put schedule data to it */
@@ -210,11 +211,15 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
         ScheduleModel schedule = mapper.transform(cursor);
 
         Bundle bundle = new Bundle();
+        bundle.putString(ScheduleContract.ScheduleEntry.COLUMN_TITLE,schedule.getTitle());
+        startActivity(intent);
+        /*Bundle bundle = new Bundle();
         bundle.putString(ScheduleContract.ScheduleEntry.COLUMN_TITLE,
                 schedule.getTitle());
         intent.putExtras(bundle);
 
-        startActivity(Intent.createChooser(intent, getResources().getText(R.string.send_to)));
+        startActivity(Intent.createChooser(intent, getResources().getText(R.string.share_to)));
+        */
     }
 
 }
