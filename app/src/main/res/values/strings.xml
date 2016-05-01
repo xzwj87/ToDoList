@@ -80,4 +80,9 @@
     your own to-do-list easily. It is mainly developed by @TianXing Li and\
     @ZhanNeng wang @XuNing</string>
 
+    <string name="wx_share_result_sucess">Share Success</string>
+    <string name="wx_share_result_cancel">User Cancel Share</string>
+    <string name="wx_share_result_auth_deny">Authentication Failure</string>
+    <string name="wx_share_result_default">Share Failure</string>
+
 </resources>
