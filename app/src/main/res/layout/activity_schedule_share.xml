@@ -58,8 +58,9 @@
             android:layout_below="@id/share_with_weibo"
             android:text="@string/button_cancel"
             android:textSize="@dimen/share_cancel_text_size"
-            android:paddingBottom="@dimen/fab_margin"
+            android:layout_marginTop="@dimen/fab_margin"
             android:paddingTop="@dimen/fab_margin"
+            android:paddingBottom="@dimen/fab_margin"
             android:typeface="normal"
             android:gravity="center"
             android:background="?android:attr/selectableItemBackground"/>

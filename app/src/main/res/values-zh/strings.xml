@@ -70,9 +70,13 @@
         如有问题，欢迎随时联系wlh2119@gmail.com</string>
 
 
-    <string name="wx_share_result_sucess">分享成功</string>
-    <string name="wx_share_result_cancel">分享取消</string>
-    <string name="wx_share_result_auth_deny">验证失败</string>
-    <string name="wx_share_result_default">分享失败</string>
+    <string name="share_result_sucess">分享成功</string>
+    <string name="share_result_cancel">分享取消</string>
+    <string name="share_result_auth_deny">验证失败</string>
+    <string name="share_result_unknown">未知错误</string>
+
+    <string name="weixin">微信</string>
+    <string name="weibo">微博</string>
+    <string name="install_info">未安装!</string>
 
 </resources>
