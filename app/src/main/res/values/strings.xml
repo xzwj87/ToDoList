@@ -88,5 +88,8 @@
     <string name="weixin">WebChat</string>
     <string name="weibo">Sina Weibo</string>
     <string name="install_info">is not installed!</string>
+    <string name="start_schedule">I just create a new schedule: </string>
+    <string name="finish_schedule">I just complete a schedule: </string>
+    <string name="come_on">,come on!</string>
 
 </resources>
