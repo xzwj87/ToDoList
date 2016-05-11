@@ -1,0 +1,6 @@
+{
+  "name": "Todolist",
+  "tagline": "",
+  "body": "### Welcome to GitHub Pages.\r\nThis is about Todo List; want to more, please go to: \r\n[ToDo List ](https://github.com/xzwj87/ToDoList)\r\n\r\n\r\n### Creating pages manually\r\nIf you prefer to not use the automatic generator, push a branch named `gh-pages` to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.\r\n\r\n### Authors and Contributors\r\nTodo List is mainly developed by TianXing Li(@nex3z), ZhanNeng Wang(@runningforlife)\r\n\r\n### Support or Contact\r\nif you have any questions or advices, please contact wlh2119@gmail.com\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
