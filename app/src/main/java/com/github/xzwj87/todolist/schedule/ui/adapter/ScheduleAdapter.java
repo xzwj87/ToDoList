@@ -84,6 +84,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
     public interface OnItemClickListener {
         void onItemClick(int position, ScheduleAdapter.ViewHolder vh);
+        void onItemLongClick(int position, ScheduleAdapter.ViewHolder vh);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -102,6 +103,16 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                     if (mListener != null) {
                         mListener.onItemClick(getLayoutPosition(), ViewHolder.this);
                     }
+                }
+            });
+
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if(mListener != null){
+                        mListener.onItemLongClick(getLayoutPosition(),ViewHolder.this);
+                    }
+                    return false;
                 }
             });
         }

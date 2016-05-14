@@ -19,4 +19,6 @@ public interface ScheduleListPresenter extends Presenter {
 
     void undoLastMarkAsDone();
 
+    void onDeleteSchedule(long id, boolean isConfirmed);
+
 }

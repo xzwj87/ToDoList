@@ -5,8 +5,13 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
+import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteSchedule;
+import com.github.xzwj87.todolist.schedule.interactor.delete.DeleteScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.update.MarkScheduleAsDone;
 import com.github.xzwj87.todolist.schedule.interactor.update.MarkScheduleAsDoneArg;
@@ -19,15 +24,18 @@ public class ScheduleListPresenterImpl implements ScheduleListPresenter {
     private ScheduleListView mScheduleListView;
     private UseCase mGetList;
     private UseCase mMarkAsDone;
+    private UseCase mDeleteUseCase;
     private ScheduleModelDataMapper mMapper;
     private Cursor mCursor;
     private long[] mLastMarkedIds;
     private boolean mLastMarkAsDone;
 
     public ScheduleListPresenterImpl(UseCase getList, UseCase markAsDone,
-                                     ScheduleModelDataMapper mapper) {
+                                     UseCase deleteSchedule, ScheduleModelDataMapper mapper) {
+
         mGetList = getList;
         mMarkAsDone = markAsDone;
+        mDeleteUseCase = deleteSchedule;
         mMapper = mapper;
     }
 
@@ -90,6 +98,17 @@ public class ScheduleListPresenterImpl implements ScheduleListPresenter {
 
     }
 
+    @Override
+    public void onDeleteSchedule(long id,boolean isConfirmed) {
+        Log.v(LOG_TAG, "onDeleteSchedule(): isConfirmed = " + isConfirmed);
+        if (!isConfirmed) {
+            mScheduleListView.requestConfirmDelete(id);
+        } else {
+            mDeleteUseCase.init(new DeleteScheduleArg(id))
+                          .execute(new DeleteScheduleSubscriber());
+        }
+    }
+
     private void loadScheduleList() {
         mGetList.execute(new ScheduleListSubscriber());
     }
@@ -116,6 +135,19 @@ public class ScheduleListPresenterImpl implements ScheduleListPresenter {
         @Override public void onNext(Integer updated) {
             Log.v(LOG_TAG, "onNext(): updated = " + updated);
             // mScheduleListView.renderScheduleList();
+        }
+    }
+
+    private final class DeleteScheduleSubscriber extends DefaultSubscriber<Integer> {
+
+        @Override public void onCompleted() {}
+
+        @Override public void onError(Throwable e) {}
+
+        @Override public void onNext(Integer deleted) {
+            Log.v(LOG_TAG, "DeleteScheduleSubscriber onNext(): deleted = " + deleted);
+            // refresh the schedule list
+            mScheduleListView.renderScheduleList();
         }
     }
 }

@@ -5,4 +5,6 @@ public interface ScheduleListView {
 
     void renderScheduleList();
 
+    void requestConfirmDelete(long id);
+
 }

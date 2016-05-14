@@ -21,4 +21,9 @@
     <string-array name="dummy_values">
     </string-array>
 
+    <string-array name="dialog_choice_list">
+        <item>marked as done</item>
+        <item>share</item>
+        <item>delete</item>
+    </string-array>
 </resources>

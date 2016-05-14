@@ -1,18 +1,22 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleArg;
@@ -24,6 +28,7 @@ import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.share.ScheduleShareActivity;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -43,7 +48,9 @@ public class ScheduleListFragment extends BaseFragment implements
     private String mScheduleType;
     private Callbacks mCallbacks = sDummyCallbacks;
     private ScheduleAdapter mScheduleAdapter;
-    private ScheduleListPresenter mScheduleListPresenter;
+
+    ScheduleListPresenterImpl mScheduleListPresenter;
+
     private boolean mIsSearchMode = false;
     private String mQuery;
     private boolean mSwipeMarkAsDone = true;
@@ -53,6 +60,7 @@ public class ScheduleListFragment extends BaseFragment implements
     @Inject @Named("getAllSchedule") UseCase mGetAllSchedule;
     @Inject @Named("getScheduleListByType") UseCase mGetScheduleListByType;
     @Inject @Named("searchSchedule") UseCase mSearchSchedule;
+    @Inject @Named("deleteSchedule") UseCase mDeleteSchedule;
     @Inject ScheduleModelDataMapper mMapper;
 
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
@@ -175,6 +183,26 @@ public class ScheduleListFragment extends BaseFragment implements
 
     }
 
+    @Override
+    public void requestConfirmDelete(long id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.delete_schedule_confirm_message)
+               .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       dialog.dismiss();
+                   }
+               })
+               .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       mScheduleListPresenter.onDeleteSchedule(id,true);
+                       dialog.dismiss();
+                   }
+               })
+               .show();
+    }
+
     @SuppressWarnings("unchecked")
     private void initialize() {
         getComponent(ScheduleComponent.class).inject(this);
@@ -197,7 +225,7 @@ public class ScheduleListFragment extends BaseFragment implements
         }
 
         mScheduleListPresenter = new ScheduleListPresenterImpl(
-                getListUseCase, mMarkScheduleAsDone, mMapper);
+                getListUseCase, mMarkScheduleAsDone,mDeleteSchedule, mMapper);
         mScheduleListPresenter.setView(this);
 
         setupRecyclerView();
@@ -211,10 +239,50 @@ public class ScheduleListFragment extends BaseFragment implements
 
     private void setupRecyclerView() {
         mScheduleAdapter = new ScheduleAdapter(this);
-        mScheduleAdapter.setOnItemClickListener((position, vh) -> {
-            long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
-            Log.v(LOG_TAG, "onItemClick(): position = " + position + ", id = " + id);
-            mCallbacks.onItemSelected(id, vh);
+        mScheduleAdapter.setOnItemClickListener(new ScheduleAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, ScheduleAdapter.ViewHolder vh) {
+                long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
+                Log.v(LOG_TAG, "onItemClick(): position = " + position + ", id = " + id);
+                mCallbacks.onItemSelected(id, vh);
+            }
+
+            @Override
+            public void onItemLongClick(int position, ScheduleAdapter.ViewHolder vh) {
+                long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
+                Log.v(LOG_TAG, "onItemLongClick(): position = " + position + ", id = " + id);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setItems(R.array.dialog_choice_list, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.v(LOG_TAG,"onClick(): id = " + which);
+                        switch(which){
+                            // marked as done
+                            case 0:
+                                mScheduleListPresenter.markAsDone(new long[]{id},true);
+                                break;
+                            // share
+                            case 1:
+                                Intent intent = new Intent(getContext(), ScheduleShareActivity.class);
+                                ScheduleModel scheduleModel = mScheduleListPresenter.getScheduleAtPosition(position);
+                                intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE,
+                                        scheduleModel.getTitle());
+                                intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_DATE_START,
+                                        scheduleModel.getScheduleStart());
+                                startActivity(intent);
+                                break;
+                            // delete
+                            case 2:
+                                mScheduleListPresenter.onDeleteSchedule(id,false);
+                                break;
+                            default:
+                                break;
+                        }
+                        dialog.dismiss();
+                    }
+                }).show();
+            }
         });
         mRvScheduleList.setAdapter(mScheduleAdapter);
 
