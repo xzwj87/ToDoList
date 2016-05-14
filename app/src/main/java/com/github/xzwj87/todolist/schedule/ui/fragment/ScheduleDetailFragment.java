@@ -211,9 +211,9 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
         ScheduleModel schedule = mapper.transform(cursor);
 
         Bundle bundle = new Bundle();
-        bundle.putString(ScheduleContract.ScheduleEntry.COLUMN_TITLE, schedule.getTitle());
+        bundle.putString(ScheduleContract.ScheduleEntry.COLUMN_TITLE, mAppBarLayout.getTitle().toString());
         bundle.putLong(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME,
-                schedule.getScheduleStart().getTime());
+                schedule.getAlarmTime().getTime());
         if(schedule.getDoneStatus().equals(ScheduleModel.DONE)){
             bundle.putBoolean(ScheduleContract.ScheduleEntry.COLUMN_IS_DONE,true);
         }else{

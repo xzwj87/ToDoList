@@ -30,7 +30,6 @@ import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByTypeArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.SearchScheduleArg;
 import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
-import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
 import com.github.xzwj87.todolist.schedule.ui.activity.AddScheduleActivity;
@@ -285,42 +284,7 @@ public class ScheduleListFragment extends BaseFragment implements
                 final long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
                 Log.v(LOG_TAG, "onItemLongClick(): position = " + position + ", id = " + id);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setItems(R.array.dialog_choice_list, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.v(LOG_TAG,"onClick(): id = " + which);
-                        switch(which){
-                            // marked as done
-                            case 0:
-                                mScheduleListPresenter.markAsDone(new long[]{id},true);
-                                break;
-                            // share
-                            case 1:
-                                Intent intent = new Intent(getContext(), ScheduleShareActivity.class);
-                                ScheduleModel scheduleModel = mScheduleListPresenter.getScheduleAtPosition(position);
-                                intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE,
-                                        scheduleModel.getTitle());
-                                intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_DATE_START,
-                                        scheduleModel.getScheduleStart().getTime());
-                                startActivity(intent);
-                                break;
-                            // edit
-                            case 2:
-                                Intent editIntent = new Intent(getContext(), AddScheduleActivity.class);
-                                editIntent.putExtra(AddScheduleActivity.SCHEDULE_ID, id);
-                                startActivity(editIntent);
-                                break;
-                            // delete
-                            case 3:
-                                mScheduleListPresenter.onDeleteSchedule(id,false);
-                                break;
-                            default:
-                                break;
-                        }
-                        dialog.dismiss();
-                    }
-                }).show();
+                createDialog(position, id);
             }
         });
         mRvScheduleList.setAdapter(mScheduleAdapter);
@@ -332,7 +296,7 @@ public class ScheduleListFragment extends BaseFragment implements
         mRvScheduleList.setHasFixedSize(true);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
                     @Override
                     public boolean onMove(RecyclerView recyclerView,
                                           RecyclerView.ViewHolder viewHolder,
@@ -349,7 +313,7 @@ public class ScheduleListFragment extends BaseFragment implements
                         Log.v(LOG_TAG, "onSwiped(): position = " + position +
                                  ", direction = " + direction);
                         long id = mScheduleAdapter.getItemId(position);
-                        mScheduleListPresenter.markAsDone(new long[] {id}, mSwipeMarkAsDone);
+                        mScheduleListPresenter.markAsDone(new long[]{id}, mSwipeMarkAsDone);
                         mLastRemovedPosition = position;
                         showSnackBarNotification(id, mSwipeMarkAsDone);
                     }
@@ -421,5 +385,44 @@ public class ScheduleListFragment extends BaseFragment implements
         // refresh the list
         loadScheduleListData();
         mCallbacks.onDataChanged(scheduleNumber);
+    }
+
+    private void createDialog(int position,long id){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setItems(R.array.dialog_choice_list, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.v(LOG_TAG,"onClick(): id = " + which);
+                switch(which){
+                    // marked as done
+                    case 0:
+                        mScheduleListPresenter.markAsDone(new long[]{id},true);
+                        break;
+                    // share
+                    case 1:
+                        Intent intent = new Intent(getContext(), ScheduleShareActivity.class);
+                        ScheduleModel scheduleModel = mScheduleListPresenter.getScheduleAtPosition(position);
+                        intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE,
+                                scheduleModel.getTitle());
+                        intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME,
+                                scheduleModel.getAlarmTime().getTime());
+                        startActivity(intent);
+                        break;
+                    // edit
+                    case 2:
+                        Intent editIntent = new Intent(getContext(), AddScheduleActivity.class);
+                        editIntent.putExtra(AddScheduleActivity.SCHEDULE_ID, id);
+                        startActivity(editIntent);
+                        break;
+                    // delete
+                    case 3:
+                        mScheduleListPresenter.onDeleteSchedule(id,false);
+                        break;
+                    default:
+                        break;
+                }
+                dialog.dismiss();
+            }
+        }).show();
     }
 }
