@@ -1,9 +1,15 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +18,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -48,6 +55,7 @@ public class ScheduleListFragment extends BaseFragment implements
     private String mScheduleType;
     private Callbacks mCallbacks = sDummyCallbacks;
     private ScheduleAdapter mScheduleAdapter;
+    private ScheduleObserver mScheduleObserver;
 
     ScheduleListPresenterImpl mScheduleListPresenter;
 
@@ -67,9 +75,31 @@ public class ScheduleListFragment extends BaseFragment implements
 
     public interface Callbacks {
         void onItemSelected(long id, ScheduleAdapter.ViewHolder vh);
+        void onDataChanged(ScheduleCategoryNumber sn);
     }
 
-    private static Callbacks sDummyCallbacks = (id, vh) -> { };
+    public class ScheduleCategoryNumber{
+        private long mUndoneTotal;
+        private long mDoneTotal;
+
+        public void setUndoneTotal(long undone){
+            mUndoneTotal = undone;
+        }
+
+        public void setDoneTotal(long done){
+            mDoneTotal = done;
+        }
+
+        public long getUndoneTotal(){
+            return mUndoneTotal;
+        }
+
+        public long getDoneTotal(){
+            return mDoneTotal;
+        }
+    }
+
+    private static Callbacks sDummyCallbacks = null;
 
     public ScheduleListFragment() {}
 
@@ -124,6 +154,7 @@ public class ScheduleListFragment extends BaseFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        registerObserver();
         initialize();
     }
 
@@ -158,6 +189,7 @@ public class ScheduleListFragment extends BaseFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterObserver();
         mScheduleListPresenter.destroy();
     }
 
@@ -326,5 +358,59 @@ public class ScheduleListFragment extends BaseFragment implements
             mScheduleListPresenter.markAsDone(new long[] {id}, !undoMarkAsDone);
         });
         snackbar.show();
+    }
+
+
+    private class ScheduleObserver extends ContentObserver {
+        public static final String TAG = "ScheduleObserver";
+
+        private ContentResolver mResolver = getContext().getContentResolver();
+        private ScheduleCategoryNumber mScheduleNumber = new ScheduleCategoryNumber();
+
+        public ScheduleObserver(Context context,Handler handler){
+            super(handler);
+
+            //ContentResolver mResolver = context.getContentResolver();
+        }
+
+        @Override
+        public void onChange(boolean selfChange){
+            onChange(selfChange, null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange,Uri uri){
+            Log.v(TAG, "onChange: uri = " + uri);
+
+            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+            String args[] = {ScheduleModel.UNDONE};
+            Cursor cursor = mResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                    null,selection,args,null);
+            //cursor.moveToFirst();
+            mScheduleNumber.setUndoneTotal(cursor.getCount());
+
+            selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+            args = new String[]{ScheduleModel.DONE};
+            cursor = mResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                    null, selection, args, null);
+            mScheduleNumber.setDoneTotal(cursor.getCount());
+            cursor.close();
+
+            // refresh the list
+            loadScheduleListData();
+            mCallbacks.onDataChanged(mScheduleNumber);
+        }
+    }
+
+    private void registerObserver(){
+        Log.v(LOG_TAG, "registerObserver");
+        mScheduleObserver = new ScheduleObserver(getContext(),new Handler());
+        getContext().getContentResolver().registerContentObserver(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                true, mScheduleObserver);
+    }
+
+    private void unregisterObserver(){
+        Log.v(LOG_TAG, "unregisterObserver");
+        getContext().getContentResolver().unregisterContentObserver(mScheduleObserver);
     }
 }

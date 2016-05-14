@@ -62,8 +62,6 @@ public class ScheduleListActivity extends BaseActivity
     @Inject SearchSuggestionPresenterImpl mPresenter;
     private ScheduleComponent mScheduleComponent;
 
-    private ScheduleObserver mScheduleObserver;
-
     @Bind(R.id.fab) FloatingActionButton mFab;
 
     @Override
@@ -108,15 +106,11 @@ public class ScheduleListActivity extends BaseActivity
         initializeView();
 
         handleIntent(getIntent());
-
-        registerObserver();
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-
-        unregisterObserver();
     }
 
     @Override
@@ -202,6 +196,12 @@ public class ScheduleListActivity extends BaseActivity
             intent.putExtra(ScheduleDetailActivity.SCHEDULE_ID, id);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onDataChanged(ScheduleListFragment.ScheduleCategoryNumber sn) {
+        Log.v(LOG_TAG,"onDataChanged()");
+        updateDrawerView(sn);
     }
 
     @Override
@@ -316,88 +316,17 @@ public class ScheduleListActivity extends BaseActivity
         });
     }
 
-    public class ScheduleObserver extends ContentObserver{
-        public static final String TAG = "ScheduleObserver";
+    private void updateDrawerView(ScheduleListFragment.ScheduleCategoryNumber number){
+        String totalScheduleMenuTitle = getResources ().getString(R.string.schedule_type_all);
+        String mDoneScheduleMenuTitle =  getResources().getString(R.string.schedule_done);
+        NavigationView view = (NavigationView)findViewById(R.id.nav_view);
+        Menu menu = view.getMenu();
 
-        private ContentResolver mContentResolver;
-        private long mTotalSchedule;
-        private long mDoneSchedule;
-        private String mTotalScheduleMenuTitle = getResources().getString(R.string.schedule_type_all);
-        private String mDoneScheduleMenuTitle = getResources().getString(R.string.schedule_done);
+        menu.findItem(R.id.nav_settings).setVisible(true);
 
-
-        public ScheduleObserver(Context context,Handler handler){
-            super(handler);
-
-            mContentResolver = getContentResolver();
-
-            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-            String args[] = {ScheduleModel.UNDONE};
-            Cursor cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    null,selection,args,null);
-            //cursor.moveToFirst();
-            mTotalSchedule = cursor.getCount();
-
-            selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-            args = new String[]{ScheduleModel.DONE};
-            cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    null,selection,args,null);
-
-            mDoneSchedule = cursor.getCount();
-
-            updateDrawerView();
-        }
-
-        @Override
-        public void onChange(boolean selfChange){
-            onChange(selfChange, null);
-        }
-
-        @Override
-        public void onChange(boolean selfChange,Uri uri){
-            Log.v(TAG, "onChange: uri = " + uri);
-
-            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-            String args[] = {ScheduleModel.UNDONE};
-            Cursor cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    null,selection,args,null);
-            //cursor.moveToFirst();
-            mTotalSchedule = cursor.getCount();
-
-            selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-            args = new String[]{ScheduleModel.DONE};
-            cursor = mContentResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    null,selection,args,null);
-
-            mDoneSchedule = cursor.getCount();
-
-            updateDrawerView();
-        }
-
-        private void updateDrawerView(){
-            NavigationView view = (NavigationView)findViewById(R.id.nav_view);
-            Menu menu = view.getMenu();
-
-            menu.findItem(R.id.nav_settings).setVisible(true);
-
-            menu.findItem(R.id.nav_schedule_type_all).setTitle(mTotalScheduleMenuTitle
-                    + "(" + mTotalSchedule + ")");
-            menu.findItem(R.id.nav_done).setTitle(mDoneScheduleMenuTitle
-                    + "(" + mDoneSchedule + ")");
-        }
-    }
-
-    public void registerObserver(){
-        Log.v(LOG_TAG,"registerObserver");
-
-        mScheduleObserver = new ScheduleObserver(this,new Handler());
-        getContentResolver().registerContentObserver(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                true,mScheduleObserver);
-    }
-
-    public void unregisterObserver(){
-        Log.v(LOG_TAG, "unregisterObserver");
-
-        getContentResolver().unregisterContentObserver(mScheduleObserver);
+        menu.findItem(R.id.nav_schedule_type_all).setTitle(totalScheduleMenuTitle
+                + "(" + number.getUndoneTotal() + ")");
+        menu.findItem(R.id.nav_done).setTitle(mDoneScheduleMenuTitle
+                + "(" + number.getDoneTotal() + ")");
     }
 }
