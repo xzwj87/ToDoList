@@ -33,6 +33,7 @@ import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleCompone
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenter;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
+import com.github.xzwj87.todolist.schedule.ui.activity.AddScheduleActivity;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.github.xzwj87.todolist.share.ScheduleShareActivity;
@@ -72,7 +73,6 @@ public class ScheduleListFragment extends BaseFragment implements
     @Inject ScheduleModelDataMapper mMapper;
 
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
-
 
     public interface Callbacks {
         void onItemSelected(long id, ScheduleAdapter.ViewHolder vh);
@@ -282,7 +282,7 @@ public class ScheduleListFragment extends BaseFragment implements
 
             @Override
             public void onItemLongClick(int position, ScheduleAdapter.ViewHolder vh) {
-                long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
+                final long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
                 Log.v(LOG_TAG, "onItemLongClick(): position = " + position + ", id = " + id);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -305,8 +305,14 @@ public class ScheduleListFragment extends BaseFragment implements
                                         scheduleModel.getScheduleStart().getTime());
                                 startActivity(intent);
                                 break;
-                            // delete
+                            // edit
                             case 2:
+                                Intent editIntent = new Intent(getContext(), AddScheduleActivity.class);
+                                editIntent.putExtra(AddScheduleActivity.SCHEDULE_ID, id);
+                                startActivity(editIntent);
+                                break;
+                            // delete
+                            case 3:
                                 mScheduleListPresenter.onDeleteSchedule(id,false);
                                 break;
                             default:

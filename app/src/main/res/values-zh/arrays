@@ -3,6 +3,7 @@
     <string-array name="dialog_choice_list">
         <item>标记为已完成</item>
         <item>分享</item>
+        <item>编辑</item>
         <item>删除</item>
     </string-array>
 </resources>
