@@ -73,6 +73,7 @@ public class ScheduleListFragment extends BaseFragment implements
 
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
 
+
     public interface Callbacks {
         void onItemSelected(long id, ScheduleAdapter.ViewHolder vh);
         void onDataChanged(ScheduleCategoryNumber sn);
@@ -262,7 +263,7 @@ public class ScheduleListFragment extends BaseFragment implements
 
         setupRecyclerView();
 
-        loadScheduleListData();
+        updateScheduleNumber();
     }
 
     private void loadScheduleListData() {
@@ -364,13 +365,8 @@ public class ScheduleListFragment extends BaseFragment implements
     private class ScheduleObserver extends ContentObserver {
         public static final String TAG = "ScheduleObserver";
 
-        private ContentResolver mResolver = getContext().getContentResolver();
-        private ScheduleCategoryNumber mScheduleNumber = new ScheduleCategoryNumber();
-
         public ScheduleObserver(Context context,Handler handler){
             super(handler);
-
-            //ContentResolver mResolver = context.getContentResolver();
         }
 
         @Override
@@ -381,24 +377,7 @@ public class ScheduleListFragment extends BaseFragment implements
         @Override
         public void onChange(boolean selfChange,Uri uri){
             Log.v(TAG, "onChange: uri = " + uri);
-
-            String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-            String args[] = {ScheduleModel.UNDONE};
-            Cursor cursor = mResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    null,selection,args,null);
-            //cursor.moveToFirst();
-            mScheduleNumber.setUndoneTotal(cursor.getCount());
-
-            selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-            args = new String[]{ScheduleModel.DONE};
-            cursor = mResolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    null, selection, args, null);
-            mScheduleNumber.setDoneTotal(cursor.getCount());
-            cursor.close();
-
-            // refresh the list
-            loadScheduleListData();
-            mCallbacks.onDataChanged(mScheduleNumber);
+            updateScheduleNumber();
         }
     }
 
@@ -412,5 +391,29 @@ public class ScheduleListFragment extends BaseFragment implements
     private void unregisterObserver(){
         Log.v(LOG_TAG, "unregisterObserver");
         getContext().getContentResolver().unregisterContentObserver(mScheduleObserver);
+    }
+
+    private void updateScheduleNumber(){
+        ContentResolver resolver = getContext().getContentResolver();
+        ScheduleCategoryNumber scheduleNumber = new ScheduleCategoryNumber();
+
+        Log.v(LOG_TAG,"updateScheduleNumber()");
+        String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+        String args[] = {ScheduleModel.UNDONE};
+        Cursor cursor = resolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                null,selection,args,null);
+        //cursor.moveToFirst();
+        scheduleNumber.setUndoneTotal(cursor.getCount());
+
+        selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
+        args = new String[]{ScheduleModel.DONE};
+        cursor = resolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                null, selection, args, null);
+        scheduleNumber.setDoneTotal(cursor.getCount());
+        cursor.close();
+
+        // refresh the list
+        loadScheduleListData();
+        mCallbacks.onDataChanged(scheduleNumber);
     }
 }
