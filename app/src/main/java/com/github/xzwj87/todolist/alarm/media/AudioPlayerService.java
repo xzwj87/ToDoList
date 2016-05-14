@@ -2,21 +2,19 @@ package com.github.xzwj87.todolist.alarm.media;
 
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.alarm.ui.activity.AlarmAlertActivity;
 import com.github.xzwj87.todolist.settings.SharePreferenceHelper;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 /**
@@ -25,14 +23,15 @@ import android.util.Log;
 
 public class AudioPlayerService extends Service
         implements AudioManager.OnAudioFocusChangeListener{
-    private static final String TAG = "AudioPlayerService";
+    public static final String TAG = "AudioPlayerService";
 
-    private AudioManager mAudioMgr;
-    private MediaPlayer mPlayer;
-    private Vibrator mVibrator;
-    private int mRingerMode;
-    private int mAlarmDuration;
-    private float mVolume;
+    private boolean mNeedSendNoti = false;
+    private AudioManager mAudioMgr = null;
+    private MediaPlayer mPlayer = null;
+    private Vibrator mVibrator = null;
+    private int mRingerMode = AudioManager.RINGER_MODE_NORMAL;
+    private int mAlarmDuration = 60*1000;
+    private float mVolume = 1;
 
     private SharePreferenceHelper mSharePrefHelper;
 
@@ -63,7 +62,13 @@ public class AudioPlayerService extends Service
         if(mRingerMode == AudioManager.RINGER_MODE_NORMAL) {
             play();
         }else if(mVibrator.hasVibrator()){
-            mVibrator.vibrate(mAlarmDuration);
+            mVibrator.vibrate(3*1000);
+            mNeedSendNoti = true;
+
+            LocalBroadcastManager broadcastMgr = LocalBroadcastManager.getInstance(getApplicationContext());
+            Intent notiIntent = new Intent();
+            notiIntent.setAction(AlarmAlertActivity.ACTION_NOTIFICATION);
+            broadcastMgr.sendBroadcast(notiIntent);
         }
 
         return super.onStartCommand(intent,flags,resId);

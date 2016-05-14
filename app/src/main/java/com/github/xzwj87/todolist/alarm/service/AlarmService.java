@@ -7,13 +7,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.github.xzwj87.todolist.app.App;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by JasonWang on 2016/3/6.

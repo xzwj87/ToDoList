@@ -213,7 +213,7 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
         Bundle bundle = new Bundle();
         bundle.putString(ScheduleContract.ScheduleEntry.COLUMN_TITLE, schedule.getTitle());
         bundle.putLong(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME,
-                schedule.getAlarmTime().getTime());
+                schedule.getScheduleStart().getTime());
         if(schedule.getDoneStatus().equals(ScheduleModel.DONE)){
             bundle.putBoolean(ScheduleContract.ScheduleEntry.COLUMN_IS_DONE,true);
         }else{

@@ -269,7 +269,7 @@ public class ScheduleListFragment extends BaseFragment implements
                                 intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE,
                                         scheduleModel.getTitle());
                                 intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_DATE_START,
-                                        scheduleModel.getScheduleStart());
+                                        scheduleModel.getScheduleStart().getTime());
                                 startActivity(intent);
                                 break;
                             // delete

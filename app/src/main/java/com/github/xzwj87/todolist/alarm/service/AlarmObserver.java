@@ -12,7 +12,6 @@ import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by JasonWang on 2016/3/6.

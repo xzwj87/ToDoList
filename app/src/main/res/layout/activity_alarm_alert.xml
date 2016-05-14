@@ -10,7 +10,7 @@
         android:src="@drawable/ic_close_24dp_white"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/fab_margin"/>
+        android:layout_margin="@dimen/fab_margin" />
 
     <TextView android:id="@+id/alarm_time"
         android:layout_width="match_parent"
