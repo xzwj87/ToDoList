@@ -12,6 +12,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="actionOverflowButtonStyle">@style/customMenuStyle</item>
+        <item name="homeAsUpIndicator">@drawable/ic_arrow_back_24dp</item>
     </style>
 
     <style name="customMenuStyle" parent="android:Widget.Holo.Light.ActionButton.Overflow">
