@@ -85,6 +85,12 @@
                 android:value="com.github.xzwj87.todolist.schedule.ui.activity.ScheduleListActivity" />
         </activity>
 
+        <activity android:name=".schedule.ui.activity.ScheduleGridActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label=""
+            android:parentActivityName=".schedule.ui.activity.ScheduleListActivity">
+        </activity>
+
         <activity android:name=".alarm.ui.activity.AlarmAlertActivity"
             android:theme="@style/AlarmAlertDialog">
         </activity>

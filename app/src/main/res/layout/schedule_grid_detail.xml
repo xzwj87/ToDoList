@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView android:id="@+id/grid_schedule_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24dp"
+        android:typeface="normal"/>
+
+    <ImageView android:id="@+id/grid_schedule_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@id/grid_schedule_title"
+        android:layout_toRightOf="@id/grid_schedule_title"
+        android:src="@drawable/ic_more_vert_24dp"/>
+
+    <RelativeLayout android:id="@+id/rl_grid_schedule_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_below="@id/grid_schedule_title"
+        android:layout_alignLeft="@id/grid_schedule_title">
+
+        <ImageView android:id="@+id/grid_schedule_period_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_schedule_24dp"/>
+
+        <TextView android:id="@+id/grid_schedule_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/grid_schedule_period_icon"
+            android:layout_marginLeft="5dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout android:id="@+id/rl_grid_alarm_time"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_below="@id/rl_grid_schedule_title"
+        android:layout_alignLeft="@id/rl_grid_schedule_title">
+
+        <ImageView android:id="@+id/grid_alarm_time_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_notifications_24dp"/>
+
+        <TextView android:id="@+id/grid_alarm_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/grid_alarm_time_icon"
+            android:layout_marginLeft="5dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_below="@id/rl_grid_alarm_time"
+        android:layout_alignLeft="@id/rl_grid_alarm_time">
+
+        <ImageView android:id="@+id/grid_schedule_type_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_label_24dp" />
+
+        <TextView android:id="@+id/grid_schedule_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/grid_schedule_type_icon"
+            android:layout_marginLeft="5dp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
