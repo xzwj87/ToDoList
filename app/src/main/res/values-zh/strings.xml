@@ -70,7 +70,7 @@
         如有问题，欢迎随时联系wlh2119@gmail.com</string>
 
 
-    <string name="share_result_sucess">分享成功</string>
+    <string name="share_result_success">分享成功</string>
     <string name="share_result_cancel">分享取消</string>
     <string name="share_result_auth_deny">验证失败</string>
     <string name="share_result_unknown">未知错误</string>
@@ -81,5 +81,8 @@
     <string name="start_schedule">我刚新建了任务: </string>
     <string name="finish_schedule">我刚完成了任务: </string>
     <string name="come_on">，快来加入我们吧！</string>
+
+    <string name="more_schedule_list_view">列表视图</string>
+    <string name="more_schedule_grid_view">网格视图</string>
 
 </resources>

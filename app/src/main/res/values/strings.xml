@@ -80,7 +80,7 @@
     your own to-do-list easily. It is mainly developed by @TianXing Li and\
     @ZhanNeng wang @XuNing</string>
 
-    <string name="share_result_sucess">Share Success</string>
+    <string name="share_result_success">Share Success</string>
     <string name="share_result_cancel">User Cancel Share</string>
     <string name="share_result_auth_deny">Authentication Failure</string>
     <string name="share_result_unknown">Share Failure</string>
@@ -91,5 +91,9 @@
     <string name="start_schedule">I just create a new schedule: </string>
     <string name="finish_schedule">I just complete a schedule: </string>
     <string name="come_on">,come on!</string>
+
+    <string name="more_schedule_list_view">List View</string>
+    <string name="more_schedule_grid_view">Grid View</string>
+
 
 </resources>
