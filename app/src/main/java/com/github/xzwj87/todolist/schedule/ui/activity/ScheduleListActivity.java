@@ -50,7 +50,9 @@ import butterknife.OnClick;
 public class ScheduleListActivity extends BaseActivity
         implements ScheduleListFragment.Callbacks, NavigationView.OnNavigationItemSelectedListener,
         SearchSuggestionView, HasComponent<ScheduleComponent> {
-    private static final String LOG_TAG = ScheduleListActivity.class.getSimpleName();
+    public static final String LOG_TAG = ScheduleListActivity.class.getSimpleName();
+
+    public static final String SCHEDULE_TYPE = "schedule_type";
 
     private static final String DETAIL_FRAGMENT_TAG = "detail_fragment";
     private static final String SEARCH_RESULT_FRAGMENT_TAG = "search_result_fragment";
@@ -167,6 +169,21 @@ public class ScheduleListActivity extends BaseActivity
         setupSearchView(searchItem);
 
         return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menu){
+        int id = menu.getItemId();
+        if(id == R.id.action_more){
+            Intent intent = new Intent(this,ScheduleGridActivity.class);
+            intent.putExtra(SCHEDULE_TYPE,mTypeFilter);
+            startActivity(intent);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override

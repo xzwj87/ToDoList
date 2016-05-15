@@ -213,7 +213,7 @@ public class ScheduleShareActivity extends AppCompatActivity
         if(requestCode == ShareConstants.SHARE_TO_SMS){
             int msgId = 0;
             if(resultCode == RESULT_OK){
-                msgId = R.string.share_result_sucess;
+                msgId = R.string.share_result_success;
             }else if(resultCode == RESULT_CANCELED){
                 msgId = R.string.share_result_cancel;
             }
@@ -232,7 +232,7 @@ public class ScheduleShareActivity extends AppCompatActivity
         int resultCode = 0;
         switch(resp.errCode){
             case BaseResp.ErrCode.ERR_OK:
-                resultCode = R.string.share_result_sucess;
+                resultCode = R.string.share_result_success;
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 resultCode = R.string.share_result_cancel;
@@ -268,7 +268,7 @@ public class ScheduleShareActivity extends AppCompatActivity
         int result = 0;
         switch (baseResponse.errCode){
             case WBConstants.ErrorCode.ERR_OK:
-                result = R.string.share_result_sucess;
+                result = R.string.share_result_success;
                 break;
             case WBConstants.ErrorCode.ERR_CANCEL:
                 result = R.string.share_result_cancel;

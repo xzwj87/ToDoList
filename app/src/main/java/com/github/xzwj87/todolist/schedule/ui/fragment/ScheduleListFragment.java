@@ -195,7 +195,15 @@ public class ScheduleListFragment extends BaseFragment implements
 
     @Override
     public ScheduleModel getItemAtPosition(int position) {
-        return mScheduleListPresenter.getScheduleAtPosition(position);
+        try {
+            ScheduleModel model = mScheduleListPresenter.getScheduleAtPosition(position);
+            return model;
+        }catch (RuntimeException e){
+            Log.v(LOG_TAG,"getItemAtPosition(): fail to get the item");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
@@ -232,7 +240,7 @@ public class ScheduleListFragment extends BaseFragment implements
                        dialog.dismiss();
                    }
                })
-               .show();
+                .show();
     }
 
     @SuppressWarnings("unchecked")
