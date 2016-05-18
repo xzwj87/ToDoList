@@ -6,7 +6,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.Window;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.internal.di.HasComponent;
@@ -41,7 +40,7 @@ public class ScheduleGridActivity extends BaseActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.grid_view_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
+        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
 
 
         if(savedInstanceState == null){
