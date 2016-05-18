@@ -16,9 +16,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/grid_item_margin"
             android:textSize="@dimen/grid_item_title_text_size"
-            android:typeface="monospace"
+            android:typeface="serif"
+            android:textStyle="bold"
             android:gravity="center_vertical"
-            android:lines="1"/>
+            android:lines="1"
+            android:maxLength="8"/>
 
     </LinearLayout>
 

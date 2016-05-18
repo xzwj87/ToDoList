@@ -30,6 +30,7 @@ import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByTypeArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.SearchScheduleArg;
 import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
+import com.github.xzwj87.todolist.schedule.observer.ScheduleDataObserver;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleListPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleListView;
 import com.github.xzwj87.todolist.schedule.ui.activity.AddScheduleActivity;
@@ -44,7 +45,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class ScheduleListFragment extends BaseFragment implements
-        ScheduleAdapter.DataSource, ScheduleListView {
+        ScheduleAdapter.DataSource,ScheduleDataObserver.DataSetChanged,
+        ScheduleListView {
     private static final String LOG_TAG = ScheduleListFragment.class.getSimpleName();
 
     public static final String SCHEDULE_TYPE_DONE = "done";
@@ -55,7 +57,7 @@ public class ScheduleListFragment extends BaseFragment implements
     private String mScheduleType;
     private Callbacks mCallbacks = sDummyCallbacks;
     private ScheduleAdapter mScheduleAdapter;
-    private ScheduleObserver mScheduleObserver;
+    private ScheduleDataObserver mScheduleObserver;
 
     ScheduleListPresenterImpl mScheduleListPresenter;
 
@@ -72,6 +74,13 @@ public class ScheduleListFragment extends BaseFragment implements
     @Inject ScheduleModelDataMapper mMapper;
 
     @Bind(R.id.rv_schedule_list) RecyclerView mRvScheduleList;
+
+    @Override
+    public void onDataSetChanged() {
+        updateScheduleNumber();
+        // refresh the list
+        loadScheduleListData();
+    }
 
     public interface Callbacks {
         void onItemSelected(long id, ScheduleAdapter.ViewHolder vh);
@@ -154,7 +163,6 @@ public class ScheduleListFragment extends BaseFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        registerObserver();
         initialize();
     }
 
@@ -270,7 +278,14 @@ public class ScheduleListFragment extends BaseFragment implements
 
         setupRecyclerView();
 
+        // schedule data observer
+        mScheduleObserver = ScheduleDataObserver.getInstance(getContext());
+        registerObserver();
+        mScheduleObserver.registerDataChangedCb(this);
+
         updateScheduleNumber();
+
+        loadScheduleListData();
     }
 
     private void loadScheduleListData() {
@@ -340,28 +355,8 @@ public class ScheduleListFragment extends BaseFragment implements
     }
 
 
-    private class ScheduleObserver extends ContentObserver {
-        public static final String TAG = "ScheduleObserver";
-
-        public ScheduleObserver(Context context,Handler handler){
-            super(handler);
-        }
-
-        @Override
-        public void onChange(boolean selfChange){
-            onChange(selfChange, null);
-        }
-
-        @Override
-        public void onChange(boolean selfChange,Uri uri){
-            Log.v(TAG, "onChange: uri = " + uri);
-            updateScheduleNumber();
-        }
-    }
-
     private void registerObserver(){
         Log.v(LOG_TAG, "registerObserver");
-        mScheduleObserver = new ScheduleObserver(getContext(),new Handler());
         getContext().getContentResolver().registerContentObserver(ScheduleContract.ScheduleEntry.CONTENT_URI,
                 true, mScheduleObserver);
     }
@@ -390,8 +385,6 @@ public class ScheduleListFragment extends BaseFragment implements
         scheduleNumber.setDoneTotal(cursor.getCount());
         cursor.close();
 
-        // refresh the list
-        loadScheduleListData();
         mCallbacks.onDataChanged(scheduleNumber);
     }
 

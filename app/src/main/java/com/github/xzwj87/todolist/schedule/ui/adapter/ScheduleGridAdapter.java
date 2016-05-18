@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.schedule.utility.ScheduleUtility;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -91,9 +92,10 @@ public class ScheduleGridAdapter extends BaseAdapter {
         String scheduleTime = startTime + " - " + endTime;
         vh.mTvSchedulePeriod.setText(scheduleDate);
         vh.mTvScheduleTime.setText(scheduleTime);
-        vh.mTvScheduleAlarmTime.setText(TIME_FORMAT.format
-                (scheduleModel.getAlarmTime()));
-        vh.mTvScheduleType.setText(scheduleModel.getType());
+        vh.mTvScheduleAlarmTime.setText(TIME_FORMAT.format(
+                scheduleModel.getAlarmTime()));
+        vh.mTvScheduleType.setText(ScheduleUtility.getScheduleTypeText(
+                scheduleModel.getType()));
 
         return rootView;
     }

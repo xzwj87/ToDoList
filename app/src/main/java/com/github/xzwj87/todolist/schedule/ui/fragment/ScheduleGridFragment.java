@@ -4,21 +4,19 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 
 import com.github.xzwj87.todolist.R;
+import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleArg;
 import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
+import com.github.xzwj87.todolist.schedule.observer.ScheduleDataObserver;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleGridPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleGridView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleGridAdapter;
@@ -34,7 +32,8 @@ import butterknife.ButterKnife;
  * Created by JasonWang on 2016/5/14.
  */
 public class ScheduleGridFragment extends BaseFragment implements
-        ScheduleGridAdapter.DataSource,ScheduleGridView{
+        ScheduleGridAdapter.DataSource,ScheduleDataObserver.DataSetChanged,
+        ScheduleGridView{
     public static final String LOG_TAG = "ScheduleGridFragment";
     public static final String SCHEDULE_TYPE_DONE = "done";
 
@@ -44,6 +43,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     private ScheduleGridPresenterImpl mScheduleGridPresenter;
     private ScheduleGridAdapter mScheduleGridAdapter;
     private GridCallBacks mCallBacks;
+    private ScheduleDataObserver mScheduleObserver;
 
     @Inject @Named("markScheduleAsDone") UseCase mMarkedAsDone;
     @Inject @Named("getAllSchedule") UseCase mGetAllSchedule;
@@ -99,7 +99,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
-        Log.v(LOG_TAG,"onAttach()");
+        Log.v(LOG_TAG, "onAttach()");
 
         if(!(context instanceof GridCallBacks)){
             Log.e(LOG_TAG,"Activity has to implement GridCallbacks");
@@ -107,6 +107,12 @@ public class ScheduleGridFragment extends BaseFragment implements
         }
 
         mCallBacks = (GridCallBacks)context;
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        unregisterObserver();
     }
 
     @Override
@@ -140,6 +146,7 @@ public class ScheduleGridFragment extends BaseFragment implements
 
     @Override
     public void onDataSetChanged() {
+        loadScheduleData();
         mCallBacks.onDataSetChanged();
     }
 
@@ -165,6 +172,11 @@ public class ScheduleGridFragment extends BaseFragment implements
                 mMarkedAsDone,mDeleteSchedule,mDataMapper);
         mScheduleGridPresenter.setView(this);
 
+        // data set observer
+        mScheduleObserver = ScheduleDataObserver.getInstance(getContext());
+        registerObserver();
+        mScheduleObserver.registerDataChangedCb(this);
+
         initGridView();
 
         loadScheduleData();
@@ -180,14 +192,14 @@ public class ScheduleGridFragment extends BaseFragment implements
             @Override
             public void onItemClick(int position, ScheduleGridAdapter.GridViewHolder vh) {
                 long id = getItemAtPosition(position).getId();
-                Log.v(LOG_TAG,"onItemClick(): position = " + position + ",id = " + id);
-                mCallBacks.onItemSelected(id,vh);
+                Log.v(LOG_TAG, "onItemClick(): position = " + position + ",id = " + id);
+                mCallBacks.onItemSelected(id, vh);
             }
 
             @Override
             public void onItemLongClick(int position, ScheduleGridAdapter.GridViewHolder vh) {
                 long id = getItemAtPosition(position).getId();
-                Log.v(LOG_TAG,"onItemLongClick(): position = " + position + ", id = " + id);
+                Log.v(LOG_TAG, "onItemLongClick(): position = " + position + ", id = " + id);
                 createDialog(id, position);
             }
         });
@@ -197,5 +209,15 @@ public class ScheduleGridFragment extends BaseFragment implements
 
     private void createDialog(long id,int position){
 
+    }
+
+    private void registerObserver() {
+        getContext().getContentResolver().registerContentObserver(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                true, mScheduleObserver);
+    }
+
+    private void unregisterObserver(){
+        getContext().getContentResolver().unregisterContentObserver(
+                mScheduleObserver);
     }
 }

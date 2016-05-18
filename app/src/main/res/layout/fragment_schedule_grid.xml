@@ -16,7 +16,6 @@
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
-        android:gravity="center"
         tools:listitem="@layout/item_schedule_grid">
     </GridView>
 

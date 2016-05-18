@@ -16,7 +16,16 @@ import java.util.Iterator;
 public class ScheduleDataObserver extends ContentObserver {
     public static final String TAG = "ScheduleObserver";
 
-    private ArrayList<DataSetChanged> mCallbacks;
+    private ArrayList<DataSetChanged> mCallbacks = new ArrayList<>();
+    private static ScheduleDataObserver mInstance = null;
+
+    public static ScheduleDataObserver getInstance(Context context){
+        if(mInstance == null){
+            mInstance = new ScheduleDataObserver(context,new Handler());
+        }
+
+        return mInstance;
+    }
 
     public ScheduleDataObserver(Context context,Handler handler){
         super(handler);
@@ -38,7 +47,7 @@ public class ScheduleDataObserver extends ContentObserver {
         }
     }
 
-    public interface DataSetChanged{
+    public interface DataSetChanged {
         void onDataSetChanged();
     }
 
