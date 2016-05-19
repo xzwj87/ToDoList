@@ -14,7 +14,7 @@ import java.util.Iterator;
  */
 
 public class ScheduleDataObserver extends ContentObserver {
-    public static final String TAG = "ScheduleObserver";
+    public static final String TAG = "ScheduleDataObserver";
 
     private ArrayList<DataSetChanged> mCallbacks = new ArrayList<>();
     private static ScheduleDataObserver mInstance = null;
@@ -52,7 +52,7 @@ public class ScheduleDataObserver extends ContentObserver {
     }
 
     public void registerDataChangedCb(DataSetChanged cb){
-        Log.v(TAG,"registerDataChagnedcb(): callback = " + cb.getClass().getSimpleName());
+        Log.v(TAG,"registerDataChangedCb(): callback = " + cb.getClass().getSimpleName());
         mCallbacks.add(cb);
     }
 

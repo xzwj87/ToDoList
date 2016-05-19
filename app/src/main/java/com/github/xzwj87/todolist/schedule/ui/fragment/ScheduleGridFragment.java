@@ -1,8 +1,9 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,8 +20,10 @@ import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleCompone
 import com.github.xzwj87.todolist.schedule.observer.ScheduleDataObserver;
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleGridPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleGridView;
+import com.github.xzwj87.todolist.schedule.ui.activity.AddScheduleActivity;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleGridAdapter;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.share.ScheduleShareActivity;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,7 +58,7 @@ public class ScheduleGridFragment extends BaseFragment implements
 
     public interface GridCallBacks{
         void onItemSelected(long id, ScheduleGridAdapter.GridViewHolder vh);
-        void onDataSetChanged();
+        //void onDataSetChanged();
     }
 
     public ScheduleGridFragment(){}
@@ -73,7 +76,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
-        Log.v(LOG_TAG,"onCreateView()");
+        Log.v(LOG_TAG, "onCreateView()");
         View rootView = inflater.inflate(R.layout.fragment_schedule_grid,container,false);
         ButterKnife.bind(this, rootView);
 
@@ -91,7 +94,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        Log.v(LOG_TAG,"onActivityCreated()");
+        Log.v(LOG_TAG, "onActivityCreated()");
 
         initialize();
     }
@@ -112,7 +115,8 @@ public class ScheduleGridFragment extends BaseFragment implements
     @Override
     public void onDestroy(){
         super.onDestroy();
-        unregisterObserver();
+        /* Todo:if unregister here, it won't refresh data*/
+        //unregisterObserver();
     }
 
     @Override
@@ -147,7 +151,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     @Override
     public void onDataSetChanged() {
         loadScheduleData();
-        mCallBacks.onDataSetChanged();
+        //mCallBacks.onDataSetChanged();
     }
 
 
@@ -198,17 +202,63 @@ public class ScheduleGridFragment extends BaseFragment implements
 
             @Override
             public void onItemLongClick(int position, ScheduleGridAdapter.GridViewHolder vh) {
-                long id = getItemAtPosition(position).getId();
+                ScheduleModel scheduleModel = getItemAtPosition(position);
+                long id = scheduleModel.getId();
                 Log.v(LOG_TAG, "onItemLongClick(): position = " + position + ", id = " + id);
-                createDialog(id, position);
+                createDialog(scheduleModel, position);
             }
         });
 
         mScheduleGridView.setAdapter(mScheduleGridAdapter);
     }
 
-    private void createDialog(long id,int position){
+    private void createDialog(ScheduleModel model,int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        int choiceListId = R.array.dialog_choice_list;
+        if(mScheduleType != null && mScheduleType.equals(SCHEDULE_TYPE_DONE)){
+            choiceListId = R.array.schedule_done_dialog_choice_list;
+        }
 
+        builder.setItems(choiceListId, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    // share
+                    case 0:
+                        Intent shareIntent = new Intent(getContext(), ScheduleShareActivity.class);
+                        shareIntent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE,
+                                model.getTitle());
+                        shareIntent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME,
+                                model.getAlarmTime().getTime());
+                        boolean scheduleDoneStatus = false;
+                        if(model.getDoneStatus().equals(ScheduleModel.DONE)){
+                            scheduleDoneStatus = true;
+                        }
+                        shareIntent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_IS_DONE, scheduleDoneStatus);
+                        startActivity(shareIntent);
+                        break;
+                    // edit
+                    case 1:
+                        Intent intent = new Intent(getContext(), AddScheduleActivity.class);
+                        intent.putExtra(AddScheduleActivity.SCHEDULE_ID,model.getId());
+                        startActivity(intent);
+                        break;
+                    // delete
+                    case 2:
+                        mScheduleGridPresenter.onDeleteSchedule(model.getId(),false);
+                        break;
+                    // marked as done
+                    case 3:
+                        mScheduleGridPresenter.markAsDone(new long[]{model.getId()},true);
+                        break;
+                    default:
+                        //dialog.dismiss();
+                        break;
+                }
+                dialog.dismiss();
+            }
+        })
+         .show();
     }
 
     private void registerObserver() {

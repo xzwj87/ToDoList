@@ -22,7 +22,13 @@
     </string-array>
 
     <string-array name="dialog_choice_list">
+        <item>share</item>
+        <item>edit</item>
+        <item>delete</item>
         <item>marked as done</item>
+    </string-array>
+
+    <string-array name="schedule_done_dialog_choice_list">
         <item>share</item>
         <item>edit</item>
         <item>delete</item>

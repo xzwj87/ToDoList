@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
+import com.github.xzwj87.todolist.schedule.interactor.insert.AddSchedule;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByTypeArg;
@@ -77,6 +78,7 @@ public class ScheduleListFragment extends BaseFragment implements
 
     @Override
     public void onDataSetChanged() {
+        Log.v(LOG_TAG,"onDataSetChanged()");
         updateScheduleNumber();
         // refresh the list
         loadScheduleListData();
@@ -174,6 +176,8 @@ public class ScheduleListFragment extends BaseFragment implements
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
         mCallbacks = (Callbacks) context;
+
+        updateScheduleNumber();
     }
 
     @Override
@@ -197,7 +201,7 @@ public class ScheduleListFragment extends BaseFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterObserver();
+        //unregisterObserver();
         mScheduleListPresenter.destroy();
     }
 
@@ -283,8 +287,6 @@ public class ScheduleListFragment extends BaseFragment implements
         registerObserver();
         mScheduleObserver.registerDataChangedCb(this);
 
-        updateScheduleNumber();
-
         loadScheduleListData();
     }
 
@@ -307,7 +309,7 @@ public class ScheduleListFragment extends BaseFragment implements
                 final long id = mScheduleListPresenter.getScheduleAtPosition(position).getId();
                 Log.v(LOG_TAG, "onItemLongClick(): position = " + position + ", id = " + id);
 
-                createDialog(position, id);
+                createDialog(id,position);
             }
         });
         mRvScheduleList.setAdapter(mScheduleAdapter);
@@ -367,12 +369,16 @@ public class ScheduleListFragment extends BaseFragment implements
     }
 
     private void updateScheduleNumber(){
-        ContentResolver resolver = getContext().getContentResolver();
+        Log.v(LOG_TAG, "updateScheduleNumber()");
+
         ScheduleCategoryNumber scheduleNumber = new ScheduleCategoryNumber();
 
-        Log.v(LOG_TAG,"updateScheduleNumber()");
         String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
         String args[] = {ScheduleModel.UNDONE};
+
+        /* Todo: when swipe to DONE list, context is null,fatal error */
+        Log.v(LOG_TAG,"context = " + getContext());
+        ContentResolver resolver = getContext().getContentResolver();
         Cursor cursor = resolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
                 null,selection,args,null);
         //cursor.moveToFirst();
@@ -388,38 +394,48 @@ public class ScheduleListFragment extends BaseFragment implements
         mCallbacks.onDataChanged(scheduleNumber);
     }
 
-    private void createDialog(int position,long id){
+    private void createDialog(long id,int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setItems(R.array.dialog_choice_list, new DialogInterface.OnClickListener() {
+        int choiceListId = R.array.dialog_choice_list;
+        if(mScheduleType != null && mScheduleType.equals(SCHEDULE_TYPE_DONE)){
+            choiceListId = R.array.schedule_done_dialog_choice_list;
+        }
+        builder.setItems(choiceListId, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.v(LOG_TAG,"onClick(): id = " + which);
+                Log.v(LOG_TAG,"onClick(): " + which);
                 switch(which){
-                    // marked as done
-                    case 0:
-                        mScheduleListPresenter.markAsDone(new long[]{id},true);
-                        break;
                     // share
-                    case 1:
+                    case 0:
                         Intent intent = new Intent(getContext(), ScheduleShareActivity.class);
                         ScheduleModel scheduleModel = mScheduleListPresenter.getScheduleAtPosition(position);
                         intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_TITLE,
                                 scheduleModel.getTitle());
                         intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME,
                                 scheduleModel.getAlarmTime().getTime());
+                        boolean scheduleDoneStatus = false;
+                        if(scheduleModel.getDoneStatus().equals(ScheduleModel.DONE)){
+                            scheduleDoneStatus = true;
+                        }
+                        intent.putExtra(ScheduleContract.ScheduleEntry.COLUMN_IS_DONE,scheduleDoneStatus);
                         startActivity(intent);
                         break;
                     // edit
-                    case 2:
+                    case 1:
                         Intent editIntent = new Intent(getContext(), AddScheduleActivity.class);
-                        editIntent.putExtra(AddScheduleActivity.SCHEDULE_ID, id);
+                        editIntent.putExtra(AddScheduleActivity.SCHEDULE_ID,id);
                         startActivity(editIntent);
                         break;
                     // delete
-                    case 3:
+                    case 2:
                         mScheduleListPresenter.onDeleteSchedule(id,false);
                         break;
+                    // marked as done
+                    case 3:
+                        mScheduleListPresenter.markAsDone(new long[]{id},true);
+                        break;
                     default:
+                        //dialog.dismiss();
                         break;
                 }
                 dialog.dismiss();

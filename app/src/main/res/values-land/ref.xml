@@ -1,3 +1,4 @@
 <resources>
     <item type="layout" name="schedule_list">@layout/schedule_list_two_panes</item>
+    <item type="layout" name="schedule_grid">@layout/schedule_grid_two_panes</item>
 </resources>

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="dialog_choice_list">
+        <item>分享</item>
+        <item>编辑</item>
+        <item>删除</item>
         <item>标记为已完成</item>
+    </string-array>
+
+    <string-array name="schedule_done_dialog_choice_list">
         <item>分享</item>
         <item>编辑</item>
         <item>删除</item>
     </string-array>
+
 </resources>

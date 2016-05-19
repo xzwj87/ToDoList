@@ -76,7 +76,7 @@ public class ScheduleGridAdapter extends BaseAdapter {
             mInflater = LayoutInflater.from(context);
         }
         View rootView = mInflater.inflate(R.layout.item_schedule_grid,null);
-        GridViewHolder vh = new GridViewHolder(rootView);
+        GridViewHolder vh = new GridViewHolder(rootView,position);
 
         ScheduleModel scheduleModel = mDataSource.getItemAtPosition(position);
         vh.mTvScheduleTitle.setText(scheduleModel.getTitle());
@@ -115,18 +115,20 @@ public class ScheduleGridAdapter extends BaseAdapter {
 
 
 
-        public GridViewHolder(View view){
+        public GridViewHolder(View view,int position){
             ButterKnife.bind(this,view);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mListener.onItemClick(position,GridViewHolder.this);
                 }
             });
 
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    mListener.onItemLongClick(position,GridViewHolder.this);
                     return false;
                 }
             });

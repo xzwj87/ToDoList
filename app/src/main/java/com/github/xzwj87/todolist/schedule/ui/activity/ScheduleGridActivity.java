@@ -14,6 +14,7 @@ import com.github.xzwj87.todolist.schedule.internal.di.component.DaggerScheduleC
 import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
 import com.github.xzwj87.todolist.schedule.internal.di.module.ScheduleModule;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleGridAdapter;
+import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleGridFragment;
 
 import javax.inject.Inject;
@@ -26,7 +27,9 @@ public class ScheduleGridActivity extends BaseActivity
             implements ScheduleGridFragment.GridCallBacks,HasComponent<ScheduleComponent>{
     public static final String LOG_TAG = "ScheduleGridActivity";
 
+    private String SCHEDULE_GRID_DETAIL_FRAGMENT = "ScheduleGridDetail";
     private ScheduleComponent mScheduleComponent = null;
+    private boolean mDualPanel = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -40,9 +43,10 @@ public class ScheduleGridActivity extends BaseActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.grid_view_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
 
-
+        mDualPanel = findViewById(R.id.schedule_grid_detail_container) != null;
+        Log.v(LOG_TAG,"onCreate(): mDualPanel = " + mDualPanel);
         if(savedInstanceState == null){
             ScheduleGridFragment fragment = ScheduleGridFragment.getInstanceByType(scheduleType);
             getSupportFragmentManager().beginTransaction()
@@ -57,11 +61,17 @@ public class ScheduleGridActivity extends BaseActivity
 
     @Override
     public void onItemSelected(long id, ScheduleGridAdapter.GridViewHolder vh) {
-
-    }
-
-    @Override
-    public void onDataSetChanged() {
+        Log.v(LOG_TAG,"onItemSelected(): id " + id);
+        if(mDualPanel){
+            ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(id);
+            getSupportFragmentManager().beginTransaction()
+                                       .add(R.id.schedule_grid_container,fragment,SCHEDULE_GRID_DETAIL_FRAGMENT)
+                                       .commit();
+         }else{
+            Intent intent = new Intent(this,ScheduleDetailActivity.class);
+            intent.putExtra(ScheduleDetailActivity.SCHEDULE_ID,id);
+            startActivity(intent);
+        }
 
     }
 
@@ -73,7 +83,7 @@ public class ScheduleGridActivity extends BaseActivity
             return true;
         }
 
-        return false;
+        return super.onOptionsItemSelected(menu);
     }
 
     @Override
