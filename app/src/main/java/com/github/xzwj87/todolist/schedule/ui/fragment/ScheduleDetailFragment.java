@@ -197,6 +197,7 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
     }
 
     /* share something with other social Apps */
+    /* Todo: use Presenter to get the data instead of resolver */
     public void doShare(){
         Log.v(LOG_TAG, "doShare()");
         Intent intent = new Intent(getContext(), ScheduleShareActivity.class);
