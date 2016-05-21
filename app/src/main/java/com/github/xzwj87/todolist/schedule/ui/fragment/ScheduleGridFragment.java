@@ -185,10 +185,11 @@ public class ScheduleGridFragment extends BaseFragment implements
         loadScheduleData();
     }
 
-    /* Todo: cannot refresh grid view */
     private void loadScheduleData(){
-        Log.v(LOG_TAG,"loadScheduleData()");
+        Log.v(LOG_TAG, "loadScheduleData()");
         mScheduleGridPresenter.initialize();
+        mScheduleGridView.invalidateViews();
+        mScheduleGridAdapter.notifyDataSetChanged();
     }
 
     private void initGridView(){
@@ -210,6 +211,8 @@ public class ScheduleGridFragment extends BaseFragment implements
             }
         });
 
+        mScheduleGridView.invalidateViews();
+        mScheduleGridAdapter.notifyDataSetChanged();
         mScheduleGridView.setAdapter(mScheduleGridAdapter);
     }
 
