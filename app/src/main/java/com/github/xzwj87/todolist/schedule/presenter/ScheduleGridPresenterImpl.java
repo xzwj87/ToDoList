@@ -17,7 +17,7 @@ import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
  * Created by JasonWang on 2016/5/15.
  */
 public class ScheduleGridPresenterImpl implements ScheduleGridPresenter {
-    public static final String LOG_TAG = "GridPresenterImpl";
+    public static final String LOG_TAG = ScheduleGridPresenterImpl.class.getSimpleName();
 
     private UseCase mGetListUseCase = null;
     private UseCase mMarkedAsDoneUseCase = null;
@@ -25,7 +25,6 @@ public class ScheduleGridPresenterImpl implements ScheduleGridPresenter {
     private ScheduleModelDataMapper mDataMapper = null;
     private Cursor mCursor = null;
     private ScheduleGridView mScheduleGridView = null;
-    private ScheduleDataObserver mScheduleObserver = null;
 
     public ScheduleGridPresenterImpl(UseCase getList, UseCase markedAsDone,
                                      UseCase deleteSchedule, ScheduleModelDataMapper mapper){

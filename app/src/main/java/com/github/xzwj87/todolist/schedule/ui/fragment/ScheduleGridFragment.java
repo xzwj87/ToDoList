@@ -58,7 +58,6 @@ public class ScheduleGridFragment extends BaseFragment implements
 
     public interface GridCallBacks{
         void onItemSelected(long id, ScheduleGridAdapter.GridViewHolder vh);
-        //void onDataSetChanged();
     }
 
     public ScheduleGridFragment(){}
@@ -150,8 +149,8 @@ public class ScheduleGridFragment extends BaseFragment implements
 
     @Override
     public void onDataSetChanged() {
+        Log.v(LOG_TAG,"onDataSetChanged()");
         loadScheduleData();
-        //mCallBacks.onDataSetChanged();
     }
 
 
@@ -186,7 +185,9 @@ public class ScheduleGridFragment extends BaseFragment implements
         loadScheduleData();
     }
 
+    /* Todo: cannot refresh grid view */
     private void loadScheduleData(){
+        Log.v(LOG_TAG,"loadScheduleData()");
         mScheduleGridPresenter.initialize();
     }
 

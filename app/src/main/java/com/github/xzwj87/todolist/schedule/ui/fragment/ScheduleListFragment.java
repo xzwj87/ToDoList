@@ -1,12 +1,8 @@
 package com.github.xzwj87.todolist.schedule.ui.fragment;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.ContentObserver;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -16,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.support.v7.app.AlertDialog;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,7 +22,6 @@ import android.view.ViewGroup;
 import com.github.xzwj87.todolist.R;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
-import com.github.xzwj87.todolist.schedule.interactor.insert.AddSchedule;
 import com.github.xzwj87.todolist.schedule.interactor.mapper.ScheduleModelDataMapper;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetAllScheduleArg;
 import com.github.xzwj87.todolist.schedule.interactor.query.GetScheduleListByTypeArg;
@@ -49,7 +45,6 @@ public class ScheduleListFragment extends BaseFragment implements
         ScheduleAdapter.DataSource,ScheduleDataObserver.DataSetChanged,
         ScheduleListView {
     private static final String LOG_TAG = ScheduleListFragment.class.getSimpleName();
-
     public static final String SCHEDULE_TYPE_DONE = "done";
 
     private static final String SCHEDULE_TYPE = "schedule_type";
@@ -58,7 +53,7 @@ public class ScheduleListFragment extends BaseFragment implements
     private String mScheduleType;
     private Callbacks mCallbacks = sDummyCallbacks;
     private ScheduleAdapter mScheduleAdapter;
-    private ScheduleDataObserver mScheduleObserver;
+    private ScheduleDataObserver mScheduleObserver = null;
 
     ScheduleListPresenterImpl mScheduleListPresenter;
 
@@ -78,36 +73,15 @@ public class ScheduleListFragment extends BaseFragment implements
 
     @Override
     public void onDataSetChanged() {
-        Log.v(LOG_TAG,"onDataSetChanged()");
-        updateScheduleNumber();
+        Log.v(LOG_TAG, "onDataSetChanged()");
+        mCallbacks.onDataChanged(mScheduleObserver.getScheduleCategoryNumber());
         // refresh the list
         loadScheduleListData();
     }
 
     public interface Callbacks {
         void onItemSelected(long id, ScheduleAdapter.ViewHolder vh);
-        void onDataChanged(ScheduleCategoryNumber sn);
-    }
-
-    public class ScheduleCategoryNumber{
-        private long mUndoneTotal;
-        private long mDoneTotal;
-
-        public void setUndoneTotal(long undone){
-            mUndoneTotal = undone;
-        }
-
-        public void setDoneTotal(long done){
-            mDoneTotal = done;
-        }
-
-        public long getUndoneTotal(){
-            return mUndoneTotal;
-        }
-
-        public long getDoneTotal(){
-            return mDoneTotal;
-        }
+        void onDataChanged(ScheduleDataObserver.ScheduleCategoryNumber sn);
     }
 
     private static Callbacks sDummyCallbacks = null;
@@ -158,6 +132,8 @@ public class ScheduleListFragment extends BaseFragment implements
             }
 
         }
+        // schedule data observer
+        mScheduleObserver = ScheduleDataObserver.getInstance(getContext());
 
         return rootView;
     }
@@ -171,37 +147,45 @@ public class ScheduleListFragment extends BaseFragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        if (!(context instanceof Callbacks)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
+        Log.v(LOG_TAG,"onAttach()");
+        try {
+            mCallbacks = (Callbacks) context;
+        }catch (IllegalStateException e){
+            Log.e(LOG_TAG,"Activity must implement fragment's callbacks.");
+            e.printStackTrace();
         }
-        mCallbacks = (Callbacks) context;
-
-        updateScheduleNumber();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.v(LOG_TAG,"onDetach(): " + this.getTag());
         mCallbacks = sDummyCallbacks;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.v(LOG_TAG, "onResume(): " + this.getTag());
         mScheduleListPresenter.resume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        Log.v(LOG_TAG, "onPause()");
         mScheduleListPresenter.pause();
     }
 
+    /* Todo: if unregister observer here, it will
+       not list to the data change event
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.v(LOG_TAG, "onDestroy()");
         //unregisterObserver();
+        mScheduleObserver.unregisterDataChangedCb(this);
         mScheduleListPresenter.destroy();
     }
 
@@ -282,10 +266,9 @@ public class ScheduleListFragment extends BaseFragment implements
 
         setupRecyclerView();
 
-        // schedule data observer
-        mScheduleObserver = ScheduleDataObserver.getInstance(getContext());
         registerObserver();
         mScheduleObserver.registerDataChangedCb(this);
+        mCallbacks.onDataChanged(mScheduleObserver.getScheduleCategoryNumber());
 
         loadScheduleListData();
     }
@@ -351,7 +334,7 @@ public class ScheduleListFragment extends BaseFragment implements
                 getString(R.string.marked_done) : getString(R.string.marked_undone);
         Snackbar snackbar = Snackbar.make(mRvScheduleList, message, Snackbar.LENGTH_LONG);
         snackbar.setAction(getString(R.string.undo), v -> {
-            mScheduleListPresenter.markAsDone(new long[] {id}, !undoMarkAsDone);
+            mScheduleListPresenter.markAsDone(new long[]{id}, !undoMarkAsDone);
         });
         snackbar.show();
     }
@@ -366,32 +349,6 @@ public class ScheduleListFragment extends BaseFragment implements
     private void unregisterObserver(){
         Log.v(LOG_TAG, "unregisterObserver");
         getContext().getContentResolver().unregisterContentObserver(mScheduleObserver);
-    }
-
-    private void updateScheduleNumber(){
-        Log.v(LOG_TAG, "updateScheduleNumber()");
-
-        ScheduleCategoryNumber scheduleNumber = new ScheduleCategoryNumber();
-
-        String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-        String args[] = {ScheduleModel.UNDONE};
-
-        /* Todo: when swipe to DONE list, context is null,fatal error */
-        Log.v(LOG_TAG,"context = " + getContext());
-        ContentResolver resolver = getContext().getContentResolver();
-        Cursor cursor = resolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                null,selection,args,null);
-        //cursor.moveToFirst();
-        scheduleNumber.setUndoneTotal(cursor.getCount());
-
-        selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
-        args = new String[]{ScheduleModel.DONE};
-        cursor = resolver.query(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                null, selection, args, null);
-        scheduleNumber.setDoneTotal(cursor.getCount());
-        cursor.close();
-
-        mCallbacks.onDataChanged(scheduleNumber);
     }
 
     private void createDialog(long id,int position){

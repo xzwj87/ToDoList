@@ -1,14 +1,9 @@
 package com.github.xzwj87.todolist.schedule.ui.activity;
 
 import android.app.SearchManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.ContentObserver;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -24,11 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.github.xzwj87.todolist.R;
-import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.internal.di.HasComponent;
 import com.github.xzwj87.todolist.schedule.internal.di.component.DaggerScheduleComponent;
 import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
 import com.github.xzwj87.todolist.schedule.internal.di.module.ScheduleModule;
+import com.github.xzwj87.todolist.schedule.observer.ScheduleDataObserver;
 import com.github.xzwj87.todolist.schedule.presenter.SearchSuggestionPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.SearchSuggestionView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
@@ -216,7 +211,7 @@ public class ScheduleListActivity extends BaseActivity
     }
 
     @Override
-    public void onDataChanged(ScheduleListFragment.ScheduleCategoryNumber sn) {
+    public void onDataChanged(ScheduleDataObserver.ScheduleCategoryNumber sn) {
         Log.v(LOG_TAG,"onDataChanged()");
         updateDrawerView(sn);
     }
@@ -333,7 +328,7 @@ public class ScheduleListActivity extends BaseActivity
         });
     }
 
-    private void updateDrawerView(ScheduleListFragment.ScheduleCategoryNumber number){
+    private void updateDrawerView(ScheduleDataObserver.ScheduleCategoryNumber  number){
         String totalScheduleMenuTitle = getResources ().getString(R.string.schedule_type_all);
         String mDoneScheduleMenuTitle =  getResources().getString(R.string.schedule_done);
         NavigationView view = (NavigationView)findViewById(R.id.nav_view);
