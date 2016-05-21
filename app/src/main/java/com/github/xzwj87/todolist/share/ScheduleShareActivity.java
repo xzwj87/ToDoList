@@ -285,5 +285,6 @@ public class ScheduleShareActivity extends AppCompatActivity
         }
 
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+        finish();
     }
 }
