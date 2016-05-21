@@ -64,10 +64,7 @@ public class ScheduleShareActivity extends AppCompatActivity
         mShareData = getIntent().getExtras();
 
         registerToWX();
-        // register to WB
-        mWbAPI = WeiboShareSDK.createWeiboAPI(this, ShareConstants.WB_APP_KEY);
-        mWbAPI.registerApp();
-
+        registerToWB();
         mAppNameMap.put(ShareConstants.WX_PACKAGE_NAME,
                 getResources().getString(R.string.weixin));
         mAppNameMap.put(ShareConstants.WEBO_PACKAGE_NAME,
@@ -84,7 +81,7 @@ public class ScheduleShareActivity extends AppCompatActivity
         if(v.equals(mShareCancel)){
             finish();
         }else if(v.equals(mShareWithWeibo)){
-
+            ShareToWB();
         }else if(v.equals(mShareWithWeixinFriend)) {
             mWxShareFlag = ShareConstants.SHARE_TO_FRIEND;
             if (isInstalled(ShareConstants.WX_PACKAGE_NAME)) {
@@ -171,6 +168,12 @@ public class ScheduleShareActivity extends AppCompatActivity
     private void registerToWX(){
         mWxAPI = WXAPIFactory.createWXAPI(this, ShareConstants.WX_APP_ID, true);
         mWxAPI.registerApp(ShareConstants.WX_APP_ID);
+    }
+
+    private void registerToWB(){
+        // register to WB
+        mWbAPI = WeiboShareSDK.createWeiboAPI(this, ShareConstants.WB_APP_KEY);
+        mWbAPI.registerApp();
     }
 
     private void shareToSMS(){
