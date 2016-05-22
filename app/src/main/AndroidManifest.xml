@@ -80,9 +80,6 @@
             android:label="@string/title_activity_add"
             android:parentActivityName=".schedule.ui.activity.ScheduleListActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.xzwj87.todolist.schedule.ui.activity.ScheduleListActivity" />
         </activity>
 
         <activity android:name=".schedule.ui.activity.ScheduleGridActivity"
@@ -103,7 +100,7 @@
         </activity>
 
         <activity android:name=".share.ScheduleShareActivity"
-            android:theme="@style/ScheduleShareActivity">
+            android:theme="@style/DialogActivity">
             <intent-filter >
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
                 <category android:name="android.intent.category.DEFAULT"/>

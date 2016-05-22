@@ -5,8 +5,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/fab_margin"
+    android:layout_margin="@dimen/grid_view_padding_size"
+    android:clipToPadding="false"
     tools:context=".schedule.ui.activity.ScheduleGridFragment">
 
     <GridView android:id="@+id/schedule_grid_view"
@@ -16,7 +16,6 @@
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
-        android:elevation="3dp"
         tools:listitem="@layout/item_schedule_grid">
     </GridView>
 

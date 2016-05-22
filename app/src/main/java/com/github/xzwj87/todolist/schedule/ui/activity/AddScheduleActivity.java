@@ -1,6 +1,8 @@
 package com.github.xzwj87.todolist.schedule.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -39,6 +41,7 @@ public class AddScheduleActivity extends BaseActivity
     private static final String LOG_TAG = AddScheduleActivity.class.getSimpleName();
 
     public static final String SCHEDULE_ID = "id";
+    public static final String PARENT_TAG = "parent_tag";
 
     private static final String START_DATE_PICK_DLG_TAG = "start_date_pick_dlg";
     private static final String END_DATE_PICK_DLG_TAG = "end_date_pick_dlg";
@@ -53,6 +56,7 @@ public class AddScheduleActivity extends BaseActivity
 
     private boolean mIsEditMode = false;
     private long mScheduleId;
+    private String mParentTag;
     private ScheduleComponent mScheduleComponent;
 
     @Bind(R.id.edit_schedule_title) EditText mEditScheduleTitle;
@@ -79,6 +83,7 @@ public class AddScheduleActivity extends BaseActivity
 
         if (savedInstanceState == null) {
             mScheduleId = getIntent().getLongExtra(SCHEDULE_ID, -1);
+            mParentTag = getIntent().getStringExtra(PARENT_TAG);
             Log.v(LOG_TAG, "onCreate(): mScheduleId = " + mScheduleId);
             if (mScheduleId != -1) {
                 mIsEditMode = true;
@@ -143,6 +148,16 @@ public class AddScheduleActivity extends BaseActivity
                 mPresenter.onSave();
                 // finish();
                 return true;
+            case android.R.id.home:
+                Intent intent = null;
+                if(mParentTag.equals(ScheduleListActivity.LOG_TAG)){
+                    intent = new Intent(this,ScheduleListActivity.class);
+                    NavUtils.navigateUpTo(this,intent);
+                }else if(mParentTag.equals(ScheduleGridActivity.LOG_TAG)){
+                    intent = new Intent(this,ScheduleGridActivity.class);
+                    // when this is empty item,here navigateUpTo fail to work
+                    startActivity(intent);
+                }
             default:
                 break;
         }

@@ -24,8 +24,10 @@ public class ScheduleDetailActivity extends BaseActivity implements HasComponent
     private static final String LOG_TAG = ScheduleDetailActivity.class.getSimpleName();
 
     public static final String SCHEDULE_ID = "id";
+    public static final String PARENT_TAG = "parent_tag";
 
     private long mScheduleId;
+    private String mParentTag;
     private ScheduleComponent mScheduleComponent;
 
     @Override
@@ -45,7 +47,9 @@ public class ScheduleDetailActivity extends BaseActivity implements HasComponent
         }
 
         if (savedInstanceState == null) {
-            mScheduleId = getIntent().getLongExtra(SCHEDULE_ID, 0);
+            Intent intent = getIntent();
+            mScheduleId = intent.getLongExtra(SCHEDULE_ID, 0);
+            mParentTag = intent.getStringExtra(PARENT_TAG);
             Log.v(LOG_TAG, "onCreate(): mScheduleId = " + mScheduleId);
 
             ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(mScheduleId);
@@ -63,7 +67,13 @@ public class ScheduleDetailActivity extends BaseActivity implements HasComponent
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            NavUtils.navigateUpTo(this, new Intent(this, ScheduleListActivity.class));
+            Intent intent = null;
+            if(ScheduleListActivity.LOG_TAG.equals(mParentTag)) {
+                intent = new Intent(this,ScheduleListActivity.class);
+            }else if(ScheduleGridActivity.LOG_TAG.equals(mParentTag)){
+                intent = new Intent(this,ScheduleGridActivity.class);
+            }
+            NavUtils.navigateUpTo(this, intent);
             return true;
         }
 
@@ -88,6 +98,7 @@ public class ScheduleDetailActivity extends BaseActivity implements HasComponent
         Log.v(LOG_TAG, "editSchedule()");
         Intent intent = new Intent(this, AddScheduleActivity.class);
         intent.putExtra(AddScheduleActivity.SCHEDULE_ID, mScheduleId);
+        intent.putExtra(AddScheduleActivity.PARENT_TAG,mParentTag);
         startActivity(intent);
     }
 }

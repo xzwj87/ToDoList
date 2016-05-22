@@ -190,6 +190,7 @@ public class ScheduleListActivity extends BaseActivity
     @OnClick(R.id.fab)
     public void pickStartDate(View view) {
         Intent intent = new Intent(ScheduleListActivity.this, AddScheduleActivity.class);
+        intent.putExtra(AddScheduleActivity.PARENT_TAG,LOG_TAG);
         startActivity(intent);
     }
 
@@ -206,6 +207,7 @@ public class ScheduleListActivity extends BaseActivity
         } else {
             Intent intent = new Intent(this, ScheduleDetailActivity.class);
             intent.putExtra(ScheduleDetailActivity.SCHEDULE_ID, id);
+            intent.putExtra(ScheduleDetailActivity.PARENT_TAG,LOG_TAG);
             startActivity(intent);
         }
     }

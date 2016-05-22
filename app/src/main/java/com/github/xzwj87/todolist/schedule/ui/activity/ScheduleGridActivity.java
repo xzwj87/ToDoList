@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.xzwj87.todolist.R;
@@ -70,20 +71,35 @@ public class ScheduleGridActivity extends BaseActivity
          }else{
             Intent intent = new Intent(this,ScheduleDetailActivity.class);
             intent.putExtra(ScheduleDetailActivity.SCHEDULE_ID,id);
+            intent.putExtra(ScheduleDetailActivity.PARENT_TAG,LOG_TAG);
             startActivity(intent);
         }
 
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+
+        getMenuInflater().inflate(R.menu.menu_schedule_grid, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem menu){
         int id  = menu.getItemId();
-        if(id == android.R.id.home){
+        Intent intent = null;
+        if(id == android.R.id.home || id == R.id.action_more){
+            intent = new Intent(this,ScheduleListActivity.class);
             NavUtils.navigateUpTo(this, new Intent(this, ScheduleListActivity.class));
-            return true;
+        }else if(id == R.id.action_add){
+            intent = new Intent(this,AddScheduleActivity.class);
+            intent.putExtra(AddScheduleActivity.PARENT_TAG,LOG_TAG);
+            startActivity(intent);
         }
 
-        return super.onOptionsItemSelected(menu);
+
+        return true;
     }
 
     @Override

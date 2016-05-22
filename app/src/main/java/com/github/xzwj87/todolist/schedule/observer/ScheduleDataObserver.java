@@ -31,6 +31,8 @@ public class ScheduleDataObserver extends ContentObserver {
     public static final String TAG = "ScheduleDataObserver";
 
     private HashSet<DataSetChanged> mCallbacks = new HashSet<>();
+    /* Todo: using ArrayList to controller the observer reference */
+    private ArrayList<ScheduleDataObserver> mObservers;
     private static ScheduleDataObserver mInstance = null;
     private Context mContext = null;
     private ScheduleCategoryNumber mScheduleNumber = null;
@@ -84,6 +86,10 @@ public class ScheduleDataObserver extends ContentObserver {
         mCallbacks.remove(cb);
     }
 
+    public void registerObserver(){
+
+    }
+
     public class ScheduleCategoryNumber{
         private long mUndoneTotal;
         private long mDoneTotal;
@@ -104,7 +110,6 @@ public class ScheduleDataObserver extends ContentObserver {
             return mDoneTotal;
         }
     }
-
 
     public ScheduleCategoryNumber getScheduleCategoryNumber(){
         return mScheduleNumber;
@@ -128,19 +133,5 @@ public class ScheduleDataObserver extends ContentObserver {
                 null, selection, args, null);
         mScheduleNumber.setDoneTotal(cursor.getCount());
         cursor.close();
-    }
-
-    private class GetScheduleListSubscriber extends DefaultSubscriber<Cursor>{
-        @Override
-        public void onCompleted(){}
-
-        @Override
-        public void onError(Throwable t){}
-
-        @Override
-        public void onNext(Cursor cursor){
-            Log.v(TAG,"onNext()");
-            mCursor = cursor;
-        }
     }
 }

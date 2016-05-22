@@ -49,6 +49,7 @@
     <string name="share_to">share ToDoList with</string>
 
     <string name="action_delete">Delete</string>
+    <string name="action_add">Add</string>
 
     <string name="alarm_notification">you have something to do in ToDoList</string>
 
