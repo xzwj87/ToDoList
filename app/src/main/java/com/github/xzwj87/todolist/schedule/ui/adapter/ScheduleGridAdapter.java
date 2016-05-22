@@ -76,6 +76,7 @@ public class ScheduleGridAdapter extends BaseAdapter {
             mInflater = LayoutInflater.from(context);
         }
         View rootView = mInflater.inflate(R.layout.item_schedule_grid,null);
+        rootView.setBackgroundResource(R.drawable.schedule_item_selected_background);
 
         GridViewHolder vh = new GridViewHolder(rootView,position);
 

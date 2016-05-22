@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_weight="1"
     android:layout_margin="@dimen/grid_view_margin_size"
-    android:background="@drawable/rect_shadow"
+    android:background="@drawable/schedule_item_background"
     android:elevation="4dp">
 
     <LinearLayout
