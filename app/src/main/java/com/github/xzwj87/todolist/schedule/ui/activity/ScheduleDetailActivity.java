@@ -15,6 +15,8 @@ import com.github.xzwj87.todolist.schedule.internal.di.component.DaggerScheduleC
 import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleComponent;
 import com.github.xzwj87.todolist.schedule.internal.di.module.ScheduleModule;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
+import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleGridFragment;
+import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -68,9 +70,9 @@ public class ScheduleDetailActivity extends BaseActivity implements HasComponent
         int id = item.getItemId();
         if (id == android.R.id.home) {
             Intent intent = null;
-            if(ScheduleListActivity.LOG_TAG.equals(mParentTag)) {
+            if(ScheduleListFragment.LOG_TAG.equals(mParentTag)) {
                 intent = new Intent(this,ScheduleListActivity.class);
-            }else if(ScheduleGridActivity.LOG_TAG.equals(mParentTag)){
+            }else if(ScheduleGridFragment.LOG_TAG.equals(mParentTag)){
                 intent = new Intent(this,ScheduleGridActivity.class);
             }
             NavUtils.navigateUpTo(this, intent);

@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
 public class ScheduleListFragment extends BaseFragment implements
         ScheduleAdapter.DataSource,ScheduleDataObserver.DataSetChanged,
         ScheduleListView {
-    private static final String LOG_TAG = ScheduleListFragment.class.getSimpleName();
+    public static final String LOG_TAG = ScheduleListFragment.class.getSimpleName();
     public static final String SCHEDULE_TYPE_DONE = "done";
 
     private static final String SCHEDULE_TYPE = "schedule_type";
@@ -61,6 +61,7 @@ public class ScheduleListFragment extends BaseFragment implements
     private String mQuery;
     private boolean mSwipeMarkAsDone = true;
     private int mLastRemovedPosition = -1;
+    private boolean mMarkedDone = true;
 
     @Inject @Named("markScheduleAsDone") UseCase mMarkScheduleAsDone;
     @Inject @Named("getAllSchedule") UseCase mGetAllSchedule;
@@ -354,8 +355,9 @@ public class ScheduleListFragment extends BaseFragment implements
     private void createDialog(long id,int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         int choiceListId = R.array.dialog_choice_list;
-        if(mScheduleType != null && mScheduleType.equals(SCHEDULE_TYPE_DONE)){
+        if(SCHEDULE_TYPE_DONE.equals(mScheduleType)){
             choiceListId = R.array.schedule_done_dialog_choice_list;
+            mMarkedDone = false;
         }
         builder.setItems(choiceListId, new DialogInterface.OnClickListener() {
             @Override
@@ -381,6 +383,7 @@ public class ScheduleListFragment extends BaseFragment implements
                     case 1:
                         Intent editIntent = new Intent(getContext(), AddScheduleActivity.class);
                         editIntent.putExtra(AddScheduleActivity.SCHEDULE_ID,id);
+                        editIntent.putExtra(AddScheduleActivity.PARENT_TAG,LOG_TAG);
                         startActivity(editIntent);
                         break;
                     // delete
@@ -389,7 +392,7 @@ public class ScheduleListFragment extends BaseFragment implements
                         break;
                     // marked as done
                     case 3:
-                        mScheduleListPresenter.markAsDone(new long[]{id},true);
+                        mScheduleListPresenter.markAsDone(new long[]{id},mMarkedDone);
                         break;
                     default:
                         //dialog.dismiss();

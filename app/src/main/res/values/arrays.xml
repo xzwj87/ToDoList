@@ -32,5 +32,6 @@
         <item>share</item>
         <item>edit</item>
         <item>delete</item>
+        <item>marked as undone</item>
     </string-array>
 </resources>

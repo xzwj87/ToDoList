@@ -207,7 +207,8 @@ public class ScheduleListActivity extends BaseActivity
         } else {
             Intent intent = new Intent(this, ScheduleDetailActivity.class);
             intent.putExtra(ScheduleDetailActivity.SCHEDULE_ID, id);
-            intent.putExtra(ScheduleDetailActivity.PARENT_TAG,LOG_TAG);
+            intent.putExtra(ScheduleDetailActivity.PARENT_TAG,
+                    ScheduleListFragment.LOG_TAG);
             startActivity(intent);
         }
     }

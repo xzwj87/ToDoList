@@ -23,6 +23,8 @@ import com.github.xzwj87.todolist.schedule.presenter.AddSchedulePresenterImpl;
 import com.github.xzwj87.todolist.schedule.presenter.EditSchedulePresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
 import com.github.xzwj87.todolist.schedule.ui.fragment.AlarmTypePickerDialogFragment;
+import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleGridFragment;
+import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleTypePickerDialogFragment;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -150,14 +152,20 @@ public class AddScheduleActivity extends BaseActivity
                 return true;
             case android.R.id.home:
                 Intent intent = null;
-                if(mParentTag.equals(ScheduleListActivity.LOG_TAG)){
+                Log.v(LOG_TAG,"parent tag = " + mParentTag);
+                if(mParentTag.equals(ScheduleListFragment.LOG_TAG)){
                     intent = new Intent(this,ScheduleListActivity.class);
-                    NavUtils.navigateUpTo(this,intent);
-                }else if(mParentTag.equals(ScheduleGridActivity.LOG_TAG)){
+                    NavUtils.navigateUpTo(this, intent);
+                    return true;
+                }else if(mParentTag.equals(ScheduleGridFragment.LOG_TAG)){
+                    Log.v(LOG_TAG,"parent tag = " + mParentTag);
                     intent = new Intent(this,ScheduleGridActivity.class);
                     // when this is empty item,here navigateUpTo fail to work
-                    startActivity(intent);
+                    NavUtils.navigateUpTo(this, intent);
+                    //startActivity(intent);
+                    return true;
                 }
+
             default:
                 break;
         }

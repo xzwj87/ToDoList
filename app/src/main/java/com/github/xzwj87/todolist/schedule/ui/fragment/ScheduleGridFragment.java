@@ -48,6 +48,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     private ScheduleGridAdapter mScheduleGridAdapter;
     private GridCallBacks mCallBacks;
     private ScheduleDataObserver mScheduleObserver;
+    private boolean mMarkedDone = true;
 
     @Inject @Named("markScheduleAsDone") UseCase mMarkedAsDone;
     @Inject @Named("getAllSchedule") UseCase mGetAllSchedule;
@@ -219,8 +220,9 @@ public class ScheduleGridFragment extends BaseFragment implements
     private void createDialog(ScheduleModel model,int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         int choiceListId = R.array.dialog_choice_list;
-        if(mScheduleType != null && mScheduleType.equals(SCHEDULE_TYPE_DONE)){
+        if(SCHEDULE_TYPE_DONE.equals(mScheduleType)){
             choiceListId = R.array.schedule_done_dialog_choice_list;
+            mMarkedDone = false;
         }
 
         builder.setItems(choiceListId, new DialogInterface.OnClickListener() {
@@ -245,6 +247,7 @@ public class ScheduleGridFragment extends BaseFragment implements
                     case 1:
                         Intent intent = new Intent(getContext(), AddScheduleActivity.class);
                         intent.putExtra(AddScheduleActivity.SCHEDULE_ID,model.getId());
+                        intent.putExtra(AddScheduleActivity.PARENT_TAG,LOG_TAG);
                         startActivity(intent);
                         break;
                     // delete
@@ -253,7 +256,7 @@ public class ScheduleGridFragment extends BaseFragment implements
                         break;
                     // marked as done
                     case 3:
-                        mScheduleGridPresenter.markAsDone(new long[]{model.getId()},true);
+                        mScheduleGridPresenter.markAsDone(new long[]{model.getId()},mMarkedDone);
                         break;
                     default:
                         //dialog.dismiss();

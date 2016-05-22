@@ -11,6 +11,7 @@
         <item>分享</item>
         <item>编辑</item>
         <item>删除</item>
+        <item>标记为未完成</item>
     </string-array>
 
 </resources>

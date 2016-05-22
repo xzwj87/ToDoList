@@ -71,7 +71,8 @@ public class ScheduleGridActivity extends BaseActivity
          }else{
             Intent intent = new Intent(this,ScheduleDetailActivity.class);
             intent.putExtra(ScheduleDetailActivity.SCHEDULE_ID,id);
-            intent.putExtra(ScheduleDetailActivity.PARENT_TAG,LOG_TAG);
+            intent.putExtra(ScheduleDetailActivity.PARENT_TAG,
+                    ScheduleGridFragment.LOG_TAG);
             startActivity(intent);
         }
 
