@@ -76,20 +76,19 @@ public class ScheduleGridAdapter extends BaseAdapter {
             mInflater = LayoutInflater.from(context);
         }
         View rootView = mInflater.inflate(R.layout.item_schedule_grid,null);
+
         GridViewHolder vh = new GridViewHolder(rootView,position);
 
         ScheduleModel scheduleModel = mDataSource.getItemAtPosition(position);
         vh.mTvScheduleTitle.setText(scheduleModel.getTitle());
+        vh.mTvScheduleTitle.setTextColor(ScheduleUtility.getScheduleColor(
+                scheduleModel.getType()));
 
-        String startDate = DATE_FORMAT.format(scheduleModel.getScheduleStart());
-        String endDate = DATE_FORMAT.format(scheduleModel.getScheduleEnd());
         String scheduleDate = DATE_FORMAT.format(scheduleModel.getScheduleStart());
-        if(!(startDate.equals(endDate))){
-            scheduleDate = startDate + " - " + endDate;
-        }
         String startTime = TIME_FORMAT.format(scheduleModel.getScheduleStart());
         String endTime = TIME_FORMAT.format(scheduleModel.getScheduleEnd());
         String scheduleTime = startTime + " - " + endTime;
+
         vh.mTvSchedulePeriod.setText(scheduleDate);
         vh.mTvScheduleTime.setText(scheduleTime);
         vh.mTvScheduleAlarmTime.setText(TIME_FORMAT.format(

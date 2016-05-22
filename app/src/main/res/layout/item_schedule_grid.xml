@@ -4,12 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="1"
-    android:background="?attr/selectableItemBackground">
+    android:layout_margin="@dimen/grid_view_margin_size"
+    android:background="@drawable/rect_shadow"
+    android:elevation="4dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/grid_view_margin_size">
 
         <TextView android:id="@+id/grid_schedule_title"
             android:layout_width="wrap_content"
@@ -19,8 +22,8 @@
             android:typeface="serif"
             android:textStyle="bold"
             android:gravity="center_vertical"
-            android:lines="1"
-            android:maxLength="8"/>
+            android:singleLine="true"
+            android:maxEms="8"/>
 
     </LinearLayout>
 
