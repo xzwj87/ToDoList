@@ -22,4 +22,5 @@
     <color name="colorOrange">#FF9800</color>
     <color name="colorDarkGrey">#424242</color>
     <color name="colorLightGrey">#EEEEEE</color>
+    <color name="colorLineDivider">#E0E0E0</color>
 </resources>

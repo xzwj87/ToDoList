@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:layout_margin="@dimen/fab_margin">
+    android:layout_marginTop="@dimen/fab_margin"
+    android:layout_marginLeft="@dimen/fab_margin"
+    android:layout_marginRight="@dimen/fab_margin">
 
     <TextView android:id="@+id/share_with"
         android:layout_width="wrap_content"
@@ -17,50 +19,59 @@
         android:layout_centerInParent="true"
         android:layout_below="@id/share_with">
 
-        <ImageView android:id="@+id/share_with_weibo"
-            android:layout_width="wrap_content"
+        <LinearLayout android:id="@+id/icon_list"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_weibo_64"
+            android:orientation="horizontal"
             android:layout_marginRight="@dimen/fab_margin"
-            android:paddingRight="5dp"
-            android:background="?android:attr/selectableItemBackground"/>
+            android:layout_marginBottom="@dimen/fab_margin">
 
-        <ImageView android:id="@+id/share_with_weixin_friend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_weixin_64"
-            android:layout_toRightOf="@id/share_with_weibo"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:background="?android:attr/selectableItemBackground"/>
+            <ImageView android:id="@+id/share_with_weibo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_weibo_64"
+                android:paddingRight="@dimen/fab_margin"
+                android:background="?android:attr/selectableItemBackground"/>
 
-        <ImageView android:id="@+id/share_with_weixin_circle"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:src="@drawable/icon_weixin_circle_64"
-            android:scaleType="centerCrop"
-            android:layout_toRightOf="@id/share_with_weixin_friend"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_alignBottom="@id/share_with_weixin_friend"
-            android:background="?android:attr/selectableItemBackground"/>
+            <ImageView android:id="@+id/share_with_weixin_friend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_weixin_64"
+                android:paddingRight="@dimen/fab_margin"
+                android:background="?android:attr/selectableItemBackground"/>
 
-        <ImageView android:id="@+id/share_with_sms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_sms_64"
-            android:layout_toRightOf="@id/share_with_weixin_circle"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:background="?android:attr/selectableItemBackground"/>
+            <ImageView android:id="@+id/share_with_weixin_circle"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/icon_weixin_circle_64"
+                android:scaleType="centerCrop"
+                android:paddingRight="@dimen/fab_margin"
+                android:background="?android:attr/selectableItemBackground"/>
 
+            <ImageView android:id="@+id/share_with_sms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_sms_64"
+                android:background="?android:attr/selectableItemBackground"/>
+
+        </LinearLayout>
+
+        <View android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/icon_list"
+            android:layout_marginBottom="@dimen/share_item_padding"
+            android:background="@color/colorLineDivider"/>
 
         <TextView android:id ="@+id/share_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/share_with_weibo"
+            android:layout_below="@id/divider"
             android:text="@string/button_cancel"
             android:textSize="@dimen/share_cancel_text_size"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:paddingTop="@dimen/fab_margin"
-            android:paddingBottom="@dimen/fab_margin"
+            android:paddingTop="@dimen/share_item_padding"
+            android:paddingBottom="@dimen/share_item_padding"
+            android:layout_marginBottom="@dimen/share_item_padding"
             android:typeface="normal"
             android:gravity="center"
             android:background="?android:attr/selectableItemBackground"/>

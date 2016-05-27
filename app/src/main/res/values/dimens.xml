@@ -34,6 +34,7 @@
 
     <dimen name="share_title_text_size">20sp</dimen>
     <dimen name="share_cancel_text_size">18sp</dimen>
+    <dimen name="share_item_padding">10dp</dimen>
     
     <dimen name="grid_item_margin">10dp</dimen>
     <dimen name="grid_item_text_size">14sp</dimen>
