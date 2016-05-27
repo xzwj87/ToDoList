@@ -400,6 +400,10 @@ public class ScheduleListFragment extends BaseFragment implements
                 }
                 dialog.dismiss();
             }
-        }).show();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
+        dialog.show();
     }
 }

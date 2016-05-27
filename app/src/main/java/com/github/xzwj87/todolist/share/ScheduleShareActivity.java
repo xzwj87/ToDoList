@@ -60,6 +60,7 @@ public class ScheduleShareActivity extends AppCompatActivity
     @Override
     public void onCreate(Bundle savedState){
         super.onCreate(savedState);
+        setContentView(R.layout.activity_schedule_share);
 
         mShareData = getIntent().getExtras();
 
@@ -74,7 +75,6 @@ public class ScheduleShareActivity extends AppCompatActivity
 
         composeShareMessage();
     }
-
 
     @Override
     public void onClick(View v) {
@@ -100,7 +100,6 @@ public class ScheduleShareActivity extends AppCompatActivity
     }
 
     private void initViews(){
-        setContentView(R.layout.activity_schedule_share);
 
         Window window = getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
@@ -110,6 +109,8 @@ public class ScheduleShareActivity extends AppCompatActivity
         wlp.gravity = Gravity.BOTTOM;
         wlp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
+
+        this.overridePendingTransition(R.anim.enter_from_bottom, R.anim.fade_out);
 
         mShareWithWeibo = (ImageView)findViewById(R.id.share_with_weibo);
         mShareWithWeixinFriend = (ImageView)findViewById(R.id.share_with_weixin_friend);

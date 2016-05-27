@@ -264,8 +264,11 @@ public class ScheduleGridFragment extends BaseFragment implements
                 }
                 dialog.dismiss();
             }
-        })
-         .show();
+        });
+        // add animation to dialog
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
+        dialog.show();
     }
 
     private void registerObserver() {
