@@ -10,6 +10,7 @@ public interface ScheduleDetailView {
     void updateAlarmTime(String time);
     void updateScheduleType(String type);
     void updateScheduleNote(String note);
+    void updateSchedulePriority(int priority);
 
     void requestConfirmDelete();
     void finishView();

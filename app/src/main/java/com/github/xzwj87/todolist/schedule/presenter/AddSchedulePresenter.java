@@ -16,6 +16,7 @@ public interface AddSchedulePresenter extends Presenter {
     void setEndTime();
     void setAlarmType();
     void setScheduleType();
+    void setPriority();
 
     void onTitleSet(String title);
     void onStartDateSet(int year, int monthOfYear, int dayOfMonth);
@@ -24,6 +25,7 @@ public interface AddSchedulePresenter extends Presenter {
     void onEndTimeSet(int hourOfDay, int minute, int second);
     void onAlarmTypeSet(@ScheduleModel.AlarmType String alarmType);
     void onScheduleTypeSet(@ScheduleModel.AlarmType String scheduleType);
+    void onPrioritySet(@ScheduleModel.Priority int priority);
     void onNoteSet(String note);
 
     void onSave();

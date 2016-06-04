@@ -38,6 +38,8 @@ public class ScheduleContract {
 
         public static final String COLUMN_IS_DONE = "is_done";
 
+        public static final String COLUMN_PRIORITY = "priority";
+
         public static Uri buildScheduleUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }

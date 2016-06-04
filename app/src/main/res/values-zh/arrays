@@ -14,4 +14,11 @@
         <item>标记为未完成</item>
     </string-array>
 
+    <string-array name="schedule_priority_picker_choice_list">
+        <item>重要/紧急</item>
+        <item>紧急/不重要</item>
+        <item>重要/非紧急</item>
+        <item>不重要/非紧急</item>
+    </string-array>
+
 </resources>

@@ -107,6 +107,11 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
     }
 
     @Override
+    public void setPriority() {
+        mView.ShowPickPriorityDlg(mSchedule.getPriority());
+    }
+
+    @Override
     public void onTitleSet(String title) {
         mSchedule.setTitle(title);
     }
@@ -178,6 +183,12 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
     }
 
     @Override
+    public void onPrioritySet(int priority) {
+        mSchedule.setPriority(priority);
+        mView.updateSchedulePriority(priority);
+    }
+
+    @Override
     public void onNoteSet(String note) {
         mSchedule.setNote(note);
     }
@@ -219,6 +230,7 @@ public class EditSchedulePresenterImpl implements AddSchedulePresenter {
 
         mView.updateScheduleTitle(schedule.getTitle());
         mView.updateScheduleNote(schedule.getNote());
+        mView.updateSchedulePriority(schedule.getPriority());
     }
 
     private void loadSchedule() {

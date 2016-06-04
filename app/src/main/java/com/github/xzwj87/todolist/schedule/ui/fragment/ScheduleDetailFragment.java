@@ -34,6 +34,7 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
     private static final String LOG_TAG = ScheduleDetailFragment.class.getSimpleName();
 
     public static final String SCHEDULE_ID = "id";
+    private static String[] sSchedulePriority = null;
 
     private long mScheduleId = 0;
 
@@ -45,9 +46,11 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
     @Bind(R.id.tv_schedule_time) TextView mTvScheduleTime;
     @Bind(R.id.tv_schedule_alarm_time) TextView mTvAlarmTime;
     @Bind(R.id.tv_schedule_type) TextView mTvScheduleType;
+    @Bind(R.id.tv_schedule_priority) TextView mTvSchedulePriority;
     @Bind(R.id.tv_schedule_note) TextView mTvScheduleNote;
 
-    public ScheduleDetailFragment() { }
+    public ScheduleDetailFragment() {
+    }
 
     public static ScheduleDetailFragment newInstance(long scheduleId) {
         ScheduleDetailFragment fragment = new ScheduleDetailFragment();
@@ -183,8 +186,18 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
         mTvScheduleNote.setText(note);
     }
 
+    @Override
+    public void updateSchedulePriority(int priority) {
+        if(sSchedulePriority != null) {
+            mTvSchedulePriority.setText(sSchedulePriority[priority]);
+        }
+    }
+
     private void initialize() {
         getComponent(ScheduleComponent.class).inject(this);
+
+        sSchedulePriority = getContext().getResources().
+                getStringArray(R.array.schedule_priority_picker_choice_list);
 
         mScheduleDetailPresenter.setView(this);
 

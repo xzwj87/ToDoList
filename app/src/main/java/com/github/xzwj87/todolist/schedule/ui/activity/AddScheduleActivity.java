@@ -25,6 +25,7 @@ import com.github.xzwj87.todolist.schedule.ui.AddScheduleView;
 import com.github.xzwj87.todolist.schedule.ui.fragment.AlarmTypePickerDialogFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleGridFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
+import com.github.xzwj87.todolist.schedule.ui.fragment.SchedulePriorityPickerDialogFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleTypePickerDialogFragment;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -51,7 +52,9 @@ public class AddScheduleActivity extends BaseActivity
     private static final String END_TIME_PICK_DLG_TAG = "end_date_pick_dlg";
     private static final String ALARM_TYPE_PICK_DLG_TAG = "alarm_time_pick_dlg";
     private static final String SCHEDULE_TYPE_PICK_DLG_TAG = "schedule_type_pick_dlg";
+    private static final String SCHEDULE_PRIORITY_PICK_DLG_TAG = "schedule_priority_pick_dlg";
 
+    private static String[] sSchedulePriority = null;
     private AddSchedulePresenter mPresenter;
     @Inject AddSchedulePresenterImpl mAddSchedulePresenterImpl;
     @Inject EditSchedulePresenterImpl mEditSchedulePresenterImpl;
@@ -69,6 +72,7 @@ public class AddScheduleActivity extends BaseActivity
     @Bind(R.id.btn_alarm_time) Button mBtnAlarmTime;
     @Bind(R.id.btn_schedule_type) Button mBtnScheduleType;
     @Bind(R.id.edit_schedule_note) EditText mEditScheduleNote;
+    @Bind(R.id.btn_priority) Button mBtnPriority;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +130,8 @@ public class AddScheduleActivity extends BaseActivity
     }
 
     private void initializeView() {
+        sSchedulePriority = getResources().getStringArray(R.array.schedule_priority_picker_choice_list);
+
         if (mIsEditMode) {
             mPresenter = mEditSchedulePresenterImpl;
         } else {
@@ -288,6 +294,18 @@ public class AddScheduleActivity extends BaseActivity
     }
 
     @Override
+    public void ShowPickPriorityDlg(int priority) {
+        SchedulePriorityPickerDialogFragment fragment = SchedulePriorityPickerDialogFragment.newInstance(
+                priority, new SchedulePriorityPickerDialogFragment.onPriorityChangedListener() {
+                    @Override
+                    public void onPriorityChanged(int priority) {
+                        mPresenter.onPrioritySet(priority);
+                    }
+                });
+        fragment.show(getSupportFragmentManager(), SCHEDULE_PRIORITY_PICK_DLG_TAG);
+    }
+
+    @Override
     public void finishView() {
         finish();
     }
@@ -315,6 +333,11 @@ public class AddScheduleActivity extends BaseActivity
     @Override
     public void updateScheduleTypeDisplay(String scheduleTypeText) {
         mBtnScheduleType.setText(scheduleTypeText);
+    }
+
+    @Override
+    public void updateSchedulePriority(int priority) {
+        mBtnPriority.setText(sSchedulePriority[priority]);
     }
 
     @Override
@@ -365,6 +388,11 @@ public class AddScheduleActivity extends BaseActivity
     @OnClick(R.id.btn_schedule_type)
     public void pickScheduleType(View view) {
         mPresenter.setScheduleType();
+    }
+
+    @OnClick(R.id.btn_priority)
+    public void pickSchedulePriority(){
+        mPresenter.setPriority();
     }
 
 }

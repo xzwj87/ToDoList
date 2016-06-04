@@ -68,6 +68,8 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         mAddScheduleView.updateScheduleTypeDisplay(
                 ScheduleUtility.getScheduleTypeText(mSchedule.getType()));
 
+        mAddScheduleView.updateSchedulePriority(mSchedule.getPriority());
+
         mIsEndDateTimeManuallySet = false;
     }
 
@@ -111,6 +113,11 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
     @Override
     public void setScheduleType() {
         mAddScheduleView.showPickScheduleTypeDlg(mSchedule.getType());
+    }
+
+    @Override
+    public void setPriority() {
+        mAddScheduleView.ShowPickPriorityDlg(mSchedule.getPriority());
     }
 
     @Override
@@ -198,6 +205,13 @@ public class AddSchedulePresenterImpl implements AddSchedulePresenter {
         mSchedule.setType(scheduleType);
         mAddScheduleView.updateScheduleTypeDisplay(
                 ScheduleUtility.getScheduleTypeText(mSchedule.getType()));
+    }
+
+    @Override
+    public void onPrioritySet(int priority) {
+        Log.v(LOG_TAG,"onPrioritySet(): priority = " + priority);
+        mSchedule.setPriority(priority);
+        mAddScheduleView.updateSchedulePriority(priority);
     }
 
     @Override

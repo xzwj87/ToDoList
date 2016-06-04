@@ -98,6 +98,25 @@
 
             <ImageView
                 style="@style/ScheduleDetailIcon"
+                android:src="@drawable/ic_grade_24dp"/>
+
+            <Button android:id="@+id/btn_priority"
+                style="@style/ScheduleDetailButton"
+                tools:text="priority"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/ScheduleDetailIcon"
                 android:src="@drawable/ic_notifications_24dp"/>
 
             <Button

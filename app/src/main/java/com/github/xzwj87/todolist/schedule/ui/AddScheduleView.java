@@ -12,6 +12,7 @@ public interface AddScheduleView {
     void showPickScheduleTypeDlg(@ScheduleModel.ScheduleType String scheduleType);
     void showMessageDialog(String title, String message);
     void showErrorIndicationOnStartTime(boolean isError);
+    void ShowPickPriorityDlg(@ScheduleModel.Priority int priority);
 
     void updateScheduleTitle(String title);
     void updateScheduleNote(String note);
@@ -21,6 +22,7 @@ public interface AddScheduleView {
     void updateEndTimeDisplay(String endTime);
     void updateAlarmTypeDisplay(String alarmTypeText);
     void updateScheduleTypeDisplay(String scheduleTypeText);
+    void updateSchedulePriority(@ScheduleModel.Priority int priority);
 
     void finishView();
     String getScheduleTitle();

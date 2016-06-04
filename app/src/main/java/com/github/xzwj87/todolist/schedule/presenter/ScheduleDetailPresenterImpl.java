@@ -99,6 +99,8 @@ public class ScheduleDetailPresenterImpl implements ScheduleDetailPresenter {
 
         mScheduleDetailView.updateScheduleNote(schedule.getNote());
 
+        mScheduleDetailView.updateSchedulePriority(schedule.getPriority());
+
     }
 
     private void loadScheduleDetails() {

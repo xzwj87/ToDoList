@@ -1,6 +1,8 @@
 package com.github.xzwj87.todolist.schedule.ui.model;
 
+import android.support.annotation.IntDef;
 import android.support.annotation.StringDef;
+import android.view.WindowManager;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -44,6 +46,15 @@ public class ScheduleModel {
     @Retention(RetentionPolicy.SOURCE)
     public @interface DoneStatus {}
 
+    // Important or urgent
+    public static final int HIGHEST = 0;
+    public static final int HIGH = 1;
+    public static final int MEDIUM = 2;
+    public static final int LOW = 3;
+    @IntDef({HIGHEST, HIGH, MEDIUM, LOW})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Priority{}
+
     private static final long MILLISECONDS_IN_10_MINUTES = 10 * 60 * 1000;
 
     private long mId;
@@ -62,6 +73,8 @@ public class ScheduleModel {
     private int mRepeatAlarmInterval;
 
     @DoneStatus private String mDoneStatus;
+
+    @Priority private int mPriority;
 
     public static ScheduleModel createDefaultSchedule() {
         ScheduleModel schedule = new ScheduleModel();
@@ -89,6 +102,8 @@ public class ScheduleModel {
         schedule.setRepeatAlarmInterval(0);
 
         schedule.setDoneStatus(UNDONE);
+
+        schedule.setPriority(MEDIUM);
 
         return schedule;
     }
@@ -192,6 +207,13 @@ public class ScheduleModel {
         mDoneStatus = doneStatus;
     }
 
+    @Priority
+    public int getPriority(){return mPriority;}
+
+    public void setPriority(int priority){
+        mPriority = priority;
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -205,6 +227,7 @@ public class ScheduleModel {
         stringBuilder.append("alarm type = " + mAlarmType + "\n");
         stringBuilder.append("alarm = " + mAlarmTime + "\n");
         stringBuilder.append("mDoneStatus = " + mDoneStatus + "\n");
+        stringBuilder.append("mPriority = " + mPriority);
 
         return stringBuilder.toString();
     }

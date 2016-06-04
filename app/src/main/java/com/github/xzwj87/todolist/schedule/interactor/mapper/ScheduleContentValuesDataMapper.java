@@ -29,6 +29,7 @@ public class ScheduleContentValuesDataMapper {
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES, scheduleModel.getRepeatAlarmTimes());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL, scheduleModel.getRepeatAlarmInterval());
         scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_IS_DONE, scheduleModel.getDoneStatus());
+        scheduleValues.put(ScheduleContract.ScheduleEntry.COLUMN_PRIORITY,scheduleModel.getPriority());
 
         Log.v(LOG_TAG, "getSchedule(): scheduleValues = " + scheduleValues);
         return scheduleValues;

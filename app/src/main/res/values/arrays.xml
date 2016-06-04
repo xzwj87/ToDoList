@@ -34,4 +34,11 @@
         <item>delete</item>
         <item>marked as undone</item>
     </string-array>
+
+    <string-array name="schedule_priority_picker_choice_list">
+        <item>important/urgent</item>
+        <item>urgent/nonImportant</item>
+        <item>important/nonUrgent</item>
+        <item>nonImportant/nonUrgent</item>
+    </string-array>
 </resources>

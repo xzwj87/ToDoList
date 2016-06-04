@@ -27,7 +27,8 @@ public class ScheduleModelDataMapper {
             ScheduleContract.ScheduleEntry.COLUMN_ALARM_TIME,
             ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_TIMES,
             ScheduleContract.ScheduleEntry.COLUMN_REPEAT_ALARM_INTERVAL,
-            ScheduleContract.ScheduleEntry.COLUMN_IS_DONE
+            ScheduleContract.ScheduleEntry.COLUMN_IS_DONE,
+            ScheduleContract.ScheduleEntry.COLUMN_PRIORITY
     };
 
     public static final int COL_SCHEDULE_ID = 0;
@@ -42,6 +43,7 @@ public class ScheduleModelDataMapper {
     public static final int COL_SCHEDULE_REPEAT_ALARM_TIMES = 9;
     public static final int COL_SCHEDULE_REPEAT_ALARM_INTERVAL = 10;
     public static final int COL_SCHEDULE_IS_DONE = 11;
+    public static final int COL_SCHEDULE_PRIORITY = 12;
 
     @Inject
     public ScheduleModelDataMapper() {}
@@ -75,6 +77,8 @@ public class ScheduleModelDataMapper {
         scheduleModel.setRepeatAlarmInterval(cursor.getInt(COL_SCHEDULE_REPEAT_ALARM_INTERVAL));
 
         scheduleModel.setDoneStatus(cursor.getString(COL_SCHEDULE_IS_DONE));
+
+        scheduleModel.setPriority(cursor.getInt(COL_SCHEDULE_PRIORITY));
 
         Log.v(LOG_TAG, "transform(): scheduleModel = " + scheduleModel);
 

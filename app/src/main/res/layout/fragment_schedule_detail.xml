@@ -42,7 +42,19 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            style="@style/ScheduleDetailItemContainer"
+            android:orientation="horizontal">
 
+            <ImageView android:id="@+id/iv_schedule_priority"
+                style="@style/ScheduleDetailIcon"
+                android:src="@drawable/ic_grade_24dp"/>
+
+            <TextView android:id="@+id/tv_schedule_priority"
+                style="@style/ScheduleDetailText"
+                tools:text="medium"/>
+
+        </LinearLayout>
 
         <LinearLayout
             style="@style/ScheduleDetailItemContainer"
@@ -101,8 +113,6 @@
                 tools:text="Default"/>
 
         </LinearLayout>
-
-
 
     </LinearLayout>
 
