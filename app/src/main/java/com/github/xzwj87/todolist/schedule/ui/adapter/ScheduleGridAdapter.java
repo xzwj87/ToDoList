@@ -94,8 +94,8 @@ public class ScheduleGridAdapter extends BaseAdapter {
         vh.mTvScheduleTime.setText(scheduleTime);
         vh.mTvScheduleAlarmTime.setText(TIME_FORMAT.format(
                 scheduleModel.getAlarmTime()));
-        vh.mTvScheduleType.setText(ScheduleUtility.getScheduleTypeText(
-                scheduleModel.getType()));
+        vh.mTvSchedulePriority.setText(ScheduleUtility.getSchedulePriorityText(
+                scheduleModel.getPriority()));
 
         return rootView;
     }
@@ -107,12 +107,11 @@ public class ScheduleGridAdapter extends BaseAdapter {
         @Bind(R.id.grid_schedule_period) public TextView mTvSchedulePeriod;
         @Bind(R.id.grid_schedule_time) public TextView mTvScheduleTime;
 
+        @Bind(R.id.grid_schedule_priority) public TextView mTvSchedulePriority;
+        @Bind(R.id.grid_schedule_priority_icon) public ImageView mIvSchedulePriority;
+
         @Bind(R.id.grid_alarm_time_icon) public ImageView mIvScheduleAlarmTime;
         @Bind(R.id.grid_alarm_time) public TextView mTvScheduleAlarmTime;
-
-        @Bind(R.id.grid_schedule_type_icon) public ImageView mIvScheduleType;
-        @Bind(R.id.grid_schedule_type) public TextView mTvScheduleType;
-
 
 
         public GridViewHolder(View view,int position){

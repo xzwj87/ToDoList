@@ -23,6 +23,7 @@ import com.github.xzwj87.todolist.schedule.internal.di.component.ScheduleCompone
 import com.github.xzwj87.todolist.schedule.presenter.ScheduleDetailPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.ScheduleDetailView;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.schedule.utility.ScheduleUtility;
 import com.github.xzwj87.todolist.share.ScheduleShareActivity;
 
 import javax.inject.Inject;
@@ -34,7 +35,6 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
     private static final String LOG_TAG = ScheduleDetailFragment.class.getSimpleName();
 
     public static final String SCHEDULE_ID = "id";
-    private static String[] sSchedulePriority = null;
 
     private long mScheduleId = 0;
 
@@ -188,16 +188,11 @@ public class ScheduleDetailFragment extends BaseFragment implements ScheduleDeta
 
     @Override
     public void updateSchedulePriority(int priority) {
-        if(sSchedulePriority != null) {
-            mTvSchedulePriority.setText(sSchedulePriority[priority]);
-        }
+        mTvSchedulePriority.setText(ScheduleUtility.getSchedulePriorityText(priority));
     }
 
     private void initialize() {
         getComponent(ScheduleComponent.class).inject(this);
-
-        sSchedulePriority = getContext().getResources().
-                getStringArray(R.array.schedule_priority_picker_choice_list);
 
         mScheduleDetailPresenter.setView(this);
 

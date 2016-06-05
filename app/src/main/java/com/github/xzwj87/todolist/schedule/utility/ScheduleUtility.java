@@ -11,6 +11,7 @@ import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 public class ScheduleUtility {
 
+    private static String[] sPriorityText = null;
     public static String getAlarmTypeText(@ScheduleModel.AlarmType String alarmType) {
         Context context = App.getAppContext();
 
@@ -61,7 +62,20 @@ public class ScheduleUtility {
             default:
                 return ContextCompat.getColor(context, R.color.colorDefault);
         }
+    }
 
+    public static String getSchedulePriorityText(@ScheduleModel.Priority int prority){
+        Context context = App.getAppContext();
+
+        if(sPriorityText == null) {
+            sPriorityText = context.getResources().getStringArray(R.array.schedule_priority_picker_choice_list);
+        }
+
+        if(sPriorityText != null){
+            return sPriorityText[prority];
+        }
+
+        return null;
     }
 
 }

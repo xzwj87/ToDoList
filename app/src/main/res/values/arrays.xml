@@ -36,9 +36,9 @@
     </string-array>
 
     <string-array name="schedule_priority_picker_choice_list">
-        <item>important/urgent</item>
-        <item>urgent/nonImportant</item>
-        <item>important/nonUrgent</item>
-        <item>nonImportant/nonUrgent</item>
+        <item>highest priority</item>
+        <item>high priority</item>
+        <item>medium priority</item>
+        <item>low priority</item>
     </string-array>
 </resources>

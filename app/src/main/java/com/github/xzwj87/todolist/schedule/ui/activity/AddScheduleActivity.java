@@ -28,6 +28,7 @@ import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.SchedulePriorityPickerDialogFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleTypePickerDialogFragment;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
+import com.github.xzwj87.todolist.schedule.utility.ScheduleUtility;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -54,7 +55,6 @@ public class AddScheduleActivity extends BaseActivity
     private static final String SCHEDULE_TYPE_PICK_DLG_TAG = "schedule_type_pick_dlg";
     private static final String SCHEDULE_PRIORITY_PICK_DLG_TAG = "schedule_priority_pick_dlg";
 
-    private static String[] sSchedulePriority = null;
     private AddSchedulePresenter mPresenter;
     @Inject AddSchedulePresenterImpl mAddSchedulePresenterImpl;
     @Inject EditSchedulePresenterImpl mEditSchedulePresenterImpl;
@@ -130,7 +130,6 @@ public class AddScheduleActivity extends BaseActivity
     }
 
     private void initializeView() {
-        sSchedulePriority = getResources().getStringArray(R.array.schedule_priority_picker_choice_list);
 
         if (mIsEditMode) {
             mPresenter = mEditSchedulePresenterImpl;
@@ -337,7 +336,7 @@ public class AddScheduleActivity extends BaseActivity
 
     @Override
     public void updateSchedulePriority(int priority) {
-        mBtnPriority.setText(sSchedulePriority[priority]);
+        mBtnPriority.setText(ScheduleUtility.getSchedulePriorityText(priority));
     }
 
     @Override
