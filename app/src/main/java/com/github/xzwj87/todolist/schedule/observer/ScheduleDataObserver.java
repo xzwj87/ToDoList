@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 
+import com.github.xzwj87.todolist.app.App;
 import com.github.xzwj87.todolist.schedule.data.provider.ScheduleContract;
 import com.github.xzwj87.todolist.schedule.interactor.DefaultSubscriber;
 import com.github.xzwj87.todolist.schedule.interactor.UseCase;
@@ -31,25 +32,25 @@ public class ScheduleDataObserver extends ContentObserver {
     public static final String TAG = "ScheduleDataObserver";
 
     private HashSet<DataSetChanged> mCallbacks = new HashSet<>();
-    /* Todo: using ArrayList to controller the observer reference */
-    private ArrayList<ScheduleDataObserver> mObservers;
+    private ArrayList<ContentObserver> mObservers;
     private static ScheduleDataObserver mInstance = null;
-    private Context mContext = null;
+    private Context mContext = App.getAppContext();
     private ScheduleCategoryNumber mScheduleNumber = null;
     private UseCase mGetScheduleList = null;
     private Cursor mCursor = null;
 
-    public static ScheduleDataObserver getInstance(Context context){
+    public static ScheduleDataObserver getInstance(){
         if(mInstance == null){
-            mInstance = new ScheduleDataObserver(context,new Handler());
+            mInstance = new ScheduleDataObserver(new Handler());
         }
 
         return mInstance;
     }
 
-    public ScheduleDataObserver(Context context,Handler handler){
+    public ScheduleDataObserver(Handler handler){
         super(handler);
-        mContext = context;
+        mObservers = new ArrayList<>();
+        mContext = App.getAppContext();
         mScheduleNumber = new ScheduleCategoryNumber();
         updateScheduleCategoryNumber();
     }
@@ -87,7 +88,20 @@ public class ScheduleDataObserver extends ContentObserver {
     }
 
     public void registerObserver(){
+        Log.v(TAG,"registerObserver(): count = " + mObservers.size());
+        if(!mObservers.contains(mInstance)) {
+            mObservers.add(mInstance);
+            mContext.getContentResolver().registerContentObserver(ScheduleContract.ScheduleEntry.CONTENT_URI,
+                    true, mInstance);
+        }
+    }
 
+    public void unregisterObserver(){
+        Log.v(TAG,"unregisterObserver(): count = " + mObservers.size());
+        if(mObservers.contains(mInstance)){
+            mContext.getContentResolver().unregisterContentObserver(mInstance);
+            mObservers.remove(mInstance);
+        }
     }
 
     public class ScheduleCategoryNumber{

@@ -134,7 +134,7 @@ public class ScheduleListFragment extends BaseFragment implements
 
         }
         // schedule data observer
-        mScheduleObserver = ScheduleDataObserver.getInstance(getContext());
+        mScheduleObserver = ScheduleDataObserver.getInstance();
 
         return rootView;
     }
@@ -160,7 +160,7 @@ public class ScheduleListFragment extends BaseFragment implements
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.v(LOG_TAG,"onDetach(): " + this.getTag());
+        Log.v(LOG_TAG, "onDetach(): " + this.getTag());
         mCallbacks = sDummyCallbacks;
     }
 
@@ -187,6 +187,7 @@ public class ScheduleListFragment extends BaseFragment implements
         Log.v(LOG_TAG, "onDestroy()");
         //unregisterObserver();
         mScheduleObserver.unregisterDataChangedCb(this);
+        mScheduleObserver.unregisterObserver();
         mScheduleListPresenter.destroy();
     }
 
@@ -267,7 +268,7 @@ public class ScheduleListFragment extends BaseFragment implements
 
         setupRecyclerView();
 
-        registerObserver();
+        mScheduleObserver.registerObserver();
         mScheduleObserver.registerDataChangedCb(this);
         mCallbacks.onDataChanged(mScheduleObserver.getScheduleCategoryNumber());
 
@@ -338,18 +339,6 @@ public class ScheduleListFragment extends BaseFragment implements
             mScheduleListPresenter.markAsDone(new long[]{id}, !undoMarkAsDone);
         });
         snackbar.show();
-    }
-
-
-    private void registerObserver(){
-        Log.v(LOG_TAG, "registerObserver");
-        getContext().getContentResolver().registerContentObserver(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                true, mScheduleObserver);
-    }
-
-    private void unregisterObserver(){
-        Log.v(LOG_TAG, "unregisterObserver");
-        getContext().getContentResolver().unregisterContentObserver(mScheduleObserver);
     }
 
     private void createDialog(long id,int position){

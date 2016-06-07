@@ -118,6 +118,9 @@ public class ScheduleGridFragment extends BaseFragment implements
         super.onDestroy();
         /* Todo:if unregister here, it won't refresh data*/
         //unregisterObserver();
+        mScheduleObserver.unregisterDataChangedCb(this);
+        mScheduleObserver.unregisterObserver();
+        mScheduleGridPresenter.destroy();
     }
 
     @Override
@@ -177,8 +180,8 @@ public class ScheduleGridFragment extends BaseFragment implements
         mScheduleGridPresenter.setView(this);
 
         // data set observer
-        mScheduleObserver = ScheduleDataObserver.getInstance(getContext());
-        registerObserver();
+        mScheduleObserver = ScheduleDataObserver.getInstance();
+        mScheduleObserver.registerObserver();
         mScheduleObserver.registerDataChangedCb(this);
 
         initGridView();
@@ -269,15 +272,5 @@ public class ScheduleGridFragment extends BaseFragment implements
         AlertDialog dialog = builder.create();
         dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
         dialog.show();
-    }
-
-    private void registerObserver() {
-        getContext().getContentResolver().registerContentObserver(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                true, mScheduleObserver);
-    }
-
-    private void unregisterObserver(){
-        getContext().getContentResolver().unregisterContentObserver(
-                mScheduleObserver);
     }
 }
