@@ -260,14 +260,14 @@ public class AlarmAlertActivity extends AppCompatActivity implements View.OnClic
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setAutoCancel(true);
 
-        Intent resultIntent = new Intent(this,
+        /*Intent resultIntent = new Intent(this,
                 NotifierDetailActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
         stackBuilder.addNextIntent(resultIntent);
 
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
                 0,PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(resultPendingIntent);
+        builder.setContentIntent(resultPendingIntent);*/
 
         int notifyId = 1;
         mNotificationMgr = (NotificationManager)getApplicationContext()
