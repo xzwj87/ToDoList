@@ -4,7 +4,6 @@ import com.github.xzwj87.todolist.schedule.internal.di.PerActivity;
 import com.github.xzwj87.todolist.schedule.internal.di.module.ActivityModule;
 import com.github.xzwj87.todolist.schedule.internal.di.module.ScheduleModule;
 import com.github.xzwj87.todolist.schedule.ui.activity.AddScheduleActivity;
-import com.github.xzwj87.todolist.schedule.ui.activity.ScheduleGridActivity;
 import com.github.xzwj87.todolist.schedule.ui.activity.ScheduleListActivity;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleGridFragment;
@@ -21,5 +20,4 @@ public interface ScheduleComponent extends ActivityComponent {
     void inject(ScheduleListActivity scheduleListActivity);
     void inject(ScheduleListFragment scheduleListFragment);
     void inject(ScheduleGridFragment scheduleGridFragment);
-    void inject(ScheduleGridActivity scheduleGridActivity);
 }

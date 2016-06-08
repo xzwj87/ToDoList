@@ -82,11 +82,6 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name=".schedule.ui.activity.ScheduleGridActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="">
-        </activity>
-
         <activity android:name=".alarm.ui.activity.AlarmAlertActivity"
             android:theme="@style/AlarmAlertDialog">
         </activity>
