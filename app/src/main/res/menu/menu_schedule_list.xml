@@ -8,9 +8,14 @@
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
-    <item android:id="@+id/action_more"
+    <item android:id="@+id/action_list_view"
         android:icon="@drawable/ic_more_vert_24dp"
-        android:title="@string/more_schedule_grid_view"
+        android:title="@string/more_schedule_list_view"
         app:showAsAction="never"/>
+
+    <item android:id="@+id/action_grid_view"
+        android:title="@string/more_schedule_grid_view"
+        app:showAsAction="never">
+    </item>
 
 </menu>

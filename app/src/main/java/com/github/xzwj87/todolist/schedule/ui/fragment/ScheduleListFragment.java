@@ -51,7 +51,7 @@ public class ScheduleListFragment extends BaseFragment implements
     private static final String QUERY = "query";
 
     private String mScheduleType;
-    private String mObserverType = "all";
+    private String mObserverType = "ListFragment";
     private Callbacks mCallbacks = sDummyCallbacks;
     private ScheduleAdapter mScheduleAdapter;
     private ScheduleDataObserver mScheduleObserver = null;
@@ -136,9 +136,7 @@ public class ScheduleListFragment extends BaseFragment implements
 
         }
 
-        if(mScheduleType != null){
-            mObserverType = mScheduleType;
-        }
+        mObserverType = mObserverType + "_" + mScheduleType;
         registerDataObserver();
 
         return rootView;
@@ -187,9 +185,7 @@ public class ScheduleListFragment extends BaseFragment implements
     public void onDestroy() {
         super.onDestroy();
         Log.v(LOG_TAG, "onDestroy()");
-        //unregisterObserver();
-        mScheduleObserver.unregisterDataChangedCb(this);
-        mScheduleObserver.unregisterObserver(mObserverType);
+        unregisterDataObserver();
         mScheduleListPresenter.destroy();
     }
 
@@ -285,6 +281,11 @@ public class ScheduleListFragment extends BaseFragment implements
         mScheduleObserver = ScheduleDataObserver.getInstance(mObserverType);
         mScheduleObserver.registerObserver(mObserverType);
         mScheduleObserver.registerDataChangedCb(this);
+    }
+
+    private void unregisterDataObserver(){
+        mScheduleObserver.unregisterDataChangedCb(this);
+        mScheduleObserver.unregisterObserver(mObserverType);
     }
 
     private void setupRecyclerView() {

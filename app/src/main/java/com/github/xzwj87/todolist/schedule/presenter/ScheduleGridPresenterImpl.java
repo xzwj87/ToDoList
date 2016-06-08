@@ -112,7 +112,8 @@ public class ScheduleGridPresenterImpl implements ScheduleGridPresenter {
         @Override
         public void onNext(Cursor cursor){
             mCursor = cursor;
-            Log.v(LOG_TAG,"onNext(): cursor count = " + cursor.getCount());
+            Log.v(LOG_TAG, "onNext(): cursor count = " + cursor.getCount());
+            mScheduleGridView.renderScheduleList();
         }
     }
 

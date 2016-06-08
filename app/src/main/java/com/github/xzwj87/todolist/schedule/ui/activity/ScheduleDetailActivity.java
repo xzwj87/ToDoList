@@ -70,11 +70,12 @@ public class ScheduleDetailActivity extends BaseActivity implements HasComponent
         int id = item.getItemId();
         if (id == android.R.id.home) {
             Intent intent = null;
-            if(ScheduleListFragment.LOG_TAG.equals(mParentTag)) {
+            intent = new Intent(this,ScheduleListActivity.class);
+            /*if(ScheduleListFragment.LOG_TAG.equals(mParentTag)) {
                 intent = new Intent(this,ScheduleListActivity.class);
             }else if(ScheduleGridFragment.LOG_TAG.equals(mParentTag)){
                 intent = new Intent(this,ScheduleGridActivity.class);
-            }
+            }*/
             NavUtils.navigateUpTo(this, intent);
             return true;
         }

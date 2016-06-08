@@ -158,7 +158,9 @@ public class AddScheduleActivity extends BaseActivity
             case android.R.id.home:
                 Intent intent = null;
                 Log.v(LOG_TAG,"parent tag = " + mParentTag);
-                if(mParentTag.equals(ScheduleListFragment.LOG_TAG)){
+                intent = new Intent(this,ScheduleListActivity.class);
+                NavUtils.navigateUpTo(this, intent);
+                /*if(mParentTag.equals(ScheduleListFragment.LOG_TAG)){
                     intent = new Intent(this,ScheduleListActivity.class);
                     NavUtils.navigateUpTo(this, intent);
                     return true;
@@ -169,8 +171,8 @@ public class AddScheduleActivity extends BaseActivity
                     NavUtils.navigateUpTo(this, intent);
                     //startActivity(intent);
                     return true;
-                }
-
+                }*/
+                return true;
             default:
                 break;
         }

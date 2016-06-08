@@ -27,8 +27,10 @@ import com.github.xzwj87.todolist.schedule.observer.ScheduleDataObserver;
 import com.github.xzwj87.todolist.schedule.presenter.SearchSuggestionPresenterImpl;
 import com.github.xzwj87.todolist.schedule.ui.SearchSuggestionView;
 import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleAdapter;
+import com.github.xzwj87.todolist.schedule.ui.adapter.ScheduleGridAdapter;
 import com.github.xzwj87.todolist.schedule.ui.adapter.SearchSuggestionAdapter;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleDetailFragment;
+import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleGridFragment;
 import com.github.xzwj87.todolist.schedule.ui.fragment.ScheduleListFragment;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 import com.github.xzwj87.todolist.schedule.ui.model.ScheduleSuggestionModel;
@@ -43,7 +45,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ScheduleListActivity extends BaseActivity
-        implements ScheduleListFragment.Callbacks, NavigationView.OnNavigationItemSelectedListener,
+        implements ScheduleListFragment.Callbacks,ScheduleGridFragment.GridCallBacks,
+        NavigationView.OnNavigationItemSelectedListener,
         SearchSuggestionView, HasComponent<ScheduleComponent> {
     public static final String LOG_TAG = ScheduleListActivity.class.getSimpleName();
 
@@ -170,12 +173,11 @@ public class ScheduleListActivity extends BaseActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem menu){
         int id = menu.getItemId();
-        if(id == R.id.action_more){
-            Intent intent = new Intent(this,ScheduleGridActivity.class);
-            intent.putExtra(SCHEDULE_TYPE,mTypeFilter);
-            startActivity(intent);
-
+        if(id == R.id.action_grid_view){
+            replaceWithGridFragment(mTypeFilter);
             return true;
+        }else if(id == R.id.action_list_view){
+            replaceScheduleListWithType(mTypeFilter);
         }
 
         return false;
@@ -196,7 +198,7 @@ public class ScheduleListActivity extends BaseActivity
 
     @Override
     public void onItemSelected(long id, ScheduleAdapter.ViewHolder vh) {
-        Log.v(LOG_TAG, "onItemSelected(): id = " + id);
+        Log.v(LOG_TAG, "onGridItemSelected(): id = " + id);
 
         if (mTwoPane) {
             ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(id);
@@ -209,6 +211,23 @@ public class ScheduleListActivity extends BaseActivity
             intent.putExtra(ScheduleDetailActivity.SCHEDULE_ID, id);
             intent.putExtra(ScheduleDetailActivity.PARENT_TAG,
                     ScheduleListFragment.LOG_TAG);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onGridItemSelected(long id, ScheduleGridAdapter.GridViewHolder vh) {
+        Log.v(LOG_TAG, "onGridItemSelected(): id " + id);
+        if(mTwoPane){
+            ScheduleDetailFragment fragment = ScheduleDetailFragment.newInstance(id);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.schedule_list_container, fragment, DETAIL_FRAGMENT_TAG)
+                    .commit();
+        }else{
+            Intent intent = new Intent(this,ScheduleDetailActivity.class);
+            intent.putExtra(ScheduleDetailActivity.SCHEDULE_ID,id);
+            intent.putExtra(ScheduleDetailActivity.PARENT_TAG,
+                    ScheduleGridFragment.LOG_TAG);
             startActivity(intent);
         }
     }
@@ -266,6 +285,15 @@ public class ScheduleListActivity extends BaseActivity
         ft.replace(R.id.schedule_list_container, fragment, SEARCH_RESULT_FRAGMENT_TAG).commit();
 
         mFab.hide();
+    }
+
+    private void replaceWithGridFragment(String scheduleType){
+        Log.v(LOG_TAG, "replaceWithGridFragment(): type = " + scheduleType);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+
+        ScheduleGridFragment fragment = ScheduleGridFragment.getInstanceByType(scheduleType);
+        ft.replace(R.id.schedule_list_container,fragment).commit();
     }
 
     private void handleIntent(Intent intent) {

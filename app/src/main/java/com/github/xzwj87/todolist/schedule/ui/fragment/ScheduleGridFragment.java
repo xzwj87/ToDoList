@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -44,7 +43,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     private static final String SCHEDULE_TYPE = "schedule_type";
 
     private String mScheduleType = null;
-    private String mObserverType = "all";
+    private String mObserverType = "GridFragment";
     private ScheduleGridPresenterImpl mScheduleGridPresenter;
     private ScheduleGridAdapter mScheduleGridAdapter;
     private GridCallBacks mCallBacks;
@@ -60,7 +59,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     @Bind(R.id.schedule_grid_view) GridView mScheduleGridView;
 
     public interface GridCallBacks{
-        void onItemSelected(long id, ScheduleGridAdapter.GridViewHolder vh);
+        void onGridItemSelected(long id, ScheduleGridAdapter.GridViewHolder vh);
     }
 
     public ScheduleGridFragment(){
@@ -91,9 +90,7 @@ public class ScheduleGridFragment extends BaseFragment implements
             }
         }
 
-        if(mScheduleType != null){
-            mObserverType = mScheduleType;
-        }
+        mObserverType = mObserverType + "_" + mScheduleType;
         registerDataObserver();
 
         return rootView;
@@ -123,8 +120,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     @Override
     public void onDestroy(){
         super.onDestroy();
-        mScheduleObserver.unregisterDataChangedCb(this);
-        mScheduleObserver.unregisterObserver(mObserverType);
+        unregisterDataObserver();
         mScheduleGridPresenter.destroy();
     }
 
@@ -136,6 +132,11 @@ public class ScheduleGridFragment extends BaseFragment implements
     @Override
     public int getItemCount() {
         return mScheduleGridPresenter.getScheduleItemCount();
+    }
+
+    @Override
+    public void renderScheduleList() {
+        mScheduleGridAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -196,6 +197,11 @@ public class ScheduleGridFragment extends BaseFragment implements
         mScheduleObserver.registerDataChangedCb(this);
     }
 
+    private void unregisterDataObserver(){
+        mScheduleObserver.unregisterDataChangedCb(this);
+        mScheduleObserver.unregisterObserver(mObserverType);
+    }
+
     private void loadScheduleData(){
         Log.v(LOG_TAG, "loadScheduleData()");
         mScheduleGridPresenter.initialize();
@@ -210,7 +216,7 @@ public class ScheduleGridFragment extends BaseFragment implements
             public void onItemClick(int position, ScheduleGridAdapter.GridViewHolder vh) {
                 long id = getItemAtPosition(position).getId();
                 Log.v(LOG_TAG, "onItemClick(): position = " + position + ",id = " + id);
-                mCallBacks.onItemSelected(id, vh);
+                mCallBacks.onGridItemSelected(id, vh);
             }
 
             @Override

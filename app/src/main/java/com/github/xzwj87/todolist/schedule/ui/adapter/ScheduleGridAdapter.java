@@ -71,6 +71,7 @@ public class ScheduleGridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.v(LOG_TAG,"getView(): position = " + position);
         Context context = parent.getContext();
         if(mInflater == null) {
             mInflater = LayoutInflater.from(context);
