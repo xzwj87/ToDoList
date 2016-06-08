@@ -19,6 +19,7 @@ import com.github.xzwj87.todolist.schedule.ui.model.ScheduleModel;
 
 import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -31,25 +32,21 @@ import rx.Observable;
 public class ScheduleDataObserver extends ContentObserver {
     public static final String TAG = "ScheduleDataObserver";
 
-    private HashSet<DataSetChanged> mCallbacks = new HashSet<>();
-    private ArrayList<ContentObserver> mObservers;
-    private static ScheduleDataObserver mInstance = null;
+    private static HashSet<DataSetChanged> mCallbacks = new HashSet<>();
+    private static HashMap<String,ContentObserver> mObservers = new HashMap<>();
     private Context mContext = App.getAppContext();
     private ScheduleCategoryNumber mScheduleNumber = null;
+    private String mObserverType = null;
     private UseCase mGetScheduleList = null;
     private Cursor mCursor = null;
 
-    public static ScheduleDataObserver getInstance(){
-        if(mInstance == null){
-            mInstance = new ScheduleDataObserver(new Handler());
-        }
-
-        return mInstance;
+    public static ScheduleDataObserver getInstance(String type){
+        return new ScheduleDataObserver(type,new Handler());
     }
 
-    public ScheduleDataObserver(Handler handler){
+    public ScheduleDataObserver(String type,Handler handler){
         super(handler);
-        mObservers = new ArrayList<>();
+        mObserverType = type;
         mContext = App.getAppContext();
         mScheduleNumber = new ScheduleCategoryNumber();
         updateScheduleCategoryNumber();
@@ -87,21 +84,23 @@ public class ScheduleDataObserver extends ContentObserver {
         mCallbacks.remove(cb);
     }
 
-    public void registerObserver(){
-        Log.v(TAG,"registerObserver(): count = " + mObservers.size());
-        if(!mObservers.contains(mInstance)) {
-            mObservers.add(mInstance);
+    public void registerObserver(String type){
+        if(!mObservers.containsKey(type)) {
+            ScheduleDataObserver observer = getInstance(type);
+            mObservers.put(type,observer);
             mContext.getContentResolver().registerContentObserver(ScheduleContract.ScheduleEntry.CONTENT_URI,
-                    true, mInstance);
+                    true,observer);
         }
+        Log.v(TAG,"registerObserver(): type = " + type + ",size = " + mObservers.size());
     }
 
-    public void unregisterObserver(){
-        Log.v(TAG,"unregisterObserver(): count = " + mObservers.size());
-        if(mObservers.contains(mInstance)){
-            mContext.getContentResolver().unregisterContentObserver(mInstance);
-            mObservers.remove(mInstance);
+    public void unregisterObserver(String type){
+        if(mObservers.containsKey(type)){
+            ScheduleDataObserver observer = (ScheduleDataObserver)mObservers.get(type);
+            mContext.getContentResolver().unregisterContentObserver(observer);
+            mObservers.remove(type);
         }
+        Log.v(TAG,"unregisterObserver(): type = " + type + ",size = " + mObservers.size());
     }
 
     public class ScheduleCategoryNumber{

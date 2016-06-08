@@ -44,6 +44,7 @@ public class ScheduleGridFragment extends BaseFragment implements
     private static final String SCHEDULE_TYPE = "schedule_type";
 
     private String mScheduleType = null;
+    private String mObserverType = "all";
     private ScheduleGridPresenterImpl mScheduleGridPresenter;
     private ScheduleGridAdapter mScheduleGridAdapter;
     private GridCallBacks mCallBacks;
@@ -62,7 +63,8 @@ public class ScheduleGridFragment extends BaseFragment implements
         void onItemSelected(long id, ScheduleGridAdapter.GridViewHolder vh);
     }
 
-    public ScheduleGridFragment(){}
+    public ScheduleGridFragment(){
+    }
 
     public static ScheduleGridFragment getInstanceByType(String scheduleType){
         ScheduleGridFragment gridFragment = new ScheduleGridFragment();
@@ -88,6 +90,11 @@ public class ScheduleGridFragment extends BaseFragment implements
                 Log.v(LOG_TAG,"onCreateView(): scheduleType = " + mScheduleType);
             }
         }
+
+        if(mScheduleType != null){
+            mObserverType = mScheduleType;
+        }
+        registerDataObserver();
 
         return rootView;
     }
@@ -116,10 +123,8 @@ public class ScheduleGridFragment extends BaseFragment implements
     @Override
     public void onDestroy(){
         super.onDestroy();
-        /* Todo:if unregister here, it won't refresh data*/
-        //unregisterObserver();
         mScheduleObserver.unregisterDataChangedCb(this);
-        mScheduleObserver.unregisterObserver();
+        mScheduleObserver.unregisterObserver(mObserverType);
         mScheduleGridPresenter.destroy();
     }
 
@@ -154,7 +159,7 @@ public class ScheduleGridFragment extends BaseFragment implements
 
     @Override
     public void onDataSetChanged() {
-        Log.v(LOG_TAG,"onDataSetChanged()");
+        Log.v(LOG_TAG, "onDataSetChanged()");
         loadScheduleData();
     }
 
@@ -179,14 +184,16 @@ public class ScheduleGridFragment extends BaseFragment implements
                 mMarkedAsDone,mDeleteSchedule,mDataMapper);
         mScheduleGridPresenter.setView(this);
 
-        // data set observer
-        mScheduleObserver = ScheduleDataObserver.getInstance();
-        mScheduleObserver.registerObserver();
-        mScheduleObserver.registerDataChangedCb(this);
-
         initGridView();
 
         loadScheduleData();
+    }
+
+    private void registerDataObserver(){
+        // data set observer
+        mScheduleObserver = ScheduleDataObserver.getInstance(mObserverType);
+        mScheduleObserver.registerObserver(mObserverType);
+        mScheduleObserver.registerDataChangedCb(this);
     }
 
     private void loadScheduleData(){

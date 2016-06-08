@@ -51,6 +51,7 @@ public class ScheduleListFragment extends BaseFragment implements
     private static final String QUERY = "query";
 
     private String mScheduleType;
+    private String mObserverType = "all";
     private Callbacks mCallbacks = sDummyCallbacks;
     private ScheduleAdapter mScheduleAdapter;
     private ScheduleDataObserver mScheduleObserver = null;
@@ -87,7 +88,8 @@ public class ScheduleListFragment extends BaseFragment implements
 
     private static Callbacks sDummyCallbacks = null;
 
-    public ScheduleListFragment() {}
+    public ScheduleListFragment() {
+    }
 
     public static ScheduleListFragment newInstanceByType(String scheduleType) {
         ScheduleListFragment fragment = new ScheduleListFragment();
@@ -133,8 +135,11 @@ public class ScheduleListFragment extends BaseFragment implements
             }
 
         }
-        // schedule data observer
-        mScheduleObserver = ScheduleDataObserver.getInstance();
+
+        if(mScheduleType != null){
+            mObserverType = mScheduleType;
+        }
+        registerDataObserver();
 
         return rootView;
     }
@@ -148,7 +153,7 @@ public class ScheduleListFragment extends BaseFragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.v(LOG_TAG,"onAttach()");
+        Log.v(LOG_TAG, "onAttach()");
         try {
             mCallbacks = (Callbacks) context;
         }catch (IllegalStateException e){
@@ -178,16 +183,13 @@ public class ScheduleListFragment extends BaseFragment implements
         mScheduleListPresenter.pause();
     }
 
-    /* Todo: if unregister observer here, it will
-       not list to the data change event
-     */
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.v(LOG_TAG, "onDestroy()");
         //unregisterObserver();
         mScheduleObserver.unregisterDataChangedCb(this);
-        mScheduleObserver.unregisterObserver();
+        mScheduleObserver.unregisterObserver(mObserverType);
         mScheduleListPresenter.destroy();
     }
 
@@ -268,8 +270,6 @@ public class ScheduleListFragment extends BaseFragment implements
 
         setupRecyclerView();
 
-        mScheduleObserver.registerObserver();
-        mScheduleObserver.registerDataChangedCb(this);
         mCallbacks.onDataChanged(mScheduleObserver.getScheduleCategoryNumber());
 
         loadScheduleListData();
@@ -277,6 +277,14 @@ public class ScheduleListFragment extends BaseFragment implements
 
     private void loadScheduleListData() {
         mScheduleListPresenter.initialize();
+    }
+
+    private void registerDataObserver(){
+        Log.v(LOG_TAG,"registerDataObserver()");
+        // schedule data observer
+        mScheduleObserver = ScheduleDataObserver.getInstance(mObserverType);
+        mScheduleObserver.registerObserver(mObserverType);
+        mScheduleObserver.registerDataChangedCb(this);
     }
 
     private void setupRecyclerView() {
