@@ -34,8 +34,8 @@ public class ScheduleDataObserver extends ContentObserver {
 
     private static HashSet<DataSetChanged> mCallbacks = new HashSet<>();
     private static HashMap<String,ContentObserver> mObservers = new HashMap<>();
+    private static ScheduleCategoryNumber mScheduleNumber = null;
     private Context mContext = App.getAppContext();
-    private ScheduleCategoryNumber mScheduleNumber = null;
     private String mObserverType = null;
     private UseCase mGetScheduleList = null;
     private Cursor mCursor = null;
@@ -129,8 +129,6 @@ public class ScheduleDataObserver extends ContentObserver {
     }
 
     private void updateScheduleCategoryNumber(){
-        Log.v(TAG,"updateScheduleCategoryNumber()");
-
         String selection = ScheduleContract.ScheduleEntry.COLUMN_IS_DONE + " = ?";
         String args[] = {ScheduleModel.UNDONE};
 
@@ -146,5 +144,9 @@ public class ScheduleDataObserver extends ContentObserver {
                 null, selection, args, null);
         mScheduleNumber.setDoneTotal(cursor.getCount());
         cursor.close();
+
+        Log.v(TAG, "updateScheduleCategoryNumber():done = " + mScheduleNumber.getDoneTotal() +
+                    ",undone = " + mScheduleNumber.getUndoneTotal());
+
     }
 }

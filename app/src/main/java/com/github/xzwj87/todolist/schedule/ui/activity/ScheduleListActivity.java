@@ -54,6 +54,8 @@ public class ScheduleListActivity extends BaseActivity
 
     private static final String DETAIL_FRAGMENT_TAG = "detail_fragment";
     private static final String SEARCH_RESULT_FRAGMENT_TAG = "search_result_fragment";
+    private static String sUndoneScheduleTitle = null;
+    private static String sDoneScheduleTitle = null;
     private boolean mTwoPane;
     private String mTypeFilter;
     private SearchView mSearchView;
@@ -91,6 +93,7 @@ public class ScheduleListActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
+        navigationView.getMenu().findItem(R.id.nav_settings).setVisible(true);
 
         mTwoPane = findViewById(R.id.schedule_detail_container) != null;
         Log.v(LOG_TAG, "onCreate(): mTwoPane = " + mTwoPane);
@@ -102,6 +105,8 @@ public class ScheduleListActivity extends BaseActivity
                     .commit();
         }
 
+        sUndoneScheduleTitle = getResources ().getString(R.string.schedule_type_all);
+        sDoneScheduleTitle = getResources().getString(R.string.schedule_done);
         initializeInjector();
         initializeView();
 
@@ -360,16 +365,14 @@ public class ScheduleListActivity extends BaseActivity
     }
 
     private void updateDrawerView(ScheduleDataObserver.ScheduleCategoryNumber  number){
-        String totalScheduleMenuTitle = getResources ().getString(R.string.schedule_type_all);
-        String mDoneScheduleMenuTitle =  getResources().getString(R.string.schedule_done);
+        Log.v(LOG_TAG,"updateDrawerView(): done = " + number.getDoneTotal() +
+                        ",undone = " + number.getUndoneTotal());
         NavigationView view = (NavigationView)findViewById(R.id.nav_view);
         Menu menu = view.getMenu();
 
-        menu.findItem(R.id.nav_settings).setVisible(true);
-
-        menu.findItem(R.id.nav_schedule_type_all).setTitle(totalScheduleMenuTitle
+        menu.findItem(R.id.nav_schedule_type_all).setTitle(sUndoneScheduleTitle
                 + "(" + number.getUndoneTotal() + ")");
-        menu.findItem(R.id.nav_done).setTitle(mDoneScheduleMenuTitle
+        menu.findItem(R.id.nav_done).setTitle(sDoneScheduleTitle
                 + "(" + number.getDoneTotal() + ")");
     }
 }
